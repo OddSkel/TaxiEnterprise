@@ -1,0 +1,31 @@
+<h2>My Taxis</h2>
+
+<div>
+  <label for="new-taxi">Taxi matricula:</label>
+  <input id="new-taxi" #taximatricula />
+
+  <!-- (click) passes input value to add() and then clears the input -->
+  <button
+    type="button"
+    class="add-button"
+    (click)="add(taximatricula.value); taximatricula.value = ''"
+  >
+    Add taxi
+  </button>
+</div>
+
+<ul class="taxis">
+  <li *ngFor="let taxi of taxis">
+    <a routerLink="/detail/{{ taxi.id }}">
+      <span class="badge">{{ taxi.id }}</span> {{ taxi.matricula }}
+    </a>
+    <button
+      type="button"
+      class="delete"
+      title="delete taxi"
+      (click)="delete(taxi)"
+    >
+      x
+    </button>
+  </li>
+</ul>

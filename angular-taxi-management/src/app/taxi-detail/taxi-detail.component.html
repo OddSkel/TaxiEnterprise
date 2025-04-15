@@ -1,0 +1,14 @@
+<div *ngIf="taxi">
+  <h2>{{ taxi.matricula | uppercase }} Details</h2>
+  <div><span>id: </span>{{ taxi.id }}</div>
+  <div>
+    <label for="taxi-matricula">Taxi matricula: </label>
+    <input
+      id="taxi-matricula"
+      [(ngModel)]="taxi.matricula"
+      placeholder="matricula"
+    />
+  </div>
+  <button type="button" (click)="goBack()">go back</button>
+  <button type="button" (click)="save()">save</button>
+</div>

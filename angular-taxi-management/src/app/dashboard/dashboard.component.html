@@ -1,0 +1,9 @@
+<h2>Top Taxis</h2>
+<div class="taxis-menu">
+  <a *ngFor="let taxi of taxis">
+    routerLink="/detail/{{ taxi.id }}">
+    {{ taxi.matricula }}
+  </a>
+</div>
+
+<app-taxi-search> </app-taxi-search>
