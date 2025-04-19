@@ -9,7 +9,7 @@ import { MessageService } from './message.service';
 
 @Injectable({ providedIn: 'root' })
 export class TaxiService {
-  private taxisUrl = 'api/Taxies'; // URL to web api
+  private taxisUrl = 'api/taxis'; // URL to web api
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
@@ -69,15 +69,20 @@ export class TaxiService {
   //////// Save methods //////////
 
   /** POST: add a new Taxi to the server */
-  addTaxi(Taxi: Taxi): Observable<Taxi> {
-    return this.http.post<Taxi>(this.taxisUrl, Taxi, this.httpOptions).pipe(
-      tap((newTaxi: Taxi) => this.log(`added Taxi w/ id=${newTaxi.id}`)),
+  addTaxi(taxi: Taxi): Observable<Taxi> {
+    return this.http.post<Taxi>(this.taxisUrl, taxi).pipe(
+      map((response: any) => {
+        return {
+          ...response,
+          id: response._id, // map _id from Mongo to id in your interface
+        };
+      }),
       catchError(this.handleError<Taxi>('addTaxi'))
     );
   }
 
   /** DELETE: delete the Taxi from the server */
-  deleteTaxi(id: number): Observable<Taxi> {
+  deleteTaxi(id: string): Observable<Taxi> {
     const url = `${this.taxisUrl}/${id}`;
 
     return this.http.delete<Taxi>(url, this.httpOptions).pipe(
@@ -89,7 +94,7 @@ export class TaxiService {
   /** PUT: update the Taxi on the server */
   updateTaxi(Taxi: Taxi): Observable<any> {
     return this.http.put(this.taxisUrl, Taxi, this.httpOptions).pipe(
-      tap((_) => this.log(`updated Taxi id=${Taxi.id}`)),
+      tap((_) => this.log(`updated Taxi matricula=${Taxi.matricula}`)),
       catchError(this.handleError<any>('updateTaxi'))
     );
   }

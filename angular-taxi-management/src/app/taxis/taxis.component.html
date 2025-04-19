@@ -2,28 +2,31 @@
 
 <div>
   <label for="new-taxi">Taxi matricula:</label>
+  <label for="new-taxi">Taxi marca:</label>
+  <label for="new-taxi">Taxi modelo:</label>
+  <label for="new-taxi">Taxi ano_compra:</label>
   <input id="new-taxi" #taximatricula />
 
   <!-- (click) passes input value to add() and then clears the input -->
   <button
     type="button"
     class="add-button"
-    (click)="add(taximatricula.value); taximatricula.value = ''"
+    (click)="add(); taximatricula.value = ''"
   >
     Add taxi
   </button>
 </div>
 
 <ul class="taxis">
-  <li *ngFor="let taxi of taxis">
-    <a routerLink="/detail/{{ taxi.id }}">
-      <span class="badge">{{ taxi.id }}</span> {{ taxi.matricula }}
+  <li *ngFor="let taxis of taxi">
+    <a routerLink="/detail/{{ taxis.matricula }}">
+      <span class="badge">{{ taxis.matricula }}</span> {{ taxis.matricula }}
     </a>
     <button
       type="button"
       class="delete"
       title="delete taxi"
-      (click)="delete(taxi)"
+      (click)="delete(taxis)"
     >
       x
     </button>

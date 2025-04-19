@@ -4,7 +4,7 @@
 
   <ul class="search-result">
     <li *ngFor="let taxi of taxis$ | async">
-      <a routerLink="/detail/{{ taxi.id }}">
+      <a routerLink="/detail/{{ taxi.matricula }}">
         {{ taxi.matricula }}
       </a>
     </li>
