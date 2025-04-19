@@ -11,6 +11,9 @@ import { TaxiDetailComponent } from './taxi-detail/taxi-detail.component';
 import { TaxisComponent } from './taxis/taxis.component';
 import { TaxiSearchComponent } from './taxi-search/taxi-search.component';
 import { MessagesComponent } from './messages/messages.component';
+import { MotoristaComponent } from './motorista/motorista.component';
+import { MotoristaDetailComponent } from './motorista-detail/motorista-detail.component';
+import { MotoristaSearchComponent } from './motorista-search/motorista-search.component';
 
 @NgModule({
   imports: [BrowserModule, FormsModule, AppRoutingModule, HttpClientModule],
@@ -21,6 +24,9 @@ import { MessagesComponent } from './messages/messages.component';
     TaxiDetailComponent,
     MessagesComponent,
     TaxiSearchComponent,
+    MotoristaComponent,
+    MotoristaDetailComponent,
+    MotoristaSearchComponent,
   ],
   bootstrap: [AppComponent],
 })
