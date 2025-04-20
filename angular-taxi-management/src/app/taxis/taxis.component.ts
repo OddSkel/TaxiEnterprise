@@ -9,25 +9,17 @@ import { TaxiService } from '../taxi.service';
   styleUrls: ['./taxis.component.css'],
 })
 export class TaxisComponent implements OnInit {
-  taxi: Taxi[] = [];
-
-  taxis: Taxi = {
-    _id: '',
+  taxis: Taxi[] = [];
+  taxi: Taxi = {
+    _id: '', // MongoDB will generate _id
     matricula: '',
+    ano_compra: 0,
     marca: '',
     modelo: '',
-    ano_compra: new Date().getFullYear(),
     nivel_conforto: '',
-    createdAt: new Date().getFullYear(),
-    motorista: {
-      nome: '',
-      idade: 0,
-      cartaConducao: '',
-    },
-    cliente: {
-      nome: '',
-      telefone: '',
-    },
+    motorista: '', // Assuming motorista and cliente are strings (IDs)
+    cliente: '',
+    createdAt: 0,
   };
 
   constructor(private taxiService: TaxiService) {}
@@ -37,42 +29,44 @@ export class TaxisComponent implements OnInit {
   }
 
   getTaxis(): void {
-    this.taxiService.getTaxis().subscribe((taxis) => (this.taxi = taxis));
-  }
-
-  add(): void {
-    const taxiToAdd: Taxi = { ...this.taxis };
-
-    // Optional: additional validation before sending
-    if (!taxiToAdd.matricula.trim() || !taxiToAdd.marca || !taxiToAdd.modelo) {
-      return;
-    }
-
-    this.taxiService.addTaxi(taxiToAdd).subscribe((createdTaxi: Taxi) => {
-      this.taxi = [createdTaxi, ...this.taxi]; // Add it at the top of the list
-      this.taxis = {
-        _id: '',
-        matricula: '',
-        marca: '',
-        modelo: '',
-        ano_compra: new Date().getFullYear(),
-        nivel_conforto: '',
-        motorista: {
-          nome: '',
-          idade: 0,
-          cartaConducao: '',
-        },
-        cliente: {
-          nome: '',
-          telefone: '',
-        },
-        createdAt: new Date().getFullYear(),
-      };
+    this.taxiService.getTaxis().subscribe((taxis) => {
+      this.taxis = taxis.sort((a, b) => b.createdAt - a.createdAt);
     });
   }
 
+  add(): void {
+    if (
+      !this.taxi.matricula ||
+      !this.taxi.ano_compra ||
+      !this.taxi.marca ||
+      !this.taxi.modelo
+    ) {
+      return; // Optional validation: check if required fields are provided
+    }
+
+    // Add taxi to the backend
+    this.taxiService.addTaxi(this.taxi).subscribe((taxi) => {
+      this.taxis.push(taxi); // Add new taxi to the list
+      this.clearForm(); // Clear the form fields after successful addition
+    });
+  }
+
+  clearForm(): void {
+    this.taxi = {
+      _id: '',
+      matricula: '',
+      ano_compra: 0,
+      marca: '',
+      modelo: '',
+      nivel_conforto: '',
+      motorista: '',
+      cliente: '',
+      createdAt: 0,
+    };
+  }
+
   delete(taxi: Taxi): void {
-    this.taxi = this.taxi.filter((h) => h !== taxi);
+    this.taxis = this.taxis.filter((h) => h !== taxi);
     this.taxiService.deleteTaxi(taxi._id).subscribe();
   }
 }

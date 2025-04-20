@@ -1,21 +1,52 @@
 const Taxi = require("../models/taxi");
-const asyncHandler = require("express-async-handler");
+const Pessoa = require("../models/pessoa");
+const Morada = require("../models/morada");
+const Motorista = require("../models/motorista");
+const Cliente = require("../models/cliente");
+
+const express = require("express");
+const router = express.Router();
 
 router.get("/init", async (req, res) => {
   try {
     await Taxi.deleteMany({});
     await Motorista.deleteMany({});
-    const motorista = await Motorista.create({ id: 1, name: "Augusto" });
+    await Cliente.deleteMany({});
+
+    const pessoa = await Pessoa.create({
+      nome: "Augusto",
+      genero: "M",
+      nif: "123456789",
+    });
+
+    const morada = await Morada.create({
+      rua: "Alberto3",
+      numPorta: "34",
+      codigoPostal: "3456-987",
+      localidade: "Lisboa",
+    });
+
+    const motorista = await Motorista.create({
+      pessoa: pessoa._id,
+      morada: morada._id,
+      anoNascimento: 1997,
+      cartaConducao: "ABCD12345",
+    });
+
+    const cliente = await Cliente.create({ name: "Alberto" });
+
     const taxi1 = await Taxi.create({
       matricula: "DF65SA",
       ano_compra: 2020,
       marca: "BMW",
       modelo: "M50",
       nivel_conforto: "LUXUOSO",
-      createdAt: 2019,
-      motoristaId: motorista,
-      clienteId: null,
+      createdAt: new Date(2019, 0, 1),
+      motorista: motorista._id,
+      cliente: cliente._id,
     });
+
+    console.log("Taxi created:", taxi1);
 
     res.status(200).json({ message: "Database initialized successfully" });
   } catch (error) {
@@ -24,7 +55,7 @@ router.get("/init", async (req, res) => {
   }
 });
 
-// /hero/:id - Get hero by id
+// /taxi/:id - Get hero by id
 router.get("/taxi/:id", async (req, res) => {
   try {
     const taxiId = req.params.id;
@@ -46,7 +77,8 @@ router.get("/taxis", async (req, res) => {
   try {
     const taxis = await Taxi.find()
       .sort({ createdAt: -1 })
-      .populate("matricula"); // Populate the entire pet document
+      .populate("motorista")
+      .populate("cliente"); // Populate the entire pet document
     res.json(taxis);
   } catch (error) {
     console.error("Error fetching taxis:", error);
@@ -69,14 +101,14 @@ router.post("/taxis", async (req, res) => {
     } = req.body;
 
     if (
-      (!matricula,
-      !ano_compra,
-      !marca,
-      !modelo,
-      !nivel_conforto,
-      !createdAt,
-      !motorista,
-      !cliente)
+      !matricula ||
+      !ano_compra ||
+      !marca ||
+      !modelo ||
+      !nivel_conforto ||
+      !createdAt ||
+      !motorista ||
+      !cliente
     ) {
       return res.status(400).json({ message: "You're missing requirements!" });
     }
@@ -117,7 +149,7 @@ router.post("/taxis", async (req, res) => {
       modelo,
       nivel_conforto,
       createdAt,
-      motorista: motoristaId,
+      motorista,
       cliente,
     });
 
