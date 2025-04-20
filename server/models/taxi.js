@@ -29,7 +29,7 @@ const TaxiSchema = new Schema({
     enum: marcas,
   },
   modelo: {
-    type: string,
+    type: String,
     enum: modelos,
     required: true,
   },
@@ -39,15 +39,13 @@ const TaxiSchema = new Schema({
     required: true,
   },
   createdAt: { type: Date, default: Date.now },
-  motoristaId: {
+  motorista: {
     type: Schema.Types.ObjectId,
-    ref: "Motorista", // This is how we reference the Pet model
-    default: null, // If no pet is associated, set it to null
+    ref: "Motorista", // This is how we reference the Motorista model
   },
-  clienteId: {
+  cliente: {
     type: Schema.Types.ObjectId,
-    ref: "Cliente", // This is how we reference the Pet model
-    default: null, // If no pet is associated, set it to null
+    ref: "Cliente", // This is how we reference the Cliente model
   },
 });
 

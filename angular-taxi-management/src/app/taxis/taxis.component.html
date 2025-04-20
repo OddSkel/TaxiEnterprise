@@ -1,32 +1,45 @@
 <h2>My Taxis</h2>
 
 <div>
-  <label for="new-taxi">Taxi matricula:</label>
-  <label for="new-taxi">Taxi marca:</label>
-  <label for="new-taxi">Taxi modelo:</label>
-  <label for="new-taxi">Taxi ano_compra:</label>
-  <input id="new-taxi" #taximatricula />
+  <label for="matricula">Matricula:</label>
+  <input id="matricula" [(ngModel)]="taxi.matricula" />
+
+  <label for="ano_compra">Ano de Compra:</label>
+  <input id="ano_compra" [(ngModel)]="taxi.ano_compra" type="number" />
+
+  <label for="marca">Marca:</label>
+  <input id="marca" [(ngModel)]="taxi.marca" />
+
+  <label for="modelo">Modelo:</label>
+  <input id="modelo" [(ngModel)]="taxi.modelo" />
+
+  <label for="nivel_conforto">Nível de Conforto:</label>
+  <input id="nivel_conforto" [(ngModel)]="taxi.nivel_conforto" />
+
+  <label for="createdAt">Data de Criação:</label>
+  <input id="createdAt" [(ngModel)]="taxi.createdAt" type="number" />
+
+  <!-- Assuming motorista and cliente are already defined -->
+  <label for="motorista">Motorista:</label>
+  <input id="motorista" [(ngModel)]="taxi.motorista" />
+
+  <label for="cliente">Cliente:</label>
+  <input id="cliente" [(ngModel)]="taxi.cliente" />
 
   <!-- (click) passes input value to add() and then clears the input -->
-  <button
-    type="button"
-    class="add-button"
-    (click)="add(); taximatricula.value = ''"
-  >
-    Add taxi
-  </button>
+  <button type="button" class="add-button" (click)="add()">Add taxi</button>
 </div>
 
 <ul class="taxis">
-  <li *ngFor="let taxis of taxi">
-    <a routerLink="/detail/{{ taxis.matricula }}">
-      <span class="badge">{{ taxis.matricula }}</span> {{ taxis.matricula }}
+  <li *ngFor="let taxi of taxis">
+    <a routerLink="/detail/{{ taxi.matricula }}">
+      <span class="badge">{{ taxi.matricula }}</span> {{ taxi.matricula }}
     </a>
     <button
       type="button"
       class="delete"
       title="delete taxi"
-      (click)="delete(taxis)"
+      (click)="delete(taxi)"
     >
       x
     </button>

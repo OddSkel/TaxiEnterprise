@@ -1,7 +1,6 @@
 <h2>Top Taxis</h2>
 <div class="taxis-menu">
-  <a *ngFor="let taxi of taxis">
-    routerLink="/detail/{{ taxi.matricula }}">
+  <a *ngFor="let taxi of taxis" routerLink="/detail/{{ taxi._id }}">
     {{ taxi.matricula }}
   </a>
 </div>
