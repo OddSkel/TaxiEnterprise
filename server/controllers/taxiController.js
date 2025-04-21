@@ -137,7 +137,7 @@ router.post("/taxis", async (req, res) => {
       });
     }
 
-    if (!marcas.include(marca)) {
+    if (marcas && !marcas.includes(marca)) {
       return res.status(400).json({
         message: "Validation failed",
         fieldErrors: {
@@ -146,7 +146,7 @@ router.post("/taxis", async (req, res) => {
       });
     }
 
-    if (!modelos.include(modelo)) {
+    if (modelos && !modelos.includes(modelo)) {
       return res.status(400).json({
         message: "Validation failed",
         fieldErrors: {
@@ -155,7 +155,7 @@ router.post("/taxis", async (req, res) => {
       });
     }
 
-    if (!nivel_conforto.include(nivel_conforto)) {
+    if (confortos && !confortos.includes(nivel_conforto)) {
       return res.status(400).json({
         message: "Validation failed",
         fieldErrors: {
