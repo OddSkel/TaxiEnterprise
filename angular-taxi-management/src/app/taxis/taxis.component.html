@@ -1,33 +1,84 @@
 <h2>My Taxis</h2>
 
-<div>
+<div class="forms">
   <label for="matricula">Matricula:</label>
-  <input id="matricula" [(ngModel)]="taxi.matricula" />
+  <input
+    id="matricula"
+    name="matricula"
+    [(ngModel)]="taxi.matricula"
+    (ngModelChange)="validateMatricula()"
+    type="string"
+  />
+  <div *ngIf="fieldErrors['matricula']" class="error">
+    {{ fieldErrors["matricula"] }}
+  </div>
 
   <label for="ano_compra">Ano de Compra:</label>
-  <input id="ano_compra" [(ngModel)]="taxi.ano_compra" type="number" />
+  <input
+    id="ano_compra"
+    name="ano_compra"
+    [(ngModel)]="taxi.ano_compra"
+    (ngModelChange)="validateAnos()"
+    type="number"
+  />
 
   <label for="marca">Marca:</label>
-  <input id="marca" [(ngModel)]="taxi.marca" />
+  <input
+    id="marca"
+    name="marca"
+    [(ngModel)]="taxi.marca"
+    (ngModelChange)="validateMarca()"
+    type="string"
+  />
+  <div *ngIf="fieldErrors['marca']" class="error">
+    {{ fieldErrors["marca"] }}
+  </div>
 
   <label for="modelo">Modelo:</label>
-  <input id="modelo" [(ngModel)]="taxi.modelo" />
+  <input
+    id="modelo"
+    name="modelo"
+    [(ngModel)]="taxi.modelo"
+    (ngModelChange)="validateModelo()"
+    type="string"
+  />
+  <div *ngIf="fieldErrors['modelo']" class="error">
+    {{ fieldErrors["modelo"] }}
+  </div>
 
   <label for="nivel_conforto">Nível de Conforto:</label>
-  <input id="nivel_conforto" [(ngModel)]="taxi.nivel_conforto" />
+  <input
+    id="nivel_conforto"
+    name="nivel_conforto"
+    [(ngModel)]="taxi.nivel_conforto"
+    (ngModelChange)="validateConforto()"
+    type="string"
+  />
+  <div *ngIf="fieldErrors['nivel_conforto']" class="error">
+    {{ fieldErrors["nivel_conforto"] }}
+  </div>
 
   <label for="createdAt">Data de Criação:</label>
-  <input id="createdAt" [(ngModel)]="taxi.createdAt" type="number" />
-
-  <!-- Assuming motorista and cliente are already defined -->
-  <label for="motorista">Motorista:</label>
-  <input id="motorista" [(ngModel)]="taxi.motorista" />
-
-  <label for="cliente">Cliente:</label>
-  <input id="cliente" [(ngModel)]="taxi.cliente" />
+  <input
+    id="createdAt"
+    name="createdAt"
+    [(ngModel)]="taxi.createdAt"
+    (ngModelChange)="validateAnos()"
+    type="number"
+  />
+  <div *ngIf="fieldErrors['ano_compra']" class="error">
+    {{ fieldErrors["ano_compra"] }}
+  </div>
 
   <!-- (click) passes input value to add() and then clears the input -->
-  <button type="button" class="add-button" (click)="add()">Add taxi</button>
+  <button
+    type="button"
+    class="add-button"
+    (click)="add()"
+    [disabled]="!formValid"
+  >
+    Add taxi
+  </button>
 </div>
 
 <ul class="taxis">

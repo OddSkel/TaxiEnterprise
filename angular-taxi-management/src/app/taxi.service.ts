@@ -42,7 +42,7 @@ export class TaxiService {
   }
 
   /** GET Taxi by id. Will 404 if id not found */
-  getTaxi(id: number): Observable<Taxi> {
+  getTaxi(id: string): Observable<Taxi> {
     const url = `${this.taxisUrl}/${id}`;
     return this.http.get<Taxi>(url).pipe(
       tap((_) => this.log(`fetched Taxi id=${id}`)),
@@ -93,7 +93,7 @@ export class TaxiService {
 
   /** PUT: update the Taxi on the server */
   updateTaxi(Taxi: Taxi): Observable<any> {
-    return this.http.put(this.taxisUrl, Taxi, this.httpOptions).pipe(
+    return this.http.put(`${this.taxisUrl}/${Taxi._id}`, Taxi).pipe(
       tap((_) => this.log(`updated Taxi matricula=${Taxi.matricula}`)),
       catchError(this.handleError<any>('updateTaxi'))
     );
