@@ -38,15 +38,7 @@ const TaxiSchema = new Schema({
     enum: confortos,
     required: true,
   },
-  createdAt: { type: Date, default: Date.now },
-  motorista: {
-    type: Schema.Types.ObjectId,
-    ref: "Motorista", // This is how we reference the Motorista model
-  },
-  cliente: {
-    type: Schema.Types.ObjectId,
-    ref: "Cliente", // This is how we reference the Cliente model
-  },
+  createdAt: { type: Number, required: true },
 });
 
 module.exports = mongoose.model("Taxi", TaxiSchema);
