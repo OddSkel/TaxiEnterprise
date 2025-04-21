@@ -1,9 +1,9 @@
 var express = require('express');
 var router = express.Router();
 
-/* GET gestor home page. */
-router.get('/gestor', function(req, res, next) {
-  res.rendirect('/gestor');
+/* GET home page. */
+router.get('/', function(req, res, next) {
+  res.render('index', { title: 'Express' });
 });
 
 module.exports = router;
