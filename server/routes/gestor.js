@@ -21,14 +21,14 @@ router.get("/init", async (req, res) => {
 
     const pessoa = await Pessoa.create({
       nome: "Augusto",
-      genero: "M",
+      genero: "masculino",
       nif: "123456789",
     });
 
     const morada = await Morada.create({
       rua: "Alberto3",
       numPorta: "34",
-      codigoPostal: "3456-987",
+      codigoPostal: "1000-987",
       localidade: "Lisboa",
     });
 
@@ -63,13 +63,13 @@ router.get("/init", async (req, res) => {
 
 router.get('/motoristas', motorista_controller.getMotoristas);
 
-router.post('/motorista', motorista_controller.createMotorista);
+router.post('/motoristas', motorista_controller.createMotorista);
 
-router.get('/motorista/:id', motorista_controller.getMotoristaById);
+router.get('/motoristas/:id', motorista_controller.getMotoristaById);
 
-router.delete('/motorista/:id', motorista_controller.deleteMotorista);
+router.delete('/motoristas/:id', motorista_controller.deleteMotorista);
 
-router.put('/motorista/:id', motorista_controller.updateMotorista);
+router.put('/motoristas/:id', motorista_controller.updateMotorista);
 
 
 //TAXI ROUTES

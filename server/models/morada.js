@@ -5,7 +5,7 @@ const MoradaSchema = new mongoose.Schema({
   rua: { type: String, required: true },
   numPorta: { type: String, required: true },
   codigoPostal: { type: String, required: true },
-  localidade: { type: String }
+  localidade: { type: String, requeired: true }
 });
 
 module.exports = mongoose.model('Morada', MoradaSchema);
