@@ -58,11 +58,11 @@
     {{ fieldErrors["nivel_conforto"] }}
   </div>
 
-  <label for="createdAt">Data de Criação:</label>
+  <label for="yearCriation">Data de Criação:</label>
   <input
-    id="createdAt"
-    name="createdAt"
-    [(ngModel)]="taxi.createdAt"
+    id="yearCriation"
+    name="yearCriation"
+    [(ngModel)]="taxi.yearCriation"
     (ngModelChange)="validateAnos()"
     type="number"
   />

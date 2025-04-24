@@ -70,8 +70,8 @@ export class TaxiDetailComponent implements OnInit {
   validateAnos() {
     if (
       this.taxi?.ano_compra &&
-      this.taxi?.createdAt &&
-      this.taxi.ano_compra < this.taxi.createdAt
+      this.taxi?.yearCriation &&
+      this.taxi.ano_compra < this.taxi.yearCriation
     ) {
       this.fieldErrors['ano_compra'] =
         'Taxi cannot be bought before it was created';
@@ -109,7 +109,7 @@ export class TaxiDetailComponent implements OnInit {
   validateModelo() {
     const modelos = [
       'M50',
-      'AUG40',
+      'AMG40',
       'R8',
       'PANAMERA',
       'COROLLA',

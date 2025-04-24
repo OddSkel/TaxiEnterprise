@@ -17,7 +17,7 @@ export class TaxisComponent implements OnInit {
     marca: '',
     modelo: '',
     nivel_conforto: '',
-    createdAt: 0,
+    yearCriation: 0,
   };
   errorMessage: string = '';
   fieldErrors: { [key: string]: string } = {};
@@ -32,13 +32,6 @@ export class TaxisComponent implements OnInit {
   getTaxis(): void {
     this.taxiService.getTaxis().subscribe((taxis) => {
       this.taxis = taxis;
-      this.sortTaxis();
-    });
-  }
-
-  sortTaxis(): void {
-    this.taxis.sort((a, b) => {
-      return b.createdAt - a.createdAt;
     });
   }
 
@@ -56,7 +49,7 @@ export class TaxisComponent implements OnInit {
     this.taxiService.addTaxi(this.taxi).subscribe({
       next: (taxi) => {
         this.taxis.push(taxi);
-        this.sortTaxis();
+        this.getTaxis();
         this.clearForm();
         this.fieldErrors = {};
         this.errorMessage = '';
@@ -81,7 +74,7 @@ export class TaxisComponent implements OnInit {
       marca: '',
       modelo: '',
       nivel_conforto: '',
-      createdAt: 0,
+      yearCriation: 0,
     };
     this.errorMessage = '';
     this.fieldErrors = {};
@@ -116,7 +109,7 @@ export class TaxisComponent implements OnInit {
   }
 
   validateAnos() {
-    if (this.taxi.ano_compra < this.taxi.createdAt) {
+    if (this.taxi.ano_compra < this.taxi.yearCriation) {
       this.fieldErrors['ano_compra'] =
         'Taxi cannot be bought before it was created';
     } else {
@@ -155,7 +148,7 @@ export class TaxisComponent implements OnInit {
   validateModelo() {
     const modelos = [
       'M50',
-      'AUG40',
+      'AMG40',
       'R8',
       'PANAMERA',
       'COROLLA',
@@ -170,11 +163,22 @@ export class TaxisComponent implements OnInit {
   }
 
   checkFormValidity() {
-    const { matricula, ano_compra, marca, modelo, nivel_conforto, createdAt } =
-      this.taxi;
+    const {
+      matricula,
+      ano_compra,
+      marca,
+      modelo,
+      nivel_conforto,
+      yearCriation,
+    } = this.taxi;
 
     const allFieldsFilled =
-      matricula && ano_compra && marca && modelo && nivel_conforto && createdAt;
+      matricula &&
+      ano_compra &&
+      marca &&
+      modelo &&
+      nivel_conforto &&
+      yearCriation;
 
     const noFieldErrors = Object.keys(this.fieldErrors).length === 0;
 

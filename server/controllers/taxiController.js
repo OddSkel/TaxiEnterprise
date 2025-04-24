@@ -32,8 +32,14 @@ exports.getTaxis = async (req, res) => {
 //taxis - create new taxi
 exports.createTaxi = async (req, res) => {
   try {
-    const { matricula, ano_compra, marca, modelo, nivel_conforto, createdAt } =
-      req.body;
+    const {
+      matricula,
+      ano_compra,
+      marca,
+      modelo,
+      nivel_conforto,
+      yearCriation,
+    } = req.body;
 
     if (
       !matricula ||
@@ -41,7 +47,7 @@ exports.createTaxi = async (req, res) => {
       !marca ||
       !modelo ||
       !nivel_conforto ||
-      !createdAt
+      !yearCriation
     ) {
       return res.status(400).json({ message: "You're missing requirements!" });
     }
@@ -72,7 +78,7 @@ exports.createTaxi = async (req, res) => {
       });
     }
 
-    if (ano_compra - createdAt < 0) {
+    if (ano_compra - yearCriation < 0) {
       return res.status(400).json({
         message: "Validation failed",
         fieldErrors: {
@@ -115,7 +121,7 @@ exports.createTaxi = async (req, res) => {
       marca,
       modelo,
       nivel_conforto,
-      createdAt,
+      yearCriation,
     });
 
     const savedTaxi = await taxi.save();
@@ -172,5 +178,3 @@ function formatValidationErrors(error) {
   }
   return fieldErrors;
 }
-
-
