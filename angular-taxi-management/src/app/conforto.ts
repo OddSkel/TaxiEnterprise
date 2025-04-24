@@ -1,5 +1,5 @@
 export interface Conforto {
-    name: String,
-    acrescimo: Number,
-    preco: Number
+  name: String;
+  acrescimo: number;
+  preco: Number;
 }

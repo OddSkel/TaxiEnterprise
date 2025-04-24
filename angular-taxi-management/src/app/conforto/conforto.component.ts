@@ -3,14 +3,12 @@ import { Component, OnInit } from '@angular/core';
 import { Conforto } from '../conforto';
 import { ConfortoService } from '../conforto.service';
 
-
 @Component({
   selector: 'app-conforto',
   templateUrl: './conforto.component.html',
-  styleUrls: ['./conforto.component.css']
+  styleUrls: ['./conforto.component.css'],
 })
-export class ConfortoComponent implements OnInit{
-
+export class ConfortoComponent implements OnInit {
   confortos: Conforto[] = [];
 
   constructor(private confortoService: ConfortoService) {}
@@ -25,4 +23,7 @@ export class ConfortoComponent implements OnInit{
     });
   }
 
+  getAcrescimoPercent(value: number | null | undefined): number {
+    return value ? value - 1 : 0;
+  }
 }
