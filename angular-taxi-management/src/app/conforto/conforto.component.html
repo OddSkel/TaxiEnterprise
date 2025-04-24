@@ -3,10 +3,7 @@
 <ul *ngFor="let conforto of confortos">
   <li>Tipo de conforto: {{ conforto.name }}</li>
   <li>Preço por minuto: {{ conforto.preco }}</li>
-  <li>
-    Acrescimo:
-    {{ getAcrescimoPercent(conforto.acrescimo) | percent : "1.0-2" }}
-  </li>
+  <li>Acrescimo:{{ conforto.acrescimo }}%</li>
   <li>
     <a routerLink="/confortos/{{ conforto.name }}"> Editar </a>
     <a routerLink="/confortos/simular/{{ conforto.name }}"> Simular </a>

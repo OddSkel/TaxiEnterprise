@@ -22,8 +22,4 @@ export class ConfortoComponent implements OnInit {
       this.confortos = confortos;
     });
   }
-
-  getAcrescimoPercent(value: number | null | undefined): number {
-    return value ? value - 1 : 0;
-  }
 }
