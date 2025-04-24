@@ -1,0 +1,17 @@
+<div *ngIf="conforto">
+    <h2>Simulador de viagem com taxi de nível {{conforto.name}}</h2>
+    <form (ngSubmit)="calculate(+iHoraInput.value, +iMinutInput.value, +fHoraInput.value,
+     +fMinutInput.value, +conforto.preco, +conforto.acrescimo)"  class="update-form">
+        <label for="">Hora de Partida: </label>
+        <input #iHoraInput type="number" placeholder='0'> 
+        <label for="">Minutos de Partida: </label>
+        <input #iMinutInput type="number" placeholder='0'>
+        <label for="">Hora de Chegada: </label>
+        <input #fHoraInput type="number" placeholder='0'> 
+        <label for="">Hora de Chegada: </label>
+        <input #fMinutInput type="number" placeholder='0'> 
+        <button type="submit">Simular</button>
+    </form>
+    <p>O custo da viagem vão ser: {{precoFinal}} €</p>
+    <button type="button" (click)="goBack()">go back</button>
+</div>

@@ -14,6 +14,9 @@ import { MessagesComponent } from './messages/messages.component';
 import { MotoristaComponent } from './motorista/motorista.component';
 import { MotoristaDetailComponent } from './motorista-detail/motorista-detail.component';
 import { MotoristaSearchComponent } from './motorista-search/motorista-search.component';
+import { ConfortoComponent } from './conforto/conforto.component';
+import { ConfortoDetailsComponent } from './conforto-details/conforto-details.component';
+import { SimularComponent } from './simular/simular.component';
 
 @NgModule({
   imports: [BrowserModule, FormsModule, AppRoutingModule, HttpClientModule],
@@ -27,6 +30,9 @@ import { MotoristaSearchComponent } from './motorista-search/motorista-search.co
     MotoristaComponent,
     MotoristaDetailComponent,
     MotoristaSearchComponent,
+    ConfortoComponent,
+    ConfortoDetailsComponent,
+    SimularComponent,
   ],
   bootstrap: [AppComponent],
 })

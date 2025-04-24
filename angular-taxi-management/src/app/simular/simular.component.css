@@ -1,0 +1,40 @@
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.update-form {
+  display: flex;
+  flex-direction: column;
+  max-width: 200px;
+}
+
+.update-form label {
+  display: flex;
+  margin-bottom: 0.2rem;
+}
+
+.update-form button {
+  max-width: 75px;
+  margin-top: 0.5rem;
+}
+
+
+.update-form input {
+  font-size: 14px;
+  margin-bottom: 0.5rem;
+  max-width: 100px;
+  text-align: center;
+}
+
+
+
+
+
