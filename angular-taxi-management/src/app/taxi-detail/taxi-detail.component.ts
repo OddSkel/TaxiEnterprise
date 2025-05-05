@@ -68,11 +68,8 @@ export class TaxiDetailComponent implements OnInit {
   }
 
   validateAnos() {
-    if (
-      this.taxi?.ano_compra &&
-      this.taxi?.yearCriation &&
-      this.taxi.ano_compra < this.taxi.yearCriation
-    ) {
+    let current_Year = new Date().getFullYear();
+    if (this.taxi?.ano_compra && this.taxi.ano_compra > current_Year) {
       this.fieldErrors['ano_compra'] =
         'Taxi cannot be bought before it was created';
     } else {

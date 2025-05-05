@@ -1,4 +1,4 @@
-<h2>My Taxis</h2>
+<h2>Taxis</h2>
 
 <div class="forms">
   <label for="matricula">Matricula:</label>
@@ -21,6 +21,9 @@
     (ngModelChange)="validateAnos()"
     type="number"
   />
+  <div *ngIf="fieldErrors['ano_compra']" class="error">
+    {{ fieldErrors["ano_compra"] }}
+  </div>
 
   <label for="marca">Marca:</label>
   <input
@@ -56,18 +59,6 @@
   />
   <div *ngIf="fieldErrors['nivel_conforto']" class="error">
     {{ fieldErrors["nivel_conforto"] }}
-  </div>
-
-  <label for="yearCriation">Data de Criação:</label>
-  <input
-    id="yearCriation"
-    name="yearCriation"
-    [(ngModel)]="taxi.yearCriation"
-    (ngModelChange)="validateAnos()"
-    type="number"
-  />
-  <div *ngIf="fieldErrors['ano_compra']" class="error">
-    {{ fieldErrors["ano_compra"] }}
   </div>
 
   <!-- (click) passes input value to add() and then clears the input -->

@@ -32,23 +32,9 @@ exports.getTaxis = async (req, res) => {
 //taxis - create new taxi
 exports.createTaxi = async (req, res) => {
   try {
-    const {
-      matricula,
-      ano_compra,
-      marca,
-      modelo,
-      nivel_conforto,
-      yearCriation,
-    } = req.body;
+    const { matricula, ano_compra, marca, modelo, nivel_conforto } = req.body;
 
-    if (
-      !matricula ||
-      !ano_compra ||
-      !marca ||
-      !modelo ||
-      !nivel_conforto ||
-      !yearCriation
-    ) {
+    if (!matricula || !ano_compra || !marca || !modelo || !nivel_conforto) {
       return res.status(400).json({ message: "You're missing requirements!" });
     }
 
@@ -77,13 +63,12 @@ exports.createTaxi = async (req, res) => {
         },
       });
     }
-
-    if (ano_compra - yearCriation < 0) {
+    let current_Year = new Date().getFullYear();
+    if (ano_compra - current_Year > 0) {
       return res.status(400).json({
         message: "Validation failed",
         fieldErrors: {
-          ano_compra:
-            "O taxi não pode ter sido criado depois de teres comprado!",
+          ano_compra: "O taxi não pode ter sido criado no futuro!",
         },
       });
     }
@@ -121,7 +106,6 @@ exports.createTaxi = async (req, res) => {
       marca,
       modelo,
       nivel_conforto,
-      yearCriation,
     });
 
     const savedTaxi = await taxi.save();
@@ -155,11 +139,10 @@ exports.deleteTaxi = async (req, res) => {
 
 exports.updateTaxi = async (req, res) => {
   try {
-    const { matricula, ano_compra, marca, modelo, nivel_conforto, createdAt } =
-      req.body;
+    const { matricula, ano_compra, marca, modelo, nivel_conforto } = req.body;
     const updateTaxi = await Taxi.findByIdAndUpdate(
       req.params.id,
-      { matricula, ano_compra, marca, modelo, nivel_conforto, createdAt },
+      { matricula, ano_compra, marca, modelo, nivel_conforto },
       { new: true }
     ).exec();
     updateTaxi

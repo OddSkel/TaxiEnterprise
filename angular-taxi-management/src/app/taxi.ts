@@ -5,5 +5,4 @@ export interface Taxi {
   marca: string;
   modelo: string;
   nivel_conforto: string;
-  yearCriation: number;
 }

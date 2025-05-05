@@ -17,7 +17,6 @@ export class TaxisComponent implements OnInit {
     marca: '',
     modelo: '',
     nivel_conforto: '',
-    yearCriation: 0,
   };
   errorMessage: string = '';
   fieldErrors: { [key: string]: string } = {};
@@ -74,7 +73,6 @@ export class TaxisComponent implements OnInit {
       marca: '',
       modelo: '',
       nivel_conforto: '',
-      yearCriation: 0,
     };
     this.errorMessage = '';
     this.fieldErrors = {};
@@ -109,9 +107,9 @@ export class TaxisComponent implements OnInit {
   }
 
   validateAnos() {
-    if (this.taxi.ano_compra < this.taxi.yearCriation) {
-      this.fieldErrors['ano_compra'] =
-        'Taxi cannot be bought before it was created';
+    let current_Year = new Date().getFullYear();
+    if (this.taxi.ano_compra > current_Year) {
+      this.fieldErrors['ano_compra'] = 'Taxi cannot be bought in the future';
     } else {
       delete this.fieldErrors['ano_compra']; // Remove error if valid
     }
@@ -163,22 +161,10 @@ export class TaxisComponent implements OnInit {
   }
 
   checkFormValidity() {
-    const {
-      matricula,
-      ano_compra,
-      marca,
-      modelo,
-      nivel_conforto,
-      yearCriation,
-    } = this.taxi;
+    const { matricula, ano_compra, marca, modelo, nivel_conforto } = this.taxi;
 
     const allFieldsFilled =
-      matricula &&
-      ano_compra &&
-      marca &&
-      modelo &&
-      nivel_conforto &&
-      yearCriation;
+      matricula && ano_compra && marca && modelo && nivel_conforto;
 
     const noFieldErrors = Object.keys(this.fieldErrors).length === 0;
 

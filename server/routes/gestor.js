@@ -1,4 +1,4 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
 const Taxi = require("../models/taxi");
@@ -7,10 +7,10 @@ const Morada = require("../models/morada");
 const Motorista = require("../models/motorista");
 const Cliente = require("../models/cliente");
 
-motorista_controller = require('../controllers/motoristaController');
-cli_controller = require('../controllers/clienteController');
-taxi_controller = require('../controllers/taxiController');
-conforto_controller = require('../controllers/confortoController')
+motorista_controller = require("../controllers/motoristaController");
+cli_controller = require("../controllers/clienteController");
+taxi_controller = require("../controllers/taxiController");
+conforto_controller = require("../controllers/confortoController");
 
 router.get("/init", async (req, res) => {
   try {
@@ -48,7 +48,6 @@ router.get("/init", async (req, res) => {
       marca: "BMW",
       modelo: "M50",
       nivel_conforto: "LUXUOSO",
-      createdAt: 2019,
     });
 
     console.log("Taxi created:", taxi1);
@@ -62,36 +61,33 @@ router.get("/init", async (req, res) => {
 
 //MOTORISTA ROUTES
 
-router.get('/motoristas', motorista_controller.getMotoristas);
+router.get("/motoristas", motorista_controller.getMotoristas);
 
-router.post('/motoristas', motorista_controller.createMotorista);
+router.post("/motoristas", motorista_controller.createMotorista);
 
-router.get('/motoristas/:id', motorista_controller.getMotoristaById);
+router.get("/motoristas/:id", motorista_controller.getMotoristaById);
 
-router.delete('/motoristas/:id', motorista_controller.deleteMotorista);
+router.delete("/motoristas/:id", motorista_controller.deleteMotorista);
 
-router.put('/motoristas/:id', motorista_controller.updateMotorista);
-
+router.put("/motoristas/:id", motorista_controller.updateMotorista);
 
 //TAXI ROUTES
 
-router.get("/taxis/:id",taxi_controller.getTaxiById);
+router.get("/taxis/:id", taxi_controller.getTaxiById);
 
-router.get("/taxis",taxi_controller.getTaxis);
+router.get("/taxis", taxi_controller.getTaxis);
 
-router.post("/taxis",taxi_controller.createTaxi);
+router.post("/taxis", taxi_controller.createTaxi);
 
-router.delete("/taxis/:id",taxi_controller.deleteTaxi);
+router.delete("/taxis/:id", taxi_controller.deleteTaxi);
 
-router.put("/taxis/:id",taxi_controller.updateTaxi);
+router.put("/taxis/:id", taxi_controller.updateTaxi);
 
 //CONFORTO ROUTES
 
-router.get("/conforto",conforto_controller.getConfortos);
+router.get("/conforto", conforto_controller.getConfortos);
 router.get("/conforto/:id", conforto_controller.conforto_details);
 router.put("/conforto/:id", conforto_controller.conforto_update);
 router.get("/conforto/simular/:id", conforto_controller.conforto_details);
-
-
 
 module.exports = router;

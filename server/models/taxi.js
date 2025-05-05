@@ -39,7 +39,6 @@ const TaxiSchema = new Schema(
       enum: confortos,
       required: true,
     },
-    yearCriation: { type: Number, required: true },
   },
   { timestamps: true }
 );

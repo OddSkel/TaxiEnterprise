@@ -54,18 +54,6 @@
       (ngModelChange)="validate()"
     />
   </div>
-
-  <div>
-    <label for="taxi-createdAt">Data de Criação: </label>
-    <input
-      id="taxi-createdAt"
-      [(ngModel)]="taxi.yearCriation"
-      placeholder="createdAt"
-      (ngModelChange)="validate()"
-      type="number"
-    />
-  </div>
-
   <button type="button" (click)="goBack()">Go Back</button>
   <button type="button" [disabled]="!vallid" (click)="save()">Save</button>
 </div>
