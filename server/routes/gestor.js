@@ -65,11 +65,15 @@ router.get("/motoristas", motorista_controller.getMotoristas);
 
 router.post("/motoristas", motorista_controller.createMotorista);
 
-router.get("/motoristas/:id", motorista_controller.getMotoristaById);
+router.get("/motorista/:id", motorista_controller.getMotoristaById);
 
-router.delete("/motoristas/:id", motorista_controller.deleteMotorista);
+router.delete("/motorista/:id", motorista_controller.deleteMotorista);
 
-router.put("/motoristas/:id", motorista_controller.updateMotorista);
+router.put("/motorista/:id", motorista_controller.updateMotorista);
+
+router.get("/motorista/nif/:nif", motorista_controller.getMotoristaByNIF);
+
+router.get("/motoristas/search", motorista_controller.getNIFS);
 
 //TAXI ROUTES
 

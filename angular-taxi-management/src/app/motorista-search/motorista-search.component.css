@@ -1,0 +1,6 @@
+/* Remove bullet points (default) from the unordered list */
+.search-result {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
