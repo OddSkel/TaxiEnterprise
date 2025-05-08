@@ -16,8 +16,6 @@ function validarCodigoPostal(codigo) {
 
 exports.createMotorista = async (req, res) => {
   try {
-    console.log(req.body);
-
     const {
       pessoa: { nome, genero, nif },
       morada: { rua, numPorta, codigoPostal, localidade },

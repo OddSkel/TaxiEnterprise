@@ -6,11 +6,15 @@ const Pessoa = require("../models/pessoa");
 const Morada = require("../models/morada");
 const Motorista = require("../models/motorista");
 const Cliente = require("../models/cliente");
+const Viagem = require("../models/viagem");
+const Turno = require("../models/turno");
 
 motorista_controller = require("../controllers/motoristaController");
 cli_controller = require("../controllers/clienteController");
 taxi_controller = require("../controllers/taxiController");
 conforto_controller = require("../controllers/confortoController");
+viagem_controller = require("../controllers/viagemController");
+turno_controller = require("../controllers/turnoController");
 
 router.get("/init", async (req, res) => {
   try {
@@ -75,6 +79,8 @@ router.get("/motorista/nif/:nif", motorista_controller.getMotoristaByNIF);
 
 router.get("/motoristas/search", motorista_controller.getNIFS);
 
+router.post("/motorista/:id/turno", turno_controller.requestTaxiforShift);
+
 //TAXI ROUTES
 
 router.get("/taxis/:id", taxi_controller.getTaxiById);
@@ -90,8 +96,20 @@ router.put("/taxis/:id", taxi_controller.updateTaxi);
 //CONFORTO ROUTES
 
 router.get("/conforto", conforto_controller.getConfortos);
+
 router.get("/conforto/:id", conforto_controller.conforto_details);
+
 router.put("/conforto/:id", conforto_controller.conforto_update);
+
 router.get("/conforto/simular/:id", conforto_controller.conforto_details);
+
+//TURNO ROUTES
+
+router.get("/turnos", turno_controller.getAllShifts);
+
+router.get(
+  "/turnos/motorista/:id/turnos",
+  turno_controller.getAvailableTaxisForShift
+);
 
 module.exports = router;
