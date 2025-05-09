@@ -72,6 +72,6 @@ export class MotoristaSearchComponent implements OnInit {
   }
 
   goToMotoristaDetails(motorista: Motorista): void {
-    this.router.navigate(['/motoristas', motorista._id]);
+    this.router.navigate(['/turnos/motoristas', motorista._id]);
   }
 }

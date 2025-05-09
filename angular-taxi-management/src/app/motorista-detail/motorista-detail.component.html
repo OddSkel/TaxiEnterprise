@@ -1,1 +1,78 @@
-<p>motorista-detail works!</p>
+<h2>Details</h2>
+
+<div *ngIf="motorista">
+  <h2>{{ motorista.pessoa.nome }}'s Shifts</h2>
+
+  <ul *ngIf="allShifts.length > 0; else noShifts">
+    <li *ngFor="let turno of allShifts">
+      {{ turno.start | date : "short" }} - {{ turno.end | date : "short" }} |
+      Taxi: {{ turno.taxi.matricula }}
+    </li>
+  </ul>
+  <ng-template #noShifts>
+    <p>No shifts found for this motorista.</p>
+  </ng-template>
+
+  <h3>Request Taxi for a New Shift</h3>
+  <form (ngSubmit)="getAvailableTaxisForShift()" #shiftForm="ngForm">
+    <div>
+      <label for="start">Start:</label>
+      <input
+        type="datetime-local"
+        id="start"
+        [(ngModel)]="start"
+        name="start"
+        required
+        #startField="ngModel"
+        (ngModelChange)="validateShiftTimes()"
+      />
+      <div
+        *ngIf="startField.invalid && startField.touched"
+        class="error-message"
+      >
+        Start time is required and must be in the future.
+      </div>
+    </div>
+
+    <div>
+      <label for="end">End:</label>
+      <input
+        type="datetime-local"
+        id="end"
+        [(ngModel)]="end"
+        name="end"
+        required
+        #endField="ngModel"
+        (ngModelChange)="validateShiftTimes()"
+      />
+      <div *ngIf="endField.invalid && endField.touched" class="error-message">
+        End time is required and must be after the start time.
+      </div>
+    </div>
+
+    <div *ngIf="timeError" class="error-message">
+      {{ timeError }}
+    </div>
+
+    <div *ngIf="overlapError" class="error-message">
+      {{ overlapError }}
+    </div>
+
+    <button
+      type="submit"
+      [disabled]="shiftForm.invalid || timeError || overlapError"
+    >
+      Get Available Taxis
+    </button>
+  </form>
+
+  <div *ngIf="availableTaxis.length > 0">
+    <h4>Available Taxis</h4>
+    <ul>
+      <li *ngFor="let taxi of availableTaxis">
+        {{ taxi.matricula }} - {{ taxi.marca }} {{ taxi.modelo }}
+        <button (click)="requestTaxiForShift(taxi)">Request Taxi</button>
+      </li>
+    </ul>
+  </div>
+</div>

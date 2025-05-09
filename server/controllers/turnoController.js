@@ -101,8 +101,9 @@ exports.requestTaxiforShift = async (req, res) => {
 };
 
 exports.getAllShifts = async (req, res) => {
+  const { id } = req.params;
   try {
-    const turnos = await Turno.find()
+    const turnos = await Turno.find({ motorista: id })
       .populate("taxi")
       .populate("motorista")
       .sort({ start: 1 })

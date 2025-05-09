@@ -19,9 +19,8 @@ const routes: Routes = [
   { path: 'confortos', component: ConfortoComponent },
   { path: 'confortos/:id', component: ConfortoDetailsComponent },
   { path: 'confortos/simular/:id', component: SimularComponent },
-  { path: 'motorista/nif/:nif', component: MotoristaDetailComponent },
   { path: 'motoristas/search', component: MotoristaSearchComponent },
-  { path: 'motoristas/:id', component: MotoristaDetailComponent },
+  { path: 'turnos/motoristas/:id', component: MotoristaDetailComponent },
 ];
 
 @NgModule({

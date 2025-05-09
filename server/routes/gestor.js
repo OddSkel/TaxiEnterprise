@@ -69,17 +69,26 @@ router.get("/motoristas", motorista_controller.getMotoristas);
 
 router.post("/motoristas", motorista_controller.createMotorista);
 
-router.get("/motorista/:id", motorista_controller.getMotoristaById);
+router.get("/motoristas/:id", motorista_controller.getMotoristaById);
 
-router.delete("/motorista/:id", motorista_controller.deleteMotorista);
+router.delete("/motoristas/:id", motorista_controller.deleteMotorista);
 
-router.put("/motorista/:id", motorista_controller.updateMotorista);
+router.put("/motoristas/:id", motorista_controller.updateMotorista);
 
-router.get("/motorista/nif/:nif", motorista_controller.getMotoristaByNIF);
+router.get("/motoristas/nif/:nif", motorista_controller.getMotoristaByNIF);
 
 router.get("/motoristas/search", motorista_controller.getNIFS);
 
-router.post("/motorista/:id/turno", turno_controller.requestTaxiforShift);
+//TURNO ROUTES
+
+router.post("/turnos/motoristas/:id/", turno_controller.requestTaxiforShift);
+
+router.get("/turnos/motoristas/:id/", turno_controller.getAllShifts);
+
+router.get(
+  "/turnos/motoristas/:id/turno",
+  turno_controller.getAvailableTaxisForShift
+);
 
 //TAXI ROUTES
 
@@ -102,14 +111,5 @@ router.get("/conforto/:id", conforto_controller.conforto_details);
 router.put("/conforto/:id", conforto_controller.conforto_update);
 
 router.get("/conforto/simular/:id", conforto_controller.conforto_details);
-
-//TURNO ROUTES
-
-router.get("/turnos", turno_controller.getAllShifts);
-
-router.get(
-  "/turnos/motorista/:id/turnos",
-  turno_controller.getAvailableTaxisForShift
-);
 
 module.exports = router;

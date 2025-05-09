@@ -1,11 +1,10 @@
 import { Taxi } from './taxi';
 import { Motorista } from './motorista';
-import { Periodo } from './periodo';
 
 export interface Turno {
   _id: string;
-  periodo: Periodo;
-  price: Float32Array;
+  start: string;
+  end: string;
   taxi: Taxi;
   motorista: Motorista;
 }
