@@ -7,5 +7,5 @@ import { RouterModule } from '@angular/router';
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
-  title = 'Angular Taxi Management';
+  title = 'Taxi Management';
 }

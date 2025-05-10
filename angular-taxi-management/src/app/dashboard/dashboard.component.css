@@ -1,50 +1,48 @@
-/* DashboardComponent's private CSS styles */
-
-h2 {
+.section-title {
   text-align: center;
+  margin-bottom: 1.5rem;
+  color: #333;
+  font-size: 1.8rem;
+  font-family: Arial, sans-serif;
 }
 
 .taxis-menu {
-  padding: 0;
-  margin: auto;
-  max-width: 1000px;
-
-  /* flexbox */
   display: flex;
-  flex-direction: row;
   flex-wrap: wrap;
-  justify-content: space-around;
-  align-content: flex-start;
-  align-items: flex-start;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
 }
 
-a {
-  background-color: #3f525c;
-  border-radius: 2px;
-  padding: 1rem;
-  font-size: 1.2rem;
+.top-taxis-wrapper {
+  background-color: #97fa83; /* change this to any color you like */
+  padding: 2rem;
+  border-radius: 10px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.taxi-link {
+  padding: 0.75rem 1.5rem;
+  background-color: #007bff;
+  color: white;
   text-decoration: none;
-  display: inline-block;
-  color: #fff;
-  text-align: center;
-  width: 100%;
-  min-width: 70px;
-  margin: 0.5rem auto;
-  box-sizing: border-box;
-
-  /* flexbox */
-  order: 0;
-  flex: 0 1 auto;
-  align-self: auto;
+  border-radius: 8px;
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.2s;
+  font-size: 1rem;
 }
 
-@media (min-width: 600px) {
-  a {
-    width: 18%;
-    box-sizing: content-box;
-  }
+.taxi-link:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px);
 }
 
-a:hover {
-  background-color: #000;
+/* Optional styling for embedded search components */
+app-taxi-search,
+app-motorista-search,
+app-messages {
+  display: block;
+  margin: 2rem auto;
+  max-width: 600px;
 }

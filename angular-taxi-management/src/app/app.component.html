@@ -1,8 +1,10 @@
-<h1>{{ title }}</h1>
-<nav>
-  <a routerLink="/dashboard">| Menu </a>
-  <a routerLink="/taxis">| Taxis </a>
-  <a routerLink="/motorista">| Motoristas </a>
-  <a routerLink="/confortos">| Viagens |</a>
-</nav>
-<router-outlet></router-outlet>
+<div class="main-menu">
+  <h1>{{ title }}</h1>
+  <nav>
+    <button routerLink="/dashboard">Menu</button>
+    <button routerLink="/taxis">Taxis</button>
+    <button routerLink="/motorista">Motoristas</button>
+    <button routerLink="/confortos">Viagens</button>
+  </nav>
+  <router-outlet></router-outlet>
+</div>

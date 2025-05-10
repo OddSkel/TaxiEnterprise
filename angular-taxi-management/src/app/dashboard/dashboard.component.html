@@ -1,10 +1,16 @@
-<h2>Top Taxis</h2>
-<div class="taxis-menu">
-  <a *ngFor="let taxi of taxis" routerLink="/taxis/{{ taxi._id }}">
-    {{ taxi.matricula }}
-  </a>
-</div>
+<div class="top-taxis-wrapper">
+  <h2 class="section-title">Top Táxis</h2>
 
-<app-taxi-search> </app-taxi-search>
-<app-motorista-search> </app-motorista-search>
-<app-messages></app-messages>
+  <div class="taxis-menu">
+    <a
+      class="taxi-link"
+      *ngFor="let taxi of taxis"
+      routerLink="/taxis/{{ taxi._id }}"
+    >
+      {{ taxi.matricula }}
+    </a>
+  </div>
+
+  <app-taxi-search></app-taxi-search>
+  <app-motorista-search></app-motorista-search>
+</div>

@@ -1,19 +1,20 @@
-<div id="search-component">
-  <label for="search-box">Procura de Motorista</label>
-  <input
-    #searchBox
-    id="search-box"
-    (input)="search(searchBox.value)"
-    (focus)="onSearchBoxFocus()"
-    placeholder="Digite o NIF"
-  />
+<div class="search-container">
+  <h2>Buscar Motorista</h2>
+  <div class="search-box-group">
+    <label for="search-box">Digite o NIF</label>
+    <input
+      #searchBox
+      id="search-box"
+      type="text"
+      placeholder="123456789"
+      (input)="search(searchBox.value)"
+      (focus)="onSearchBoxFocus()"
+    />
+  </div>
 
-  <ul class="search-result">
+  <ul class="search-results">
     <li *ngFor="let motorista of motoristas$ | async">
-      <button
-        (click)="goToMotoristaDetails(motorista)"
-        class="search-result-button"
-      >
+      <button (click)="goToMotoristaDetails(motorista)">
         {{ motorista.pessoa.nif }}
       </button>
     </li>
