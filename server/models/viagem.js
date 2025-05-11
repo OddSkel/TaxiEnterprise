@@ -1,15 +1,13 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const confortos = ["BASICO", "LUXUOSO"];
-
 const ViagemSchema = new Schema({
   cliente: { type: Schema.Types.ObjectId, ref: "Cliente", required: true },
   motorista: { type: Schema.Types.ObjectId, ref: "Motorista" },
   taxi: { type: Schema.Types.ObjectId, ref: "Taxi" },
   origem: { type: Schema.Types.ObjectId, ref: "Morada", required: true },
   destino: { type: Schema.Types.ObjectId, ref: "Morada", required: true },
-  conforto: { type: String, enum: confortos, required: true },
+  conforto: { type: String, enum: ['BASICO', 'LUXUOSO'], required: true },
   num_pessoas: { type: Number, required: true, default: 1 },
   estado: {
     type: String,

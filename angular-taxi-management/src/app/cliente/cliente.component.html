@@ -1,0 +1,67 @@
+<div class="container">
+  <!-- Formulário do Cliente -->
+  <form (ngSubmit)="pedirViagem()" #form="ngForm">
+    <h3>Pedido de Viagem</h3>
+
+    <!-- Nome -->
+    <div class="form-group">
+      <label>Nome:</label>
+      <input type="text" [(ngModel)]="cliente.pessoa.nome" name="nome" required class="form-control" />
+    </div>
+
+    <!-- NIF -->
+    <div class="form-group">
+      <label>NIF:</label>
+      <input type="text" [(ngModel)]="cliente.pessoa.nif" name="nif" required class="form-control" />
+    </div>
+
+    <!-- Gênero -->
+    <div class="form-group">
+      <label>Gênero:</label>
+      <select [(ngModel)]="cliente.pessoa.genero" name="genero" required class="form-control">
+        <option value="masculino">Masculino</option>
+        <option value="feminino">Feminino</option>
+      </select>
+    </div>
+
+    <!-- Origem -->
+    <div class="form-group">
+      <label>Origem:</label>
+      <input type="text" [(ngModel)]="origem" name="origem" class="form-control" readonly />
+    </div>
+
+    <!-- Destino -->
+    <div class="form-group">
+      <label>Destino:</label>
+      <input type="text" [(ngModel)]="destino" name="destino" class="form-control" readonly />
+    </div>
+
+    <!-- Número de Pessoas -->
+    <div class="form-group">
+      <label>Número de Pessoas:</label>
+      <input type="number" [(ngModel)]="numPessoas" name="numPessoas" min="1" max="10" required class="form-control" />
+    </div>
+
+    <!-- Conforto -->
+    <div class="form-group">
+      <label>Conforto:</label>
+      <select [(ngModel)]="conforto" name="conforto" class="form-control">
+        <option value="BASICO">BASICO</option>
+        <option value="LUXUOSO">LUXUOSO</option>
+      </select>
+    </div>
+
+    <!-- Botão -->
+    <button type="submit" class="btn btn-primary">Pedir Viagem</button>
+  </form>
+
+  <!-- Mapa -->
+  <div id="map" style="height: 400px; margin-top: 20px;"></div>
+
+  <!-- Mensagens -->
+  <div *ngIf="viagemConfirmada" class="alert alert-success mt-3">Viagem confirmada com sucesso!</div>
+  <div *ngIf="motoristaResposta" class="alert alert-info mt-3">
+    <p><strong>Motorista:</strong> {{ motoristaResposta.motoristaId }}</p>
+    <p><strong>Viagem:</strong> {{ motoristaResposta.viagemId }}</p>
+  </div>
+</div>

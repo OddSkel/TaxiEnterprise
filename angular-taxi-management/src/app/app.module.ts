@@ -18,6 +18,8 @@ import { ConfortoComponent } from './conforto/conforto.component';
 import { ConfortoDetailsComponent } from './conforto-details/conforto-details.component';
 import { SimularComponent } from './simular/simular.component';
 import { TurnoComponent } from './turno/turno.component';
+import { ViagemComponent } from './viagem/viagem.component';
+import { ClienteComponent } from './cliente/cliente.component';
 
 @NgModule({
   imports: [BrowserModule, FormsModule, AppRoutingModule, HttpClientModule],
@@ -35,6 +37,8 @@ import { TurnoComponent } from './turno/turno.component';
     ConfortoDetailsComponent,
     SimularComponent,
     TurnoComponent,
+    ViagemComponent,
+    ClienteComponent,
   ],
   bootstrap: [AppComponent],
 })

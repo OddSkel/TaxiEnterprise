@@ -84,14 +84,6 @@ router.get("/motoristas/nif/:nif", motorista_controller.getMotoristaByNIF);
 
 router.get("/motoristas/search", motorista_controller.getNIFS);
 
-//TURNO ROUTES
-
-router.post("/turnos/motoristas/:id/", turno_controller.requestTaxiforShift);
-
-router.get("/turnos/motoristas/:id/", turno_controller.getAllShifts);
-
-router.get("/turnos/motoristas/:id/turno", turno_controller.getAvailableTaxisForShift);
-
 //TAXI ROUTES
 
 router.get("/taxis/:id", taxi_controller.getTaxiById);

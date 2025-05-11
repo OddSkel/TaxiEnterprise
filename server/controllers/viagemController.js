@@ -4,6 +4,7 @@ const Morada = require("../models/morada");
 const Turno = require("../models/turno");
 const Motorista = require("../models/motorista");
 const Pessoa = require("../models/pessoa");
+const Conforto = require("../models/conforto");
 
 
 
@@ -24,8 +25,8 @@ exports.pedirViagem = async (req, res) => {
       return res.status(400).json({ message: "NIF inválido." });
     }
 
-    // Validação de conforto e número de pessoas
-    if (!["BASICO", "LUXUOSO"].includes(conforto)) {
+    const confortoDb = await Conforto.findOne({ name: conforto.name });
+    if (!confortoDb) {
       return res.status(400).json({ message: "Nível de conforto inválido." });
     }
 

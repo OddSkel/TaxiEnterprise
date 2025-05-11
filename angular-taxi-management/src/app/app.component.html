@@ -1,10 +1,14 @@
 <div class="main-menu">
   <h1>{{ title }}</h1>
   <nav>
-    <button routerLink="/dashboard">Menu</button>
-    <button routerLink="/taxis">Taxis</button>
-    <button routerLink="/motorista">Motoristas</button>
-    <button routerLink="/confortos">Viagens</button>
+    <!-- Menu para o Gestor -->
+    <button routerLink="/gestor/dashboard">Dashboard</button>
+    <button routerLink="/gestor/taxis">Taxis</button>
+    <button routerLink="/gestor/motorista">Motoristas</button>
+    <button routerLink="/gestor/confortos">Viagens</button>
+
+    <!-- Menu para o Cliente -->
+    <button routerLink="/cliente">Pedido de Táxi</button>
   </nav>
   <router-outlet></router-outlet>
 </div>

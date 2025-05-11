@@ -9,18 +9,26 @@ import { ConfortoDetailsComponent } from './conforto-details/conforto-details.co
 import { SimularComponent } from './simular/simular.component';
 import { MotoristaDetailComponent } from './motorista-detail/motorista-detail.component';
 import { MotoristaSearchComponent } from './motorista-search/motorista-search.component';
+import { ClienteComponent } from './cliente/cliente.component';
+import { ViagemComponent } from './viagem/viagem.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
-  { path: 'taxis', component: TaxisComponent },
-  { path: 'dashboard', component: DashboardComponent },
-  { path: 'taxis/:id', component: TaxiDetailComponent },
-  { path: 'motorista', component: MotoristaComponent },
-  { path: 'confortos', component: ConfortoComponent },
-  { path: 'confortos/:id', component: ConfortoDetailsComponent },
-  { path: 'confortos/simular/:id', component: SimularComponent },
-  { path: 'motoristas/search', component: MotoristaSearchComponent },
-  { path: 'turnos/motoristas/:id', component: MotoristaDetailComponent },
+  // Rotas para o Gestor (prefixo /gestor/)
+  { path: 'gestor/taxis', component: TaxisComponent }, // Gerenciamento de taxis
+  { path: 'gestor/dashboard', component: DashboardComponent }, // Dashboard
+  { path: 'gestor/taxis/:id', component: TaxiDetailComponent }, // Detalhes do taxi
+  { path: 'gestor/motorista', component: MotoristaComponent }, // Gerenciamento de motoristas
+  { path: 'gestor/confortos', component: ConfortoComponent }, // Gerenciamento de confortos
+  { path: 'gestor/confortos/:id', component: ConfortoDetailsComponent }, // Detalhes de um conforto
+  { path: 'gestor/confortos/simular/:id', component: SimularComponent }, // Simulação de conforto
+
+  // Rotas para o Motorista (prefixo /motorista/)
+  { path: 'motorista/motoristas/search', component: MotoristaSearchComponent }, // Busca de motoristas
+  { path: 'motorista/turnos/motoristas/:id', component: MotoristaDetailComponent }, // Detalhes de turnos de motorista
+  { path: 'motorista/viagens/:id', component: ViagemComponent }, // Detalhes de turnos de motorista
+
+  // Rotas para o Cliente (prefixo /cliente/)
+  { path: 'cliente', component: ClienteComponent }, // Rota para o Cliente onde ele pode pedir um táxi
 ];
 
 @NgModule({
