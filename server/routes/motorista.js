@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 
 const motorista_controller = require("../controllers/motoristaController");
+const turno_controller = require("../controllers/turnoController");
+const viagem_controller = require("../controllers/viagemController");
 
 
 //MOTORISTA ROUTES
@@ -23,5 +25,6 @@ router.get("/turnos/motoristas/:id/turno", turno_controller.getAvailableTaxisFor
 router.get("/viagens-pendentes", viagem_controller.listarPedidos);
 
 router.post("/aceitar-pedido/:viagemId", viagem_controller.aceitarPedido);
+
 
 module.exports = router;

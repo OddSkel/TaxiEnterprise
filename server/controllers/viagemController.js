@@ -1,153 +1,201 @@
 const Viagem = require("../models/viagem");
 const Cliente = require("../models/cliente");
-const Pessoa = require("../models/pessoa");
 const Morada = require("../models/morada");
 const Turno = require("../models/turno");
-const mongoose = require("mongoose");
+const Motorista = require("../models/motorista");
+const Pessoa = require("../models/pessoa");
 
-// Função utilitária para validações
-function validatePessoa(pessoa) {
-  return /^[0-9]{9}$/.test(pessoa.nif) && ["masculino", "feminino"].includes(pessoa.genero);
-}
+
 
 exports.pedirViagem = async (req, res) => {
   try {
-    const {
-      pessoa,
-      origem,
-      destino,
-      conforto,
-      numPessoas,
-      coordenadasOrigem,
-      coordenadasDestino
-    } = req.body;
+    const { cliente, origem, destino, conforto, num_pessoas } = req.body;
 
-    if (!pessoa || !validatePessoa(pessoa)) {
-      return res.status(400).json({ message: "Dados inválidos da pessoa." });
+    // Validações do cliente
+    if (!cliente?.nif || !cliente?.nome || !cliente?.genero) {
+      return res.status(400).json({ message: "Dados do cliente incompletos." });
     }
 
-    const novaPessoa = new Pessoa(pessoa);
-    await novaPessoa.save();
+    if (!["masculino", "feminino"].includes(cliente.genero)) {
+      return res.status(400).json({ message: "Género inválido." });
+    }
 
-    const novoCliente = new Cliente({ pessoa: novaPessoa._id });
-    await novoCliente.save();
+    if (!/^\d{9}$/.test(cliente.nif)) {
+      return res.status(400).json({ message: "NIF inválido." });
+    }
 
-    const moradaOrigem = new Morada(origem);
-    const moradaDestino = new Morada(destino);
-    await moradaOrigem.save();
-    await moradaDestino.save();
+    // Validação de conforto e número de pessoas
+    if (!["BASICO", "LUXUOSO"].includes(conforto)) {
+      return res.status(400).json({ message: "Nível de conforto inválido." });
+    }
 
+    if (typeof num_pessoas !== "number" || num_pessoas < 1 || num_pessoas > 6) {
+      return res.status(400).json({ message: "Número de pessoas inválido." });
+    }
+
+    // Verifica ou cria cliente
+    let clienteDb = await Cliente.findOne({ nif: cliente.nif }).populate('pessoa');
+
+    if (!clienteDb) {
+      // Cria a Pessoa primeiro
+      const pessoa = new Pessoa({
+        nome: cliente.nome,
+        nif: cliente.nif,
+        genero: cliente.genero
+      });
+
+      await pessoa.save();
+
+      // Depois cria o Cliente com referência à Pessoa
+      clienteDb = new Cliente({
+        pessoa: pessoa._id
+      });
+
+      await clienteDb.save();
+    }
+
+    // Validação e criação das moradas
+    if (!origem.rua || !origem.localidade || !origem.coordenadas?.latitude || !origem.coordenadas?.longitude) {
+      return res.status(400).json({ message: "Morada de origem incompleta." });
+    }
+
+    if (!destino.rua || !destino.localidade || !destino.coordenadas?.latitude || !destino.coordenadas?.longitude) {
+      return res.status(400).json({ message: "Morada de destino incompleta." });
+    }
+
+    let origemDb = await Morada.findOne({ rua: origem.rua, numPorta: origem.numPorta, coordenadas: origem.coordenadas });
+    let destinoDb = await Morada.findOne({ rua: destino.rua, numPorta: destino.numPorta, coordenadas: destino.coordenadas });
+
+    if (!origemDb) {
+      origemDb = new Morada(origem);
+      await origemDb.save().catch(err => {
+        return res.status(500).json({ message: "Erro ao salvar morada de origem." });
+      });
+    }
+
+    if (!destinoDb) {
+      destinoDb = new Morada(destino);
+      await destinoDb.save().catch(err => {
+        return res.status(500).json({ message: "Erro ao salvar morada de destino." });
+      });
+    }
+
+    // Busca um turno ativo
+    const agora = new Date();
+    const turno = await Turno.findOne({ start: { $lte: agora }, end: { $gte: agora } });
+
+    if (!turno) {
+      return res.status(404).json({ message: "Nenhum turno ativo encontrado. Tente novamente mais tarde." });
+    }
+
+    // Determina seq
+    const ultimo = await Viagem.find({ turno: turno._id }).sort({ seq: -1 }).limit(1);
+    const seq = ultimo.length ? ultimo[0].seq + 1 : 1;
+
+    // Cria a viagem
     const viagem = new Viagem({
-      cliente: novoCliente._id,
-      origem: {
-        morada: moradaOrigem._id,
-        coordenadas: coordenadasOrigem
-      },
-      destino: {
-        morada: moradaDestino._id,
-        coordenadas: coordenadasDestino
-      },
+      cliente: clienteDb._id,
+      origem: origemDb._id,
+      destino: destinoDb._id,
       conforto,
-      numPessoas,
+      num_pessoas,
       estado: "pendente",
-      seq: 0, // será atualizado ao ser aceite por um motorista
-      turno: null
+      turno: turno._id,
+      seq
     });
 
-    await viagem.save();
-    return res.status(201).json({ message: "Pedido de táxi efetuado com sucesso.", viagem });
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({ message: "Erro ao criar pedido de viagem." });
+    await viagem.save().catch(err => {
+      return res.status(500).json({ message: "Erro ao salvar viagem." });
+    });
+
+    res.status(201).json({ message: "Viagem criada com sucesso!", viagem });
+
+  } catch (error) {
+    console.error("Erro ao pedir viagem:", error);
+    res.status(500).json({ message: "Erro interno ao criar a viagem.", erro: error.message });
   }
+
+};
+
+const calcularDistancia = (coordenadas1, coordenadas2) => {
+  const R = 6371; // Raio da Terra em km
+  const dLat = (coordenadas2.latitude - coordenadas1.latitude) * Math.PI / 180;
+  const dLon = (coordenadas2.longitude - coordenadas1.longitude) * Math.PI / 180;
+
+  const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(coordenadas1.latitude * Math.PI / 180) * Math.cos(coordenadas2.latitude * Math.PI / 180) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const distancia = R * c; // Em km
+  return distancia;
 };
 
 exports.listarPedidos = async (req, res) => {
   try {
     const motoristaId = req.params.motoristaId;
-    const { latitude, longitude } = req.query;
-
-    if (!latitude || !longitude) {
-      return res.status(400).json({ message: "Coordenadas não fornecidas." });
+    const motorista = await Motorista.findById(motoristaId);
+    if (!motorista) {
+      return res.status(404).json({ message: "Motorista não encontrado" });
     }
 
-    const turnoAtual = await Turno.findOne({
-      motorista: motoristaId,
-      start: { $lte: new Date() },
-      end: { $gte: new Date() }
-    });
-
-    if (!turnoAtual) {
-      return res.status(200).json([]); // Sem turno ativo
+    const agora = new Date();
+    const turno = await Turno.findOne({ motorista: motoristaId, start: { $lte: agora }, end: { $gte: agora } });
+    if (!turno) {
+      return res.status(404).json({ message: "Nenhum turno ativo encontrado para este motorista." });
     }
 
-    const viagensPendentes = await Viagem.find({
-      estado: "pendente"
-    })
-      .populate("cliente")
-      .populate({ path: "origem.morada" })
-      .populate({ path: "destino.morada" });
+    // Buscar pedidos de viagem pendentes no turno atual
+    const pedidosPendentes = await Viagem.find({
+      estado: "pendente",
+      turno: turno._id,
+      origem: { $ne: null },
+      destino: { $ne: null }
+    }).populate('origem destino');
 
-    const pedidosComDistancia = viagensPendentes.map(viagem => {
-      const dist = calcularDistancia(
-        latitude,
-        longitude,
-        viagem.origem.coordenadas.latitude,
-        viagem.origem.coordenadas.longitude
-      );
-
-      return {
-        _id: viagem._id,
-        numPessoas: viagem.numPessoas,
-        origem: viagem.origem.morada,
-        destino: viagem.destino.morada,
-        distancia: dist
+    // Calcular distância entre o motorista e cada pedido
+    const pedidosComDistancia = pedidosPendentes.map(pedido => {
+      const distancia = calcularDistancia(motorista.coordenadas, pedido.origem.coordenadas);
+      return { 
+        ...pedido.toObject(),
+        distancia,
+        num_pessoas: pedido.num_pessoas,
+        origem: pedido.origem,
+        destino: pedido.destino
       };
     });
 
+    // Ordenar pedidos pela distância em ordem crescente
     pedidosComDistancia.sort((a, b) => a.distancia - b.distancia);
-    return res.status(200).json(pedidosComDistancia);
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({ message: "Erro ao listar pedidos." });
+
+    res.status(200).json(pedidosComDistancia);
+
+  } catch (error) {
+    console.error("Erro ao listar pedidos de táxi:", error);
+    res.status(500).json({ message: "Erro ao listar pedidos de táxi." });
   }
 };
 
 exports.aceitarPedido = async (req, res) => {
   try {
-    const { viagemId, turnoId } = req.body;
+    const { pedidoId } = req.params;
 
-    const turno = await Turno.findById(turnoId);
-    if (!turno) return res.status(404).json({ message: "Turno não encontrado." });
+    const pedido = await Viagem.findById(pedidoId);
+    if (!pedido) {
+      return res.status(404).json({ message: "Pedido de táxi não encontrado." });
+    }
 
-    const countViagens = await Viagem.countDocuments({ turno: turnoId });
+    if (pedido.estado !== "pendente") {
+      return res.status(400).json({ message: "Este pedido já foi processado." });
+    }
 
-    const viagem = await Viagem.findById(viagemId);
-    if (!viagem) return res.status(404).json({ message: "Viagem não encontrada." });
+    // Alteramos o estado para 'aceite' diretamente
+    pedido.estado = "aceite";
+    await pedido.save();
 
-    viagem.turno = turno._id;
-    viagem.taxi = turno.taxi;
-    viagem.motorista = turno.motorista;
-    viagem.seq = countViagens + 1;
-    viagem.estado = "aguarda_confirmacao";
+    res.status(200).json({ message: "Pedido de táxi aceito com sucesso!" });
 
-    await viagem.save();
-    return res.status(200).json({ message: "Pedido aceite. Aguardando confirmação do cliente.", viagem });
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({ message: "Erro ao aceitar pedido." });
+  } catch (error) {
+    console.error("Erro ao aceitar pedido:", error);
+    res.status(500).json({ message: "Erro ao aceitar pedido de táxi." });
   }
 };
-
-// Utilitário de distância em km
-function calcularDistancia(lat1, lon1, lat2, lon2) {
-  const R = 6371;
-  const dLat = (lat2 - lat1) * Math.PI / 180;
-  const dLon = (lon2 - lon1) * Math.PI / 180;
-  const a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-    Math.sin(dLon / 2) * Math.sin(dLon / 2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  return R * c;
-}

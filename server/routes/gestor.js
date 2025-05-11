@@ -10,7 +10,6 @@ const Viagem = require("../models/viagem");
 const Turno = require("../models/turno");
 
 motorista_controller = require("../controllers/motoristaController");
-cli_controller = require("../controllers/clienteController");
 taxi_controller = require("../controllers/taxiController");
 conforto_controller = require("../controllers/confortoController");
 viagem_controller = require("../controllers/viagemController");
@@ -44,7 +43,13 @@ router.get("/init", async (req, res) => {
       cartaConducao: "ABCD12345",
     });
 
-    const cliente = await Cliente.create({ name: "Alberto" });
+    const cliente = await Cliente.create({ 
+      pessoa: await Pessoa.create({ 
+        nome: "Alberto",
+        genero: "masculino",
+        nif: "111111111",
+      })
+    });
 
     const taxi1 = await Taxi.create({
       matricula: "DF65SA",

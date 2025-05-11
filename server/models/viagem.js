@@ -22,4 +22,4 @@ const ViagemSchema = new Schema({
 
 ViagemSchema.index({ turno: 1, seq: 1 }, { unique: true });
 
-module.exports = mongoose.model("Viagem", ViagemSchema);
+module.exports = mongoose.model('Viagem', ViagemSchema);
