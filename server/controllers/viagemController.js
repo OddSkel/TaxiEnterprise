@@ -34,25 +34,23 @@ exports.pedirViagem = async (req, res) => {
     }
 
     // Verifica ou cria cliente
-    let clienteDb = await Cliente.findOne({ nif: cliente.nif }).populate('pessoa');
+    const pessoaExistente = await Pessoa.findOne({ nif: cliente.nif });
 
-    if (!clienteDb) {
-      // Cria a Pessoa primeiro
-      const pessoa = new Pessoa({
+    let clienteDb;
+    if (pessoaExistente) {
+      clienteDb = await Cliente.findOne({ pessoa: pessoaExistente._id });
+    } else {
+      const novaPessoa = new Pessoa({
         nome: cliente.nome,
         nif: cliente.nif,
         genero: cliente.genero
       });
+      await novaPessoa.save();
 
-      await pessoa.save();
-
-      // Depois cria o Cliente com referência à Pessoa
-      clienteDb = new Cliente({
-        pessoa: pessoa._id
-      });
-
+      clienteDb = new Cliente({ pessoa: novaPessoa._id });
       await clienteDb.save();
     }
+
 
     // Validação e criação das moradas
     if (!origem.rua || !origem.localidade || !origem.coordenadas?.latitude || !origem.coordenadas?.longitude) {
@@ -63,36 +61,33 @@ exports.pedirViagem = async (req, res) => {
       return res.status(400).json({ message: "Morada de destino incompleta." });
     }
 
-    let origemDb = await Morada.findOne({ rua: origem.rua, numPorta: origem.numPorta, coordenadas: origem.coordenadas });
-    let destinoDb = await Morada.findOne({ rua: destino.rua, numPorta: destino.numPorta, coordenadas: destino.coordenadas });
+    let origemDb = await Morada.findOne({ 
+      rua: origem.rua, 
+      numPorta: origem.numPorta, 
+      codigoPostal: origem.codigoPostal, 
+      localidade: origem.localidade,
+      coordenadas: origem.coordenadas 
+    });
+
+    let destinoDb = await Morada.findOne({ 
+      rua: destino.rua, 
+      numPorta: destino.numPorta, 
+      codigoPostal: destino.codigoPostal, 
+      localidade: destino.localidade,
+      coordenadas: destino.coordenadas 
+    });
 
     if (!origemDb) {
       origemDb = new Morada(origem);
-      await origemDb.save().catch(err => {
-        return res.status(500).json({ message: "Erro ao salvar morada de origem." });
-      });
+      await origemDb.save();
     }
 
     if (!destinoDb) {
       destinoDb = new Morada(destino);
-      await destinoDb.save().catch(err => {
-        return res.status(500).json({ message: "Erro ao salvar morada de destino." });
-      });
+      await destinoDb.save();
     }
 
-    // Busca um turno ativo
-    const agora = new Date();
-    const turno = await Turno.findOne({ start: { $lte: agora }, end: { $gte: agora } });
-
-    if (!turno) {
-      return res.status(404).json({ message: "Nenhum turno ativo encontrado. Tente novamente mais tarde." });
-    }
-
-    // Determina seq
-    const ultimo = await Viagem.find({ turno: turno._id }).sort({ seq: -1 }).limit(1);
-    const seq = ultimo.length ? ultimo[0].seq + 1 : 1;
-
-    // Cria a viagem
+    // Cria a viagem com estado pendente e sem turno
     const viagem = new Viagem({
       cliente: clienteDb._id,
       origem: origemDb._id,
@@ -100,13 +95,9 @@ exports.pedirViagem = async (req, res) => {
       conforto,
       num_pessoas,
       estado: "pendente",
-      turno: turno._id,
-      seq
     });
 
-    await viagem.save().catch(err => {
-      return res.status(500).json({ message: "Erro ao salvar viagem." });
-    });
+    await viagem.save();
 
     res.status(201).json({ message: "Viagem criada com sucesso!", viagem });
 
@@ -114,88 +105,242 @@ exports.pedirViagem = async (req, res) => {
     console.error("Erro ao pedir viagem:", error);
     res.status(500).json({ message: "Erro interno ao criar a viagem.", erro: error.message });
   }
-
 };
 
-const calcularDistancia = (coordenadas1, coordenadas2) => {
-  const R = 6371; // Raio da Terra em km
-  const dLat = (coordenadas2.latitude - coordenadas1.latitude) * Math.PI / 180;
-  const dLon = (coordenadas2.longitude - coordenadas1.longitude) * Math.PI / 180;
 
-  const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-            Math.cos(coordenadas1.latitude * Math.PI / 180) * Math.cos(coordenadas2.latitude * Math.PI / 180) *
-            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+// Função para calcular a distância usando a fórmula de Haversine
+function calcularDistancia(lat1, lon1, lat2, lon2) {
+  const R = 6371; // km
+  const toRad = (value) => (value * Math.PI) / 180;
+
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRad(lat1)) *
+      Math.cos(toRad(lat2)) *
+      Math.sin(dLon / 2) ** 2;
+
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  const distancia = R * c; // Em km
-  return distancia;
-};
+
+  return R * c;
+}
 
 exports.listarPedidos = async (req, res) => {
   try {
-    const motoristaId = req.params.motoristaId;
-    const motorista = await Motorista.findById(motoristaId);
+    const { id } = req.params;
+    let { lat, lon } = req.query;
+
+    // Coordenadas padrão (Faculdade de Ciências)
+    if (!lat || !lon) {
+      lat = 38.756734;
+      lon = -9.155412;
+    } else {
+      lat = parseFloat(lat);
+      lon = parseFloat(lon);
+    }
+
+    const motorista = await Motorista.findById(id);
     if (!motorista) {
-      return res.status(404).json({ message: "Motorista não encontrado" });
+      return res.status(404).json({ message: "Motorista não encontrado." });
     }
 
-    const agora = new Date();
-    const turno = await Turno.findOne({ motorista: motoristaId, start: { $lte: agora }, end: { $gte: agora } });
-    if (!turno) {
-      return res.status(404).json({ message: "Nenhum turno ativo encontrado para este motorista." });
-    }
+    const now = new Date(Date.now() + 3600000);
 
-    // Buscar pedidos de viagem pendentes no turno atual
-    const pedidosPendentes = await Viagem.find({
-      estado: "pendente",
-      turno: turno._id,
-      origem: { $ne: null },
-      destino: { $ne: null }
-    }).populate('origem destino');
-
-    // Calcular distância entre o motorista e cada pedido
-    const pedidosComDistancia = pedidosPendentes.map(pedido => {
-      const distancia = calcularDistancia(motorista.coordenadas, pedido.origem.coordenadas);
-      return { 
-        ...pedido.toObject(),
-        distancia,
-        num_pessoas: pedido.num_pessoas,
-        origem: pedido.origem,
-        destino: pedido.destino
-      };
+    const turnoAtivo = await Turno.findOne({
+      motorista: id,
+      start: { $lte: now },
+      end: { $gte: now }
     });
 
-    // Ordenar pedidos pela distância em ordem crescente
-    pedidosComDistancia.sort((a, b) => a.distancia - b.distancia);
+    if (!turnoAtivo) {
+      return res.status(400).json({ message: "Motorista não tem turno ativo." });
+    }
 
-    res.status(200).json(pedidosComDistancia);
+    const viagens = await Viagem.find({estado: "pendente"})
+      .populate("origem")
+      .populate("destino")
+      .populate("cliente");
 
-  } catch (error) {
-    console.error("Erro ao listar pedidos de táxi:", error);
-    res.status(500).json({ message: "Erro ao listar pedidos de táxi." });
+    const viagensFiltradas = viagens
+      .map((viagem) => {
+        const origem = viagem.origem;
+        const destino = viagem.destino;
+
+        if (!origem?.coordenadas || !destino?.coordenadas) return null;
+
+        const distancia = calcularDistancia(
+          lat,
+          lon,
+          origem.coordenadas.latitude,
+          origem.coordenadas.longitude
+        );
+
+        const tempoRestanteMin = (new Date(turnoAtivo.end) - now) / 60000;
+        const tempoEstimado = (distancia / 40) * 60;
+
+        if (tempoEstimado > tempoRestanteMin) return null;
+
+        return {
+          _id: viagem._id,
+          cliente: viagem.cliente,
+          nr_pessoas: viagem.nr_pessoas,
+          origem: origem.endereco,
+          coordenadas_origem: origem.coordenadas,
+          destino: destino.endereco,
+          coordenadas_destino: destino.coordenadas,
+          distanciaKm: distancia.toFixed(2),
+          estimativaMin: Math.ceil(tempoEstimado)
+        };
+      })
+      .filter((v) => v !== null)
+      .sort((a, b) => a.distanciaKm - b.distanciaKm);
+
+    return res.status(200).json({ pedidos: viagensFiltradas });
+  } catch (err) {
+    console.error("Erro ao listar pedidos:", err);
+    return res.status(500).json({ message: "Erro interno ao listar pedidos.", erro: err.message });
   }
 };
 
 exports.aceitarPedido = async (req, res) => {
   try {
-    const { pedidoId } = req.params;
+    const { motoristaId, viagemId } = req.params;
 
-    const pedido = await Viagem.findById(pedidoId);
-    if (!pedido) {
-      return res.status(404).json({ message: "Pedido de táxi não encontrado." });
+    // Verificar se o motorista existe
+    const motorista = await Motorista.findById(motoristaId);
+    if (!motorista) {
+      return res.status(404).json({ message: "Motorista não encontrado." });
     }
 
-    if (pedido.estado !== "pendente") {
-      return res.status(400).json({ message: "Este pedido já foi processado." });
+    // Verificar se a viagem existe e está pendente
+    const viagem = await Viagem.findById(viagemId);
+    if (!viagem) {
+      return res.status(404).json({ message: "Viagem não encontrada." });
     }
 
-    // Alteramos o estado para 'aceite' diretamente
-    pedido.estado = "aceite";
-    await pedido.save();
+    if (viagem.estado !== "pendente") {
+      return res.status(400).json({ message: "A viagem já foi processada." });
+    }
 
-    res.status(200).json({ message: "Pedido de táxi aceito com sucesso!" });
+    if (viagem.motorista) {
+      return res.status(400).json({ message: "A viagem já foi aceite por outro motorista." });
+    }
 
-  } catch (error) {
-    console.error("Erro ao aceitar pedido:", error);
-    res.status(500).json({ message: "Erro ao aceitar pedido de táxi." });
+    const now = new Date(Date.now() + 3600000);
+
+    // Verificar se o motorista tem um turno ativo
+    const turnoAtivo = await Turno.findOne({
+      motorista: motoristaId,
+      start: { $lte: now },
+      end: { $gte: now }
+    });
+
+    if (!turnoAtivo) {
+      return res.status(400).json({ message: "Motorista não tem turno ativo." });
+    }
+
+    // Atribuir motorista e turno à viagem
+    viagem.motorista = motoristaId;
+    viagem.turno = turnoAtivo._id;  // Guarda o ID do turno
+    viagem.seq = await gerarSeqViagem(turnoAtivo);  // Gere o seq se necessário
+
+    // Salvar a viagem
+    await viagem.save();
+
+    return res.status(200).json({
+      message: "Pedido aceite. A aguardar confirmação do cliente.",
+      viagem
+    });
+  } catch (err) {
+    console.error("Erro ao aceitar pedido:", err);
+    return res.status(500).json({
+      message: "Erro interno ao aceitar pedido.",
+      erro: err.message
+    });
   }
 };
+
+// Função para gerar a sequência da viagem
+const gerarSeqViagem = async (turno) => {
+  const lastViagem = await Viagem.findOne({ turno: turno._id }).sort({ seq: -1 });
+  return lastViagem ? lastViagem.seq + 1 : 1;
+};
+
+
+
+exports.clienteConfirmar = async (req, res) => {
+  try {
+    const { clienteId, viagemId } = req.params;
+
+    // Verificar se a viagem existe e está pendente
+    const viagem = await Viagem.findById(viagemId);
+    if (!viagem) {
+      return res.status(404).json({ message: "Viagem não encontrada." });
+    }
+
+    if (viagem.estado !== "pendente") {
+      return res.status(400).json({ message: "A viagem já foi confirmada ou rejeitada." });
+    }
+
+    // Verificar se o cliente está associado a esta viagem
+    if (viagem.cliente.toString() !== clienteId) {
+      return res.status(400).json({ message: "Esta viagem não pertence a este cliente." });
+    }
+
+    // Alterar o estado da viagem
+    viagem.estado = "aceite";
+    await viagem.save();
+
+    return res.status(200).json({
+      message: "Viagem confirmada. O motorista pode prosseguir.",
+      viagem
+    });
+  } catch (err) {
+    console.error("Erro ao confirmar pedido:", err);
+    return res.status(500).json({
+      message: "Erro interno ao confirmar pedido.",
+      erro: err.message
+    });
+  }
+};
+
+// POST /cliente/:clienteId/rejeitar/:viagemId
+exports.clienteRejeitar = async (req, res) => {
+  try {
+    const { clienteId, viagemId } = req.params;
+
+    // Verificar se a viagem existe e está pendente
+    const viagem = await Viagem.findById(viagemId);
+    if (!viagem) {
+      return res.status(404).json({ message: "Viagem não encontrada." });
+    }
+
+    if (viagem.estado !== "pendente") {
+      return res.status(400).json({ message: "A viagem já foi confirmada ou rejeitada." });
+    }
+
+    // Verificar se o cliente está associado a esta viagem
+    if (viagem.cliente.toString() !== clienteId) {
+      return res.status(400).json({ message: "Esta viagem não pertence a este cliente." });
+    }
+
+    // Rejeitar o pedido e remover o motorista da viagem
+    viagem.estado = "cancelada";
+    viagem.motorista = null; // Remover o motorista da viagem
+    await viagem.save();
+
+    return res.status(200).json({
+      message: "Viagem rejeitada. O motorista foi removido.",
+      viagem
+    });
+  } catch (err) {
+    console.error("Erro ao rejeitar pedido:", err);
+    return res.status(500).json({
+      message: "Erro interno ao rejeitar pedido.",
+      erro: err.message
+    });
+  }
+};
+

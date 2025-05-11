@@ -16,10 +16,14 @@ const ViagemSchema = new Schema({
     enum: ['pendente', 'aceite', 'concluída', 'cancelada'],
     default: 'pendente'
   },
-  seq: { type: Number, required: true },
-  turno: { type: Schema.Types.ObjectId, ref: "Turno", required: true },
+  seq: { type: Number },
+  turno: { type: Schema.Types.ObjectId, ref: "Turno" }
 });
 
-ViagemSchema.index({ turno: 1, seq: 1 }, { unique: true });
+// Índice parcial: apenas aplica a restrição de unicidade quando turno está definido
+ViagemSchema.index(
+  { turno: 1, seq: 1 },
+  { unique: true, partialFilterExpression: { turno: { $exists: true } } }
+);
 
 module.exports = mongoose.model('Viagem', ViagemSchema);
