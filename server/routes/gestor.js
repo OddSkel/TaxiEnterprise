@@ -85,10 +85,7 @@ router.post("/turnos/motoristas/:id/", turno_controller.requestTaxiforShift);
 
 router.get("/turnos/motoristas/:id/", turno_controller.getAllShifts);
 
-router.get(
-  "/turnos/motoristas/:id/turno",
-  turno_controller.getAvailableTaxisForShift
-);
+router.get("/turnos/motoristas/:id/turno", turno_controller.getAvailableTaxisForShift);
 
 //TAXI ROUTES
 
