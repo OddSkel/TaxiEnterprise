@@ -5,8 +5,7 @@ const Turno = require("../models/turno");
 const Motorista = require("../models/motorista");
 const Pessoa = require("../models/pessoa");
 const Conforto = require("../models/conforto");
-
-
+const Taxi = require("../models/taxi");
 
 exports.pedirViagem = async (req, res) => {
   try {
@@ -44,7 +43,7 @@ exports.pedirViagem = async (req, res) => {
       const novaPessoa = new Pessoa({
         nome: cliente.nome,
         nif: cliente.nif,
-        genero: cliente.genero
+        genero: cliente.genero,
       });
       await novaPessoa.save();
 
@@ -52,30 +51,39 @@ exports.pedirViagem = async (req, res) => {
       await clienteDb.save();
     }
 
-
     // Validação e criação das moradas
-    if (!origem.rua || !origem.localidade || !origem.coordenadas?.latitude || !origem.coordenadas?.longitude) {
+    if (
+      !origem.rua ||
+      !origem.localidade ||
+      !origem.coordenadas?.latitude ||
+      !origem.coordenadas?.longitude
+    ) {
       return res.status(400).json({ message: "Morada de origem incompleta." });
     }
 
-    if (!destino.rua || !destino.localidade || !destino.coordenadas?.latitude || !destino.coordenadas?.longitude) {
+    if (
+      !destino.rua ||
+      !destino.localidade ||
+      !destino.coordenadas?.latitude ||
+      !destino.coordenadas?.longitude
+    ) {
       return res.status(400).json({ message: "Morada de destino incompleta." });
     }
 
-    let origemDb = await Morada.findOne({ 
-      rua: origem.rua, 
-      numPorta: origem.numPorta, 
-      codigoPostal: origem.codigoPostal, 
+    let origemDb = await Morada.findOne({
+      rua: origem.rua,
+      numPorta: origem.numPorta,
+      codigoPostal: origem.codigoPostal,
       localidade: origem.localidade,
-      coordenadas: origem.coordenadas 
+      coordenadas: origem.coordenadas,
     });
 
-    let destinoDb = await Morada.findOne({ 
-      rua: destino.rua, 
-      numPorta: destino.numPorta, 
-      codigoPostal: destino.codigoPostal, 
+    let destinoDb = await Morada.findOne({
+      rua: destino.rua,
+      numPorta: destino.numPorta,
+      codigoPostal: destino.codigoPostal,
       localidade: destino.localidade,
-      coordenadas: destino.coordenadas 
+      coordenadas: destino.coordenadas,
     });
 
     if (!origemDb) {
@@ -101,13 +109,14 @@ exports.pedirViagem = async (req, res) => {
     await viagem.save();
 
     res.status(201).json({ message: "Viagem criada com sucesso!", viagem });
-
   } catch (error) {
     console.error("Erro ao pedir viagem:", error);
-    res.status(500).json({ message: "Erro interno ao criar a viagem.", erro: error.message });
+    res.status(500).json({
+      message: "Erro interno ao criar a viagem.",
+      erro: error.message,
+    });
   }
 };
-
 
 // Função para calcular a distância usando a fórmula de Haversine
 function calcularDistancia(lat1, lon1, lat2, lon2) {
@@ -119,9 +128,7 @@ function calcularDistancia(lat1, lon1, lat2, lon2) {
 
   const a =
     Math.sin(dLat / 2) ** 2 +
-    Math.cos(toRad(lat1)) *
-      Math.cos(toRad(lat2)) *
-      Math.sin(dLon / 2) ** 2;
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
 
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
@@ -152,14 +159,16 @@ exports.listarPedidos = async (req, res) => {
     const turnoAtivo = await Turno.findOne({
       motorista: id,
       start: { $lte: now },
-      end: { $gte: now }
+      end: { $gte: now },
     });
 
     if (!turnoAtivo) {
-      return res.status(400).json({ message: "Motorista não tem turno ativo." });
+      return res
+        .status(400)
+        .json({ message: "Motorista não tem turno ativo." });
     }
 
-    const viagens = await Viagem.find({estado: "pendente"})
+    const viagens = await Viagem.find({ estado: "pendente" })
       .populate("origem")
       .populate("destino")
       .populate("cliente");
@@ -192,7 +201,7 @@ exports.listarPedidos = async (req, res) => {
           destino: destino.endereco,
           coordenadas_destino: destino.coordenadas,
           distanciaKm: distancia.toFixed(2),
-          estimativaMin: Math.ceil(tempoEstimado)
+          estimativaMin: Math.ceil(tempoEstimado),
         };
       })
       .filter((v) => v !== null)
@@ -201,7 +210,9 @@ exports.listarPedidos = async (req, res) => {
     return res.status(200).json({ pedidos: viagensFiltradas });
   } catch (err) {
     console.error("Erro ao listar pedidos:", err);
-    return res.status(500).json({ message: "Erro interno ao listar pedidos.", erro: err.message });
+    return res
+      .status(500)
+      .json({ message: "Erro interno ao listar pedidos.", erro: err.message });
   }
 };
 
@@ -226,7 +237,9 @@ exports.aceitarPedido = async (req, res) => {
     }
 
     if (viagem.motorista) {
-      return res.status(400).json({ message: "A viagem já foi aceite por outro motorista." });
+      return res
+        .status(400)
+        .json({ message: "A viagem já foi aceite por outro motorista." });
     }
 
     const now = new Date(Date.now() + 3600000);
@@ -235,41 +248,43 @@ exports.aceitarPedido = async (req, res) => {
     const turnoAtivo = await Turno.findOne({
       motorista: motoristaId,
       start: { $lte: now },
-      end: { $gte: now }
+      end: { $gte: now },
     });
 
     if (!turnoAtivo) {
-      return res.status(400).json({ message: "Motorista não tem turno ativo." });
+      return res
+        .status(400)
+        .json({ message: "Motorista não tem turno ativo." });
     }
 
     // Atribuir motorista e turno à viagem
     viagem.motorista = motoristaId;
-    viagem.turno = turnoAtivo._id;  // Guarda o ID do turno
-    viagem.seq = await gerarSeqViagem(turnoAtivo);  // Gere o seq se necessário
+    viagem.turno = turnoAtivo._id; // Guarda o ID do turno
+    viagem.seq = await gerarSeqViagem(turnoAtivo); // Gere o seq se necessário
 
     // Salvar a viagem
     await viagem.save();
 
     return res.status(200).json({
       message: "Pedido aceite. A aguardar confirmação do cliente.",
-      viagem
+      viagem,
     });
   } catch (err) {
     console.error("Erro ao aceitar pedido:", err);
     return res.status(500).json({
       message: "Erro interno ao aceitar pedido.",
-      erro: err.message
+      erro: err.message,
     });
   }
 };
 
 // Função para gerar a sequência da viagem
 const gerarSeqViagem = async (turno) => {
-  const lastViagem = await Viagem.findOne({ turno: turno._id }).sort({ seq: -1 });
+  const lastViagem = await Viagem.findOne({ turno: turno._id }).sort({
+    seq: -1,
+  });
   return lastViagem ? lastViagem.seq + 1 : 1;
 };
-
-
 
 exports.clienteConfirmar = async (req, res) => {
   try {
@@ -282,12 +297,16 @@ exports.clienteConfirmar = async (req, res) => {
     }
 
     if (viagem.estado !== "pendente") {
-      return res.status(400).json({ message: "A viagem já foi confirmada ou rejeitada." });
+      return res
+        .status(400)
+        .json({ message: "A viagem já foi confirmada ou rejeitada." });
     }
 
     // Verificar se o cliente está associado a esta viagem
     if (viagem.cliente.toString() !== clienteId) {
-      return res.status(400).json({ message: "Esta viagem não pertence a este cliente." });
+      return res
+        .status(400)
+        .json({ message: "Esta viagem não pertence a este cliente." });
     }
 
     // Alterar o estado da viagem
@@ -296,13 +315,13 @@ exports.clienteConfirmar = async (req, res) => {
 
     return res.status(200).json({
       message: "Viagem confirmada. O motorista pode prosseguir.",
-      viagem
+      viagem,
     });
   } catch (err) {
     console.error("Erro ao confirmar pedido:", err);
     return res.status(500).json({
       message: "Erro interno ao confirmar pedido.",
-      erro: err.message
+      erro: err.message,
     });
   }
 };
@@ -319,12 +338,16 @@ exports.clienteRejeitar = async (req, res) => {
     }
 
     if (viagem.estado !== "pendente") {
-      return res.status(400).json({ message: "A viagem já foi confirmada ou rejeitada." });
+      return res
+        .status(400)
+        .json({ message: "A viagem já foi confirmada ou rejeitada." });
     }
 
     // Verificar se o cliente está associado a esta viagem
     if (viagem.cliente.toString() !== clienteId) {
-      return res.status(400).json({ message: "Esta viagem não pertence a este cliente." });
+      return res
+        .status(400)
+        .json({ message: "Esta viagem não pertence a este cliente." });
     }
 
     // Rejeitar o pedido e remover o motorista da viagem
@@ -334,14 +357,126 @@ exports.clienteRejeitar = async (req, res) => {
 
     return res.status(200).json({
       message: "Viagem rejeitada. O motorista foi removido.",
-      viagem
+      viagem,
     });
   } catch (err) {
     console.error("Erro ao rejeitar pedido:", err);
     return res.status(500).json({
       message: "Erro interno ao rejeitar pedido.",
-      erro: err.message
+      erro: err.message,
     });
   }
 };
 
+exports.startViagem = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { motoristaId, turnoId, taxiId } = req.body;
+
+    const viagem = await Viagem.findById(id);
+    if (!viagem) {
+      return res.status(404).json({ message: "Viagem não encontrada." });
+    }
+
+    const turno = await Turno.findById(turnoId);
+    const taxi = await Taxi.findById(taxiId);
+    const motorista = await Motorista.findById(motoristaId);
+
+    if (!turno || !taxi || !motorista) {
+      return res
+        .status(400)
+        .json({ message: "Turno, táxi ou motorista inválido." });
+    }
+
+    viagem.motorista = motorista._id;
+    viagem.turno = turno._id;
+    viagem.taxi = taxi._id;
+    viagem.inicio = new Date();
+    viagem.estado = "aceite";
+
+    const lastViagem = await Viagem.find({ turno: turno._id })
+      .sort({ seq: -1 })
+      .limit(1);
+
+    viagem.seq = lastViagem.length > 0 ? lastViagem[0].seq + 1 : 1;
+
+    await viagem.save();
+
+    res.status(200).json({ message: "Viagem iniciada com sucesso.", viagem });
+  } catch (error) {
+    console.error("Erro ao iniciar a viagem:", error);
+    res.status(500).json({ message: "Erro interno ao iniciar a viagem." });
+  }
+};
+
+exports.endViagem = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const viagem = await Viagem.findById(id)
+      .populate("origem")
+      .populate("destino")
+      .populate("turno")
+      .populate("taxi");
+
+    if (!viagem) {
+      return res.status(404).json({ message: "Viagem não encontrada." });
+    }
+
+    if (!viagem.inicio || !viagem.turno) {
+      return res
+        .status(400)
+        .json({ message: "A viagem ainda não foi iniciada." });
+    }
+
+    const fim = new Date();
+
+    if (viagem.inicio >= fim) {
+      return res.status(400).json({ message: "Hora de fim inválida." });
+    }
+
+    if (viagem.inicio < viagem.turno.inicio || fim > viagem.turno.fim) {
+      return res
+        .status(400)
+        .json({ message: "A viagem deve ocorrer dentro do turno." });
+    }
+
+    const km = haversine(
+      viagem.origem.coordenadas.latitude,
+      viagem.origem.coordenadas.longitude,
+      viagem.destino.coordenadas.latitude,
+      viagem.destino.coordenadas.longitude
+    );
+
+    if (km <= 0) {
+      return res
+        .status(400)
+        .json({ message: "Não foi possível calcular a distância." });
+    }
+
+    const durationMinutes = Math.ceil((fim - viagem.inicio) / 60000);
+
+    const baseRate = viagem.conforto === "LUXUOSO" ? 0.25 : 0.15;
+    const nightExtra = 0.2;
+    const startHour = viagem.inicio.getHours();
+    const endHour = fim.getHours();
+
+    const isNight =
+      startHour >= 21 || startHour < 6 || endHour >= 21 || endHour < 6;
+    const rate = isNight ? baseRate * (1 + nightExtra) : baseRate;
+
+    const custo = parseFloat((rate * durationMinutes).toFixed(2));
+
+    viagem.fim = fim;
+    viagem.quilometros = km;
+    viagem.custo_total = custo;
+    viagem.estado = "concluída";
+
+    await viagem.save();
+
+    res.status(200).json({ message: "Viagem concluída com sucesso.", viagem });
+  } catch (error) {
+    console.error("Erro ao concluir a viagem:", error);
+    res.status(500).json({ message: "Erro interno ao concluir a viagem." });
+  }
+};
