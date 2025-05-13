@@ -1,67 +1,64 @@
 <div class="container">
-  <!-- Formulário do Cliente -->
-  <form (ngSubmit)="pedirViagem()" #form="ngForm">
-    <h3>Pedido de Viagem</h3>
+  <h2>Pedir Viagem</h2>
 
-    <!-- Nome -->
-    <div class="form-group">
-      <label>Nome:</label>
-      <input type="text" [(ngModel)]="cliente.pessoa.nome" name="nome" required class="form-control" />
-    </div>
+  <form (ngSubmit)="pedirViagem()" class="viagem-form">
+    <h3>Dados do Cliente</h3>
+    <label>
+      Nome:
+      <input type="text" [(ngModel)]="cliente.pessoa.nome" name="nome" placeholder="Nome completo" required />
+    </label>
 
-    <!-- NIF -->
-    <div class="form-group">
-      <label>NIF:</label>
-      <input type="text" [(ngModel)]="cliente.pessoa.nif" name="nif" required class="form-control" />
-    </div>
+    <label>
+      NIF:
+      <input type="text" [(ngModel)]="cliente.pessoa.nif" name="nif" placeholder="NIF" required />
+    </label>
 
-    <!-- Gênero -->
-    <div class="form-group">
-      <label>Gênero:</label>
-      <select [(ngModel)]="cliente.pessoa.genero" name="genero" required class="form-control">
+    <label>
+      Género:
+      <select [(ngModel)]="cliente.pessoa.genero" name="genero" required>
+        <option value="">Selecione o género</option>
         <option value="masculino">Masculino</option>
         <option value="feminino">Feminino</option>
       </select>
-    </div>
+    </label>
 
-    <!-- Origem -->
-    <div class="form-group">
-      <label>Origem:</label>
-      <input type="text" [(ngModel)]="origem" name="origem" class="form-control" readonly />
-    </div>
+    <h3>Informações da Viagem</h3>
+    <label>
+      Origem:
+      <input type="text" [(ngModel)]="origem" name="origem" placeholder="Rua ou coordenadas (lat, lon)" required />
+    </label>
+    <button type="button" (click)="usarLocalizacaoAtual()">📍 Usar Localização Atual</button>
 
-    <!-- Destino -->
-    <div class="form-group">
-      <label>Destino:</label>
-      <input type="text" [(ngModel)]="destino" name="destino" class="form-control" readonly />
-    </div>
+    <label>
+      Destino:
+      <input type="text" [(ngModel)]="destino" name="destino" placeholder="Rua ou coordenadas (lat, lon)" required />
+    </label>
 
-    <!-- Número de Pessoas -->
-    <div class="form-group">
-      <label>Número de Pessoas:</label>
-      <input type="number" [(ngModel)]="numPessoas" name="numPessoas" min="1" max="10" required class="form-control" />
-    </div>
-
-    <!-- Conforto -->
-    <div class="form-group">
-      <label>Conforto:</label>
-      <select [(ngModel)]="conforto" name="conforto" class="form-control">
+    <label>
+      Conforto:
+      <select [(ngModel)]="conforto" name="conforto" required>
+        <option value="">Selecione o tipo de conforto</option>
         <option value="BASICO">BASICO</option>
         <option value="LUXUOSO">LUXUOSO</option>
       </select>
-    </div>
+    </label>
 
-    <!-- Botão -->
-    <button type="submit" class="btn btn-primary">Pedir Viagem</button>
+    <label>
+      Nº de Pessoas:
+      <input type="number" [(ngModel)]="numPessoas" name="numPessoas" min="1" max="8" required />
+    </label>
+
+    <button type="submit" class="btn-pedir">🚕 Pedir Viagem</button>
   </form>
 
-  <!-- Mapa -->
-  <div id="map" style="height: 400px; margin-top: 20px;"></div>
+  <div id="map"></div>
 
-  <!-- Mensagens -->
-  <div *ngIf="viagemConfirmada" class="alert alert-success mt-3">Viagem confirmada com sucesso!</div>
-  <div *ngIf="motoristaResposta" class="alert alert-info mt-3">
-    <p><strong>Motorista:</strong> {{ motoristaResposta.motoristaId }}</p>
-    <p><strong>Viagem:</strong> {{ motoristaResposta.viagemId }}</p>
+  <div *ngIf="motoristaResposta" class="resposta-motorista">
+    <h3>Motorista Encontrado</h3>
+    <p><strong>Nome:</strong> {{ motoristaResposta.nome }}</p>
+    <p><strong>Matrícula:</strong> {{ motoristaResposta.matricula }}</p>
+
+    <button (click)="aceitarViagem()" class="btn-confirmar">✅ Aceitar</button>
+    <button (click)="rejeitarViagem()" class="btn-rejeitar">❌ Rejeitar</button>
   </div>
 </div>

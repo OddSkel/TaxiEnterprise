@@ -13,6 +13,7 @@ import { ClienteComponent } from './cliente/cliente.component';
 import { ViagemComponent } from './viagem/viagem.component';
 
 const routes: Routes = [
+
   // Rotas para o Gestor (prefixo /gestor/)
   { path: 'gestor/taxis', component: TaxisComponent }, // Gerenciamento de taxis
   { path: 'gestor/dashboard', component: DashboardComponent }, // Dashboard

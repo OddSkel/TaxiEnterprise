@@ -25,8 +25,7 @@ exports.pedirViagem = async (req, res) => {
       return res.status(400).json({ message: "NIF inválido." });
     }
 
-    const confortoDb = await Conforto.findOne({ name: conforto.name });
-    if (!confortoDb) {
+    if (!["BASICO", "LUXUOSO"].includes(conforto)) {
       return res.status(400).json({ message: "Nível de conforto inválido." });
     }
 
@@ -36,11 +35,15 @@ exports.pedirViagem = async (req, res) => {
 
     // Verifica ou cria cliente
     const pessoaExistente = await Pessoa.findOne({ nif: cliente.nif });
-
     let clienteDb;
+
     if (pessoaExistente) {
+      console.log("Pessoa já existente:", pessoaExistente);
       clienteDb = await Cliente.findOne({ pessoa: pessoaExistente._id });
-    } else {
+    }
+
+    if (!clienteDb) {
+      console.log("Criando novo cliente...");
       const novaPessoa = new Pessoa({
         nome: cliente.nome,
         nif: cliente.nif,
@@ -52,6 +55,12 @@ exports.pedirViagem = async (req, res) => {
       await clienteDb.save();
     }
 
+    console.log("Cliente encontrado ou criado:", clienteDb);
+    
+    // Verifica se clienteDb existe
+    if (!clienteDb?._id) {
+      return res.status(400).json({ message: "Cliente não encontrado ou criado com sucesso." });
+    }
 
     // Validação e criação das moradas
     if (!origem.rua || !origem.localidade || !origem.coordenadas?.latitude || !origem.coordenadas?.longitude) {
@@ -62,6 +71,14 @@ exports.pedirViagem = async (req, res) => {
       return res.status(400).json({ message: "Morada de destino incompleta." });
     }
 
+    ['origem', 'destino'].forEach((campo) => {
+      if (req.body[campo] && req.body[campo]._id === '') {
+        delete req.body[campo]._id;
+      }
+    });
+
+
+    // Busca ou cria a morada de origem
     let origemDb = await Morada.findOne({ 
       rua: origem.rua, 
       numPorta: origem.numPorta, 
@@ -70,6 +87,13 @@ exports.pedirViagem = async (req, res) => {
       coordenadas: origem.coordenadas 
     });
 
+    if (!origemDb) {
+      console.log('Criando nova morada de origem:', origem);
+      origemDb = new Morada(origem);
+      await origemDb.save();
+    }
+
+    // Busca ou cria a morada de destino
     let destinoDb = await Morada.findOne({ 
       rua: destino.rua, 
       numPorta: destino.numPorta, 
@@ -78,17 +102,20 @@ exports.pedirViagem = async (req, res) => {
       coordenadas: destino.coordenadas 
     });
 
-    if (!origemDb) {
-      origemDb = new Morada(origem);
-      await origemDb.save();
-    }
-
     if (!destinoDb) {
+      console.log('Criando nova morada de destino:', destino);
       destinoDb = new Morada(destino);
       await destinoDb.save();
     }
 
-    // Cria a viagem com estado pendente e sem turno
+    // Verifica se as moradas foram criadas com sucesso
+    if (!origemDb?._id || !destinoDb?._id) {
+      return res.status(400).json({ message: "Erro na criação das moradas: IDs inválidos." });
+    }
+
+    console.log('Moradas encontradas ou criadas com sucesso:', origemDb, destinoDb);
+
+    // Cria a viagem com estado pendente e sem motorista/taxi definidos
     const viagem = new Viagem({
       cliente: clienteDb._id,
       origem: origemDb._id,
@@ -96,6 +123,8 @@ exports.pedirViagem = async (req, res) => {
       conforto,
       num_pessoas,
       estado: "pendente",
+      motorista: null,
+      taxi: null,
     });
 
     await viagem.save();
@@ -107,7 +136,6 @@ exports.pedirViagem = async (req, res) => {
     res.status(500).json({ message: "Erro interno ao criar a viagem.", erro: error.message });
   }
 };
-
 
 // Função para calcular a distância usando a fórmula de Haversine
 function calcularDistancia(lat1, lon1, lat2, lon2) {
@@ -126,7 +154,7 @@ function calcularDistancia(lat1, lon1, lat2, lon2) {
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
   return R * c;
-}
+};
 
 exports.listarPedidos = async (req, res) => {
   try {

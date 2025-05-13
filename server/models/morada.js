@@ -7,10 +7,10 @@ const coordenadasSchema = new Schema({
 }, { _id: false });
 
 const MoradaSchema = new Schema({
-  rua: { type: String, required: true },
+  rua: { type: String },
   numPorta: { type: String },
   codigoPostal: { type: String },
-  localidade: { type: String, required: true },
+  localidade: { type: String },
   coordenadas: { type: coordenadasSchema } 
 });
 
