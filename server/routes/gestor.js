@@ -22,6 +22,9 @@ router.get("/init", async (req, res) => {
     await Cliente.deleteMany({});
     await Pessoa.deleteMany({});
     await Morada.deleteMany({});
+    await Turno.deleteMany({});
+    await Viagem.deleteMany({});
+    await Cliente.deleteMany({});
 
     const pessoa = await Pessoa.create({
       nome: "Augusto",
@@ -43,14 +46,6 @@ router.get("/init", async (req, res) => {
       cartaConducao: "ABCD12345",
     });
 
-    const cliente = await Cliente.create({ 
-      pessoa: await Pessoa.create({ 
-        nome: "Alberto",
-        genero: "masculino",
-        nif: "111111111",
-      })
-    });
-
     const taxi1 = await Taxi.create({
       matricula: "DF65SA",
       ano_compra: 2020,
@@ -58,8 +53,6 @@ router.get("/init", async (req, res) => {
       modelo: "M50",
       nivel_conforto: "LUXUOSO",
     });
-
-    console.log("Taxi created:", taxi1);
 
     res.status(200).json({ message: "Database initialized successfully" });
   } catch (error) {

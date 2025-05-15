@@ -10,7 +10,7 @@ import { Viagem } from './viagem';
 @Injectable({ providedIn: 'root' })
 export class ViagemService {
   private viagemUrl = 'http://localhost:3000/motorista'; // Base da API
-  private clienteUrl = 'http://localhost:3000/cliente/';
+  private clienteUrl = 'http://localhost:3000/cliente';
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
@@ -22,7 +22,7 @@ export class ViagemService {
   ) {}
 
   // Pedir uma nova viagem
-pedirViagem(viagem: Viagem): Observable<Viagem> {
+pedirViagem(viagem: any): Observable<Viagem> {
   const url = `${this.clienteUrl}/pedirViagem`;
   return this.http.post<Viagem>(url, viagem, this.httpOptions).pipe(
     tap((v: Viagem) => this.log(`viagem pedida com id=${v._id}`)),

@@ -24,8 +24,7 @@ exports.pedirViagem = async (req, res) => {
       return res.status(400).json({ message: "NIF inválido." });
     }
 
-    const confortoDb = await Conforto.findOne({ name: conforto.name });
-    if (!confortoDb) {
+    if (!["BASICO", "LUXUOSO"].includes(conforto)) {
       return res.status(400).json({ message: "Nível de conforto inválido." });
     }
 
@@ -35,11 +34,15 @@ exports.pedirViagem = async (req, res) => {
 
     // Verifica ou cria cliente
     const pessoaExistente = await Pessoa.findOne({ nif: cliente.nif });
-
     let clienteDb;
+
     if (pessoaExistente) {
+      console.log("Pessoa já existente:", pessoaExistente);
       clienteDb = await Cliente.findOne({ pessoa: pessoaExistente._id });
-    } else {
+    }
+
+    if (!clienteDb) {
+      console.log("Criando novo cliente...");
       const novaPessoa = new Pessoa({
         nome: cliente.nome,
         nif: cliente.nif,
@@ -49,6 +52,15 @@ exports.pedirViagem = async (req, res) => {
 
       clienteDb = new Cliente({ pessoa: novaPessoa._id });
       await clienteDb.save();
+    }
+
+    console.log("Cliente encontrado ou criado:", clienteDb);
+
+    // Verifica se clienteDb existe
+    if (!clienteDb?._id) {
+      return res
+        .status(400)
+        .json({ message: "Cliente não encontrado ou criado com sucesso." });
     }
 
     // Validação e criação das moradas
@@ -70,6 +82,13 @@ exports.pedirViagem = async (req, res) => {
       return res.status(400).json({ message: "Morada de destino incompleta." });
     }
 
+    ["origem", "destino"].forEach((campo) => {
+      if (req.body[campo] && req.body[campo]._id === "") {
+        delete req.body[campo]._id;
+      }
+    });
+
+    // Busca ou cria a morada de origem
     let origemDb = await Morada.findOne({
       rua: origem.rua,
       numPorta: origem.numPorta,
@@ -78,6 +97,13 @@ exports.pedirViagem = async (req, res) => {
       coordenadas: origem.coordenadas,
     });
 
+    if (!origemDb) {
+      console.log("Criando nova morada de origem:", origem);
+      origemDb = new Morada(origem);
+      await origemDb.save();
+    }
+
+    // Busca ou cria a morada de destino
     let destinoDb = await Morada.findOne({
       rua: destino.rua,
       numPorta: destino.numPorta,
@@ -86,17 +112,26 @@ exports.pedirViagem = async (req, res) => {
       coordenadas: destino.coordenadas,
     });
 
-    if (!origemDb) {
-      origemDb = new Morada(origem);
-      await origemDb.save();
-    }
-
     if (!destinoDb) {
+      console.log("Criando nova morada de destino:", destino);
       destinoDb = new Morada(destino);
       await destinoDb.save();
     }
 
-    // Cria a viagem com estado pendente e sem turno
+    // Verifica se as moradas foram criadas com sucesso
+    if (!origemDb?._id || !destinoDb?._id) {
+      return res
+        .status(400)
+        .json({ message: "Erro na criação das moradas: IDs inválidos." });
+    }
+
+    console.log(
+      "Moradas encontradas ou criadas com sucesso:",
+      origemDb,
+      destinoDb
+    );
+
+    // Cria a viagem com estado pendente e sem motorista/taxi definidos
     const viagem = new Viagem({
       cliente: clienteDb._id,
       origem: origemDb._id,
@@ -104,6 +139,8 @@ exports.pedirViagem = async (req, res) => {
       conforto,
       num_pessoas,
       estado: "pendente",
+      motorista: null,
+      taxi: null,
     });
 
     await viagem.save();
@@ -278,7 +315,6 @@ exports.aceitarPedido = async (req, res) => {
   }
 };
 
-// Função para gerar a sequência da viagem
 const gerarSeqViagem = async (turno) => {
   const lastViagem = await Viagem.findOne({ turno: turno._id }).sort({
     seq: -1,
@@ -326,7 +362,6 @@ exports.clienteConfirmar = async (req, res) => {
   }
 };
 
-// POST /cliente/:clienteId/rejeitar/:viagemId
 exports.clienteRejeitar = async (req, res) => {
   try {
     const { clienteId, viagemId } = req.params;
@@ -379,13 +414,29 @@ exports.startViagem = async (req, res) => {
     }
 
     const turno = await Turno.findById(turnoId);
+    console.log(turno);
     const taxi = await Taxi.findById(taxiId);
+    console.log(turno);
     const motorista = await Motorista.findById(motoristaId);
+    console.log(turno);
 
     if (!turno || !taxi || !motorista) {
       return res
         .status(400)
         .json({ message: "Turno, táxi ou motorista inválido." });
+    }
+
+    const overlappingTrip = await Viagem.findOne({
+      motorista: motoristaId,
+      _id: { $ne: viagem._id },
+      inicio: { $lt: fim },
+      fim: { $gt: viagem.inicio },
+    });
+
+    if (overlappingTrip) {
+      return res.status(400).json({
+        message: "Já existe uma viagem em sobreposição para este motorista.",
+      });
     }
 
     viagem.motorista = motorista._id;
@@ -412,6 +463,7 @@ exports.startViagem = async (req, res) => {
 exports.endViagem = async (req, res) => {
   try {
     const { id } = req.params;
+    console.log("Viagem ID:", id);
 
     const viagem = await Viagem.findById(id)
       .populate("origem")
@@ -441,7 +493,7 @@ exports.endViagem = async (req, res) => {
         .json({ message: "A viagem deve ocorrer dentro do turno." });
     }
 
-    const km = haversine(
+    const km = calcularDistancia(
       viagem.origem.coordenadas.latitude,
       viagem.origem.coordenadas.longitude,
       viagem.destino.coordenadas.latitude,
@@ -479,4 +531,12 @@ exports.endViagem = async (req, res) => {
     console.error("Erro ao concluir a viagem:", error);
     res.status(500).json({ message: "Erro interno ao concluir a viagem." });
   }
+};
+
+exports.listarViagensMotorista = async (req, res) => {
+  const { id } = req.params;
+  const viagens = await Viagem.find({ motorista: id, estado: "concluída" })
+    .sort({ inicio: -1 })
+    .populate("cliente origem destino");
+  res.json(viagens);
 };
