@@ -158,7 +158,7 @@ function calcularDistancia(lat1, lon1, lat2, lon2) {
 
 exports.listarPedidos = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { motoristaId } = req.params;
     let { lat, lon } = req.query;
 
     // Coordenadas padrão (Faculdade de Ciências)
@@ -170,7 +170,7 @@ exports.listarPedidos = async (req, res) => {
       lon = parseFloat(lon);
     }
 
-    const motorista = await Motorista.findById(id);
+    const motorista = await Motorista.findById(motoristaId);
     if (!motorista) {
       return res.status(404).json({ message: "Motorista não encontrado." });
     }
@@ -178,7 +178,7 @@ exports.listarPedidos = async (req, res) => {
     const now = new Date(Date.now() + 3600000);
 
     const turnoAtivo = await Turno.findOne({
-      motorista: id,
+      motorista: motoristaId,
       start: { $lte: now },
       end: { $gte: now }
     });
@@ -273,6 +273,7 @@ exports.aceitarPedido = async (req, res) => {
     // Atribuir motorista e turno à viagem
     viagem.motorista = motoristaId;
     viagem.turno = turnoAtivo._id;  // Guarda o ID do turno
+    viagem.estado = "aceite";
     viagem.seq = await gerarSeqViagem(turnoAtivo);  // Gere o seq se necessário
 
     // Salvar a viagem

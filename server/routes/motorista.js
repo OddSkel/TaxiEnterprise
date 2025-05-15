@@ -22,7 +22,7 @@ router.get("/turnos/motoristas/:id/turno", turno_controller.getAvailableTaxisFor
 
 //VIAGEM ROUTES
 
-router.get("/:id/viagens-pendentes/", viagem_controller.listarPedidos);
+router.get("/:motoristaId/viagens-pendentes/", viagem_controller.listarPedidos);
 
 router.post("/:motoristaId/aceitar-viagem/:viagemId", viagem_controller.aceitarPedido);
 
