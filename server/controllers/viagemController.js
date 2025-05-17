@@ -406,7 +406,7 @@ exports.clienteRejeitar = async (req, res) => {
 exports.startViagem = async (req, res) => {
   try {
     const { id } = req.params;
-    const { motoristaId, turnoId, taxiId } = req.body;
+    const { motoristaId, turnoId, taxiId, clienteId, numCompanions } = req.body;
 
     const viagem = await Viagem.findById(id);
     if (!viagem) {
@@ -414,35 +414,28 @@ exports.startViagem = async (req, res) => {
     }
 
     const turno = await Turno.findById(turnoId);
-    console.log(turno);
     const taxi = await Taxi.findById(taxiId);
-    console.log(turno);
     const motorista = await Motorista.findById(motoristaId);
-    console.log(turno);
+    const cliente = await Cliente.findById(clienteId);
 
-    if (!turno || !taxi || !motorista) {
+    if (!turno || !taxi || !motorista || !cliente) {
       return res
         .status(400)
         .json({ message: "Turno, táxi ou motorista inválido." });
     }
 
-    const overlappingTrip = await Viagem.findOne({
-      motorista: motoristaId,
-      _id: { $ne: viagem._id },
-      inicio: { $lt: fim },
-      fim: { $gt: viagem.inicio },
-    });
-
-    if (overlappingTrip) {
+    if (numCompanions > 7 || numCompanions < 1) {
       return res.status(400).json({
-        message: "Já existe uma viagem em sobreposição para este motorista.",
+        message: `Número de passageiros incorreto.`,
       });
     }
 
     viagem.motorista = motorista._id;
     viagem.turno = turno._id;
+    viagem.cliente = cliente._id;
     viagem.taxi = taxi._id;
     viagem.inicio = new Date();
+    viagem.num_pessoas = numCompanions;
     viagem.estado = "aceite";
 
     const lastViagem = await Viagem.find({ turno: turno._id })
@@ -493,6 +486,19 @@ exports.endViagem = async (req, res) => {
         .json({ message: "A viagem deve ocorrer dentro do turno." });
     }
 
+    const overlap = await Viagem.findOne({
+      motorista: viagem.motorista,
+      _id: { $ne: viagem._id },
+      inicio: { $lt: fim },
+      fim: { $gt: viagem.inicio },
+    });
+
+    if (overlap) {
+      return res
+        .status(400)
+        .json({ message: "O motorista já tem outra viagem nesse período." });
+    }
+
     const km = calcularDistancia(
       viagem.origem.coordenadas.latitude,
       viagem.origem.coordenadas.longitude,
@@ -507,9 +513,10 @@ exports.endViagem = async (req, res) => {
     }
 
     const durationMinutes = Math.ceil((fim - viagem.inicio) / 60000);
+    console.log(durationMinutes);
 
-    const baseRate = viagem.conforto === "LUXUOSO" ? 0.25 : 0.15;
-    const nightExtra = 0.2;
+    const baseRate = viagem.conforto === "LUXUOSO" ? 0.75 : 0.5;
+    const nightExtra = viagem.conforto === "LUXUOSO" ? 0.5 : 0.2;
     const startHour = viagem.inicio.getHours();
     const endHour = fim.getHours();
 

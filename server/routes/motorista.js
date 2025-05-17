@@ -33,7 +33,7 @@ router.post(
 
 router.post("/:id/start", viagem_controller.startViagem);
 
-router.put("/:id/end", viagem_controller.endViagem);
+router.get("/:id/end", viagem_controller.endViagem);
 
 router.get("/:id/viagens", viagem_controller.listarViagensMotorista);
 

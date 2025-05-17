@@ -32,11 +32,21 @@ router.get("/init", async (req, res) => {
       nif: "123456789",
     });
 
+    const pessoa1 = await Pessoa.create({
+      nome: "Elsa",
+      genero: "feminino",
+      nif: "111111111",
+    });
+
     const morada = await Morada.create({
       rua: "Alberto3",
       numPorta: "34",
       codigoPostal: "1000-987",
       localidade: "Lisboa",
+    });
+
+    const cliente = await Cliente.create({
+      pessoa: pessoa1._id,
     });
 
     const motorista = await Motorista.create({
