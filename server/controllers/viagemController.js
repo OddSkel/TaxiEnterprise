@@ -512,13 +512,13 @@ exports.endViagem = async (req, res) => {
         .json({ message: "Não foi possível calcular a distância." });
     }
 
-    const durationMinutes = Math.ceil((fim - viagem.inicio) / 60000);
-    console.log(durationMinutes);
+    const durationMinutes = Math.floor((viagem.fim - viagem.inicio) / 60000);
 
     const baseRate = viagem.conforto === "LUXUOSO" ? 0.75 : 0.5;
     const nightExtra = viagem.conforto === "LUXUOSO" ? 0.5 : 0.2;
     const startHour = viagem.inicio.getHours();
-    const endHour = fim.getHours();
+
+    const endHour = viagem.fim.getHours();
 
     const isNight =
       startHour >= 21 || startHour < 6 || endHour >= 21 || endHour < 6;
