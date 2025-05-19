@@ -20,6 +20,7 @@ import { SimularComponent } from './simular/simular.component';
 import { TurnoComponent } from './turno/turno.component';
 import { ViagemComponent } from './viagem/viagem.component';
 import { ClienteComponent } from './cliente/cliente.component';
+import { MotoristaViagensComponent } from './motorista-viagens/motorista-viagens.component';
 
 @NgModule({
   imports: [BrowserModule, FormsModule, AppRoutingModule, HttpClientModule],
@@ -39,6 +40,7 @@ import { ClienteComponent } from './cliente/cliente.component';
     TurnoComponent,
     ViagemComponent,
     ClienteComponent,
+    MotoristaViagensComponent,
   ],
   bootstrap: [AppComponent],
 })

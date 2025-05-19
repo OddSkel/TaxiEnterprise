@@ -191,7 +191,7 @@ exports.listarPedidos = async (req, res) => {
       return res.status(404).json({ message: "Motorista não encontrado." });
     }
 
-    const now = new Date(Date.now() + 3600000);
+    const now = new Date();
 
     const turnoAtivo = await Turno.findOne({
       motorista: id,
@@ -205,7 +205,7 @@ exports.listarPedidos = async (req, res) => {
         .json({ message: "Motorista não tem turno ativo." });
     }
 
-    const viagens = await Viagem.find({ estado: "pendente" })
+    const viagens = await Viagem.find()
       .populate("origem")
       .populate("destino")
       .populate("cliente");
@@ -239,12 +239,13 @@ exports.listarPedidos = async (req, res) => {
           coordenadas_destino: destino.coordenadas,
           distanciaKm: distancia.toFixed(2),
           estimativaMin: Math.ceil(tempoEstimado),
+          estado: viagem.estado,
         };
       })
       .filter((v) => v !== null)
       .sort((a, b) => a.distanciaKm - b.distanciaKm);
 
-    return res.status(200).json({ pedidos: viagensFiltradas });
+    return res.status(200).json(viagensFiltradas);
   } catch (err) {
     console.error("Erro ao listar pedidos:", err);
     return res
@@ -434,9 +435,12 @@ exports.startViagem = async (req, res) => {
     viagem.turno = turno._id;
     viagem.cliente = cliente._id;
     viagem.taxi = taxi._id;
-    viagem.inicio = new Date();
+    let now = new Date();
+    now.setHours(now.getHours() + 1);
+    viagem.inicio = now;
     viagem.num_pessoas = numCompanions;
     viagem.estado = "aceite";
+    viagem.fim = null;
 
     const lastViagem = await Viagem.find({ turno: turno._id })
       .sort({ seq: -1 })
@@ -456,7 +460,6 @@ exports.startViagem = async (req, res) => {
 exports.endViagem = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log("Viagem ID:", id);
 
     const viagem = await Viagem.findById(id)
       .populate("origem")
@@ -475,6 +478,7 @@ exports.endViagem = async (req, res) => {
     }
 
     const fim = new Date();
+    fim.setHours(fim.getHours() + 1);
 
     if (viagem.inicio >= fim) {
       return res.status(400).json({ message: "Hora de fim inválida." });
@@ -512,13 +516,13 @@ exports.endViagem = async (req, res) => {
         .json({ message: "Não foi possível calcular a distância." });
     }
 
-    const durationMinutes = Math.floor((viagem.fim - viagem.inicio) / 60000);
+    const durationMinutes = Math.floor((fim - viagem.inicio) / 60000);
 
     const baseRate = viagem.conforto === "LUXUOSO" ? 0.75 : 0.5;
     const nightExtra = viagem.conforto === "LUXUOSO" ? 0.5 : 0.2;
     const startHour = viagem.inicio.getHours();
 
-    const endHour = viagem.fim.getHours();
+    const endHour = fim.getHours();
 
     const isNight =
       startHour >= 21 || startHour < 6 || endHour >= 21 || endHour < 6;

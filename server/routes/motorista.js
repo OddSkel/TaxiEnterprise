@@ -31,10 +31,10 @@ router.post(
   viagem_controller.aceitarPedido
 );
 
-router.post("/:id/start", viagem_controller.startViagem);
+router.post("/detalhes/:id/start", viagem_controller.startViagem);
 
-router.get("/:id/end", viagem_controller.endViagem);
+router.post("/detalhes/:id/end", viagem_controller.endViagem);
 
-router.get("/:id/viagens", viagem_controller.listarViagensMotorista);
+router.get("/detalhes/:id/viagens", viagem_controller.listarViagensMotorista);
 
 module.exports = router;

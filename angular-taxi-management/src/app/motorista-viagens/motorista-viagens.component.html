@@ -1,0 +1,22 @@
+<h2>Viagens</h2>
+<p>DEBUG - Viagem is: {{ viagem | json }}</p>
+<div *ngIf="viagem">
+  <h2>Viagem: {{ viagem._id }}</h2>
+  <p>Estado: {{ viagem.estado }}</p>
+
+  <button
+    *ngIf="viagem.estado === 'pendente'"
+    (click)="iniciarViagem()"
+    class="btn btn-success"
+  >
+    Iniciar Viagem
+  </button>
+
+  <button
+    *ngIf="viagem.estado === 'aceite'"
+    (click)="terminarViagem()"
+    class="btn btn-danger"
+  >
+    Terminar Viagem
+  </button>
+</div>
