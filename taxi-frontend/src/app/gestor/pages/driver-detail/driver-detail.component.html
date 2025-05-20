@@ -1,0 +1,25 @@
+<div class="driver-detail-container" *ngIf="motorista">
+  <h2>Detalhes do Motorista</h2>
+
+  <div class="details-section">
+    <h3>Dados Pessoais</h3>
+    <p><strong>Nome:</strong> {{ motorista.pessoa.nome }}</p>
+    <p><strong>NIF:</strong> {{ motorista.pessoa.nif }}</p>
+    <p><strong>Género:</strong> {{ motorista.pessoa.genero | titlecase }}</p>
+    <p><strong>Ano de Nascimento:</strong> {{ motorista.anoNascimento }}</p>
+    <p><strong>Carta de Condução:</strong> {{ motorista.cartaConducao }}</p>
+  </div>
+
+  <div class="details-section">
+    <h3>Morada</h3>
+    <p><strong>Rua:</strong> {{ motorista.morada.rua }}</p>
+    <p><strong>Número da Porta:</strong> {{ motorista.morada.numPorta }}</p>
+    <p><strong>Código Postal:</strong> {{ motorista.morada.codigoPostal }}</p>
+    <p><strong>Localidade:</strong> {{ motorista.morada.localidade }}</p>
+  </div>
+
+  <div class="button-group">
+    <button (click)="goBack()">Voltar</button>
+    <button (click)="goToEditMotorista()">Editar</button>
+  </div>
+</div>

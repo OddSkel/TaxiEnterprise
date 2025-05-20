@@ -1,0 +1,20 @@
+import { Turno } from './turno';
+import { Client } from './cliente';
+import { Motorista } from './motorista';
+import { Taxi } from './taxi';
+import { Morada } from './morada';
+import { Conforto } from './conforto';
+
+export interface Viagem {
+  _id: string;
+  cliente: Client;
+  motorista: Motorista | undefined;
+  taxi: Taxi | undefined;
+  origem: Morada;
+  destino: Morada;
+  conforto: String;
+  num_pessoas: number;
+  estado: string;
+  seq: number | undefined;
+  turno: Turno | undefined;
+}

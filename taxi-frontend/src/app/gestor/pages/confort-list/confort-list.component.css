@@ -1,0 +1,76 @@
+.confort-list-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 1rem;
+  background-color: #fdfdfd;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.confort-list-container h2 {
+  text-align: center;
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.confort-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.confort-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #ffffff;
+  margin-bottom: 1rem;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+.confort-item:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.confort-info h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #222;
+}
+
+.confort-info p {
+  margin: 0.2rem 0;
+  color: #666;
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.actions button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.actions button:hover {
+  opacity: 0.9;
+}
+
+.actions button:first-child {
+  background-color: #007bff;
+  color: white;
+}
+
+.actions button.simulate {
+  background-color: #28a745;
+  color: white;
+}

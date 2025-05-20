@@ -1,0 +1,17 @@
+<div class="confort-list-container">
+  <h2>Lista de Confortos</h2>
+
+  <ul *ngIf="confortos.length > 0" class="confort-list">
+    <li *ngFor="let conforto of confortos" class="confort-item">
+      <div class="confort-info">
+        <h3>{{ conforto.name }}</h3>
+        <p>Preço: {{ conforto.preco }}</p>
+        <p>Acréscimo: {{ conforto.acrescimo }}</p>
+      </div>
+      <div class="actions">
+        <button (click)="goToEdit(conforto.name)">Editar</button>
+        <button class="simulate" (click)="goToSimulate(conforto.name)">Simular</button>
+      </div>
+    </li>
+  </ul>
+</div>

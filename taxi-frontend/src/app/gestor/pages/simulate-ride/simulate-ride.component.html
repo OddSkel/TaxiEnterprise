@@ -1,0 +1,87 @@
+<div class="simulate-ride-container">
+  <h2>Simular Viagem: {{conforto?.name}}</h2>
+
+  <form #simForm="ngForm" (ngSubmit)="
+    calculate(
+      +horaInicio.value, +minutoInicio.value,
+      +horaFim.value, +minutoFim.value,
+      conforto?.preco ?? 0,
+      conforto?.acrescimo ?? 0
+    )
+">
+
+    <fieldset>
+      <legend>Horário da Viagem</legend>
+
+      <div class="input-group">
+        <label for="horaInicio">Hora de Início</label>
+        <input
+          type="number"
+          id="horaInicio"
+          #horaInicio="ngModel"
+          name="horaInicio"
+          ngModel
+          required
+          min="0"
+          max="23"
+          placeholder="0-23"
+        />
+      </div>
+
+      <div class="input-group">
+        <label for="minutoInicio">Minuto de Início</label>
+        <input
+          type="number"
+          id="minutoInicio"
+          #minutoInicio="ngModel"
+          name="minutoInicio"
+          ngModel
+          required
+          min="0"
+          max="59"
+          placeholder="0-59"
+        />
+      </div>
+
+      <div class="input-group">
+        <label for="horaFim">Hora de Fim</label>
+        <input
+          type="number"
+          id="horaFim"
+          #horaFim="ngModel"
+          name="horaFim"
+          ngModel
+          required
+          min="0"
+          max="23"
+          placeholder="0-23"
+        />
+      </div>
+
+      <div class="input-group">
+        <label for="minutoFim">Minuto de Fim</label>
+        <input
+          type="number"
+          id="minutoFim"
+          #minutoFim="ngModel"
+          name="minutoFim"
+          ngModel
+          required
+          min="0"
+          max="59"
+          placeholder="0-59"
+        />
+      </div>
+    </fieldset>
+
+    <div class="form-actions">
+      <button type="submit" [disabled]="simForm.invalid">Calcular Preço</button>
+      <button type="button" class="secondary" (click)="goBack()">Voltar</button>
+    </div>
+  </form>
+
+  <div *ngIf="precoFinal > 0" class="resultado">
+    <h3>Preço Final Estimado:</h3>
+    <p><strong>€ {{ precoFinal.toFixed(2) }}</strong></p>
+  </div>
+</div>

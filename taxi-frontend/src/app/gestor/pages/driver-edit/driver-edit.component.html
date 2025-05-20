@@ -1,0 +1,106 @@
+<div class="register-driver-container">
+  <h2>Editar Motorista</h2>
+
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+
+  <form (ngSubmit)="save()" #form="ngForm" novalidate>
+    <fieldset>
+      <legend>Dados Pessoais</legend>
+
+      <label>
+        Nome:
+        <input type="text" [(ngModel)]="motorista.pessoa.nome" name="nome" required />
+      </label>
+
+      <label>
+        NIF:
+        <input
+          type="text"
+          [(ngModel)]="motorista.pessoa.nif"
+          name="nif"
+          required
+          (blur)="validateNif()"
+        />
+        <div *ngIf="fieldErrors['nif']" class="field-error">{{ fieldErrors['nif'] }}</div>
+      </label>
+
+      <label>
+        Género:
+        <select [(ngModel)]="motorista.pessoa.genero" name="genero" required>
+          <option value="" disabled>Selecione...</option>
+          <option value="masculino">Masculino</option>
+          <option value="feminino">Feminino</option>
+        </select>
+      </label>
+
+      <label>
+        Ano de Nascimento:
+        <input
+          type="number"
+          [(ngModel)]="motorista.anoNascimento"
+          name="anoNascimento"
+          required
+          (blur)="validateAnoNascimento()"
+        />
+        <div *ngIf="fieldErrors['anoNascimento']" class="field-error">
+          {{ fieldErrors['anoNascimento'] }}
+        </div>
+      </label>
+
+      <label>
+        Carta de Condução:
+        <input
+          type="text"
+          [(ngModel)]="motorista.cartaConducao"
+          name="cartaConducao"
+          required
+        />
+      </label>
+    </fieldset>
+
+    <fieldset>
+      <legend>Morada</legend>
+
+      <label>
+        Rua:
+        <input type="text" [(ngModel)]="motorista.morada.rua" name="rua" required />
+      </label>
+
+      <label>
+        Número da Porta:
+        <input type="text" [(ngModel)]="motorista.morada.numPorta" name="numPorta" required />
+      </label>
+
+      <label>
+        Código Postal:
+        <input
+          type="text"
+          [(ngModel)]="motorista.morada.codigoPostal"
+          name="codigoPostal"
+          required
+          (blur)="validateCodigoPostal(); onCodigoPostalChange()"
+        />
+        <div *ngIf="fieldErrors['codigoPostal']" class="field-error">
+          {{ fieldErrors['codigoPostal'] }}
+        </div>
+      </label>
+
+      <label>
+        Localidade:
+        <input
+          type="text"
+          [(ngModel)]="motorista.morada.localidade"
+          name="localidade"
+          readonly
+        />
+      </label>
+    </fieldset>
+
+    <div class="form-actions">
+      <button type="submit" [disabled]="!valid">Guardar</button>
+      <button type="button" class="secondary" (click)="goBack()">Cancelar</button>
+    </div>
+  </form>
+</div>

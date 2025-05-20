@@ -1,0 +1,99 @@
+<div class="edit-container">
+  <h2>Editar Táxi</h2>
+
+  <form (ngSubmit)="save()" *ngIf="taxi" novalidate>
+    <!-- Matrícula -->
+    <div class="form-group">
+      <label for="matricula">Matrícula</label>
+      <input
+        type="text"
+        id="matricula"
+        name="matricula"
+        [(ngModel)]="taxi.matricula"
+        (blur)="validateMatricula()"
+        [class.invalid]="fieldErrors['matricula']"
+        required
+      />
+      <div class="error" *ngIf="fieldErrors['matricula']">
+        {{ fieldErrors['matricula'] }}
+      </div>
+    </div>
+
+    <!-- Ano de Compra -->
+    <div class="form-group">
+      <label for="ano_compra">Ano de Compra</label>
+      <input
+        type="number"
+        id="ano_compra"
+        name="ano_compra"
+        [(ngModel)]="taxi.ano_compra"
+        (blur)="validateAnos()"
+        [class.invalid]="fieldErrors['ano_compra']"
+        required
+      />
+      <div class="error" *ngIf="fieldErrors['ano_compra']">
+        {{ fieldErrors['ano_compra'] }}
+      </div>
+    </div>
+
+    <!-- Marca -->
+    <div class="form-group">
+      <label for="marca">Marca</label>
+      <input
+        type="text"
+        id="marca"
+        name="marca"
+        [(ngModel)]="taxi.marca"
+        (blur)="validateMarca()"
+        [class.invalid]="fieldErrors['marca']"
+        required
+      />
+      <div class="error" *ngIf="fieldErrors['marca']">
+        {{ fieldErrors['marca'] }}
+      </div>
+    </div>
+
+    <!-- Modelo -->
+    <div class="form-group">
+      <label for="modelo">Modelo</label>
+      <input
+        type="text"
+        id="modelo"
+        name="modelo"
+        [(ngModel)]="taxi.modelo"
+        (blur)="validateModelo()"
+        [class.invalid]="fieldErrors['modelo']"
+        required
+      />
+      <div class="error" *ngIf="fieldErrors['modelo']">
+        {{ fieldErrors['modelo'] }}
+      </div>
+    </div>
+
+    <!-- Nível de Conforto -->
+    <div class="form-group">
+      <label for="nivel_conforto">Nível de Conforto</label>
+      <select
+        id="nivel_conforto"
+        name="nivel_conforto"
+        [(ngModel)]="taxi.nivel_conforto"
+        (blur)="validateConforto()"
+        [class.invalid]="fieldErrors['nivel_conforto']"
+        required
+      >
+        <option value="">Selecione...</option>
+        <option value="BASICO">BÁSICO</option>
+        <option value="LUXUOSO">LUXUOSO</option>
+      </select>
+      <div class="error" *ngIf="fieldErrors['nivel_conforto']">
+        {{ fieldErrors['nivel_conforto'] }}
+      </div>
+    </div>
+
+    <!-- Botões -->
+    <div class="button-group">
+      <button type="submit" [disabled]="!valid">Salvar</button>
+      <button type="button" class="secondary" (click)="goBack()">Cancelar</button>
+    </div>
+  </form>
+</div>

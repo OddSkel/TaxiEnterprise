@@ -1,0 +1,34 @@
+<div class="taxis-container">
+  <h2>Lista de Táxis</h2>
+
+  <div class="actions">
+    <button class="create-button" (click)="goToCreateTaxi()">
+      + Adicionar Táxi
+    </button>
+  </div>
+
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+
+  <div *ngIf="taxis.length === 0">
+    <p>Não há táxis disponíveis.</p>
+  </div>
+
+  <ul class="taxis-list">
+    <li *ngFor="let taxi of taxis" class="taxi-item">
+      <a [routerLink]="['/gestor/taxis', taxi._id]" class="taxi-link">
+        <div class="taxi-info">
+          <p><strong>Matrícula:</strong> {{ taxi.matricula }}</p>
+          <p><strong>Marca:</strong> {{ taxi.marca }}</p>
+        </div>
+      </a>
+      <button
+        class="delete-button"
+        (click)="delete(taxi); $event.stopPropagation();"
+      >
+        X
+      </button>
+    </li>
+  </ul>
+</div>

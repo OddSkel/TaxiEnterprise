@@ -1,0 +1,34 @@
+<div class="motoristas-container">
+  <h2>Lista de Motoristas</h2>
+
+  <div class="actions">
+    <button class="create-button" (click)="goToCreateMotorista()">
+      + Adicionar Motorista
+    </button>
+  </div>
+
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+
+  <div *ngIf="motoristas.length === 0">
+    <p>Não há motoristas disponíveis.</p>
+  </div>
+
+  <ul class="motoristas-list">
+    <li *ngFor="let motorista of motoristas" class="motorista-item">
+      <a [routerLink]="['/gestor/motoristas', motorista._id]" class="motorista-link">
+        <div class="motorista-info">
+          <p><strong>Nome:</strong> {{ motorista.pessoa.nome }}</p>
+          <p><strong>Nif:</strong> {{ motorista.pessoa.nif }}</p>
+        </div>
+      </a>
+      <button
+        class="delete-button"
+        (click)="delete(motorista); $event.stopPropagation();"
+      >
+        X
+      </button>
+    </li>
+  </ul>
+</div>

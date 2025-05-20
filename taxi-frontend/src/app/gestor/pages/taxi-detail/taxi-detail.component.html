@@ -1,0 +1,33 @@
+<div class="taxi-detail-container">
+  <h2>Detalhes do Táxi</h2>
+
+  <div class="field">
+    <label>Matrícula:</label>
+    <span>{{ taxi?.matricula }}</span>
+  </div>
+
+  <div class="field">
+    <label>Ano de Compra:</label>
+    <span>{{ taxi?.ano_compra }}</span>
+  </div>
+
+  <div class="field">
+    <label>Marca:</label>
+    <span>{{ taxi?.marca }}</span>
+  </div>
+
+  <div class="field">
+    <label>Modelo:</label>
+    <span>{{ taxi?.modelo }}</span>
+  </div>
+
+  <div class="field">
+    <label>Nível de Conforto:</label>
+    <span>{{ taxi?.nivel_conforto }}</span>
+  </div>
+
+  <div class="buttons">
+    <button class="btn btn-back" (click)="goBack()">Voltar</button>
+    <button class= "btn btn-edit" (click)="goToEditTaxi()">Editar</button>
+  </div>
+</div>
