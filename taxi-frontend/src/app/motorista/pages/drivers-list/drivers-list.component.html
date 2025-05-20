@@ -1,0 +1,29 @@
+<div class="container">
+  <h2>Lista de Motoristas</h2>
+
+  <div class="search-bar">
+    <input
+      type="text"
+      [(ngModel)]="filtroNif"
+      placeholder="Pesquisar por NIF"
+      aria-label="Pesquisar por NIF"
+    />
+    <button (click)="pesquisarPorNif()">Pesquisar</button>
+  </div>
+
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+
+  <ul class="motoristas-list" *ngIf="motoristas.length > 0">
+    <li *ngFor="let motorista of motoristas" class="motorista-item">
+      <a [routerLink]="['/motorista/motoristas', motorista._id]" class="motorista-link">
+        <div class="motorista-info">
+          <h3>{{ motorista.pessoa.nome }}</h3>
+          <p>NIF: {{ motorista.pessoa.nif }}</p>
+        </div>
+      </a>
+    </li>
+  </ul>
+</div>
+

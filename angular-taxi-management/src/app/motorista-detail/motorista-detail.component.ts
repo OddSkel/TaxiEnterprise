@@ -67,13 +67,13 @@ export class MotoristaDetailComponent implements OnInit {
 
     // Ensure start time is at least 1 hour in the future
     const now = new Date();
-    now.setHours(now.getHours() + 1);
+    now.setMinutes(now.getMinutes() + 1);
 
     const startIso = new Date(this.start).toISOString();
     const endIso = new Date(this.end).toISOString();
 
     if (new Date(this.start) < now) {
-      console.error('Start time must be at least 1 hour in the future.');
+      console.error('Start time must be at least 1 minute in the future.');
       return;
     }
 
@@ -108,9 +108,9 @@ export class MotoristaDetailComponent implements OnInit {
     const endTime = new Date(this.end);
 
     // Check if the start time is in the future (at least 1 hour from now)
-    now.setHours(now.getHours() + 1);
+    now.setMinutes(now.getMinutes() + 1);
     if (startTime < now) {
-      this.timeError = 'Start time must be at least 1 hour in the future.';
+      this.timeError = 'Start time must be at least 1 minute in the future.';
       return;
     }
 

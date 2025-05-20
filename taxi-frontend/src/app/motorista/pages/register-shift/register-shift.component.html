@@ -1,1 +1,34 @@
-<p>register-shift works!</p>
+<div class="register-shift-container" *ngIf="motorista">
+    <button class="back-button" (click)="goBack()">Voltar</button>
+    <h2>Registar Turno</h2>
+
+  <form (ngSubmit)="validateShiftTimes()" class="shift-form">
+    <div class="form-group">
+      <label for="start">Início do turno:</label>
+      <input type="datetime-local" id="start" [(ngModel)]="start" name="start" required />
+    </div>
+
+    <div class="form-group">
+      <label for="end">Fim do turno:</label>
+      <input type="datetime-local" id="end" [(ngModel)]="end" name="end" required />
+    </div>
+
+    <div class="error" *ngIf="timeError">{{ timeError }}</div>
+    <div class="error" *ngIf="overlapError">{{ overlapError }}</div>
+
+    <button type="submit" class="validate-button">Validar Turno</button>
+  </form>
+
+  <div *ngIf="shiftValidated" class="taxis-container">
+    <h3>Táxis disponíveis:</h3>
+    <div *ngIf="availableTaxis.length > 0; else noTaxis">
+      <div class="taxi-card" *ngFor="let taxi of availableTaxis">
+        <p><strong>Matrícula:</strong> {{ taxi.matricula }}</p>
+        <button (click)="requestTaxiForShift(taxi)">Escolher este táxi</button>
+      </div>
+    </div>
+    <ng-template #noTaxis>
+      <p class="info">Nenhum táxi disponível no momento.</p>
+    </ng-template>
+  </div>
+</div>

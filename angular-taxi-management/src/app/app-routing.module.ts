@@ -11,9 +11,9 @@ import { MotoristaDetailComponent } from './motorista-detail/motorista-detail.co
 import { MotoristaSearchComponent } from './motorista-search/motorista-search.component';
 import { ClienteComponent } from './cliente/cliente.component';
 import { ViagemComponent } from './viagem/viagem.component';
+import { MotoristaViagensComponent } from './motorista-viagens/motorista-viagens.component';
 
 const routes: Routes = [
-
   // Rotas para o Gestor (prefixo /gestor/)
   { path: 'gestor/taxis', component: TaxisComponent }, // Gerenciamento de taxis
   { path: 'gestor/dashboard', component: DashboardComponent }, // Dashboard
@@ -25,8 +25,12 @@ const routes: Routes = [
 
   // Rotas para o Motorista (prefixo /motorista/)
   { path: 'motorista/motoristas/search', component: MotoristaSearchComponent }, // Busca de motoristas
-  { path: 'motorista/turnos/motoristas/:id', component: MotoristaDetailComponent }, // Detalhes de turnos de motorista
+  {
+    path: 'motorista/turnos/motoristas/:id',
+    component: MotoristaDetailComponent,
+  }, // Detalhes de turnos de motorista
   { path: 'motorista/viagens/:id', component: ViagemComponent }, // Detalhes de turnos de motorista
+  { path: 'motorista/detalhes/:id', component: MotoristaViagensComponent }, //Detalhes da viagens do motorista
 
   // Rotas para o Cliente (prefixo /cliente/)
   { path: 'cliente', component: ClienteComponent }, // Rota para o Cliente onde ele pode pedir um táxi

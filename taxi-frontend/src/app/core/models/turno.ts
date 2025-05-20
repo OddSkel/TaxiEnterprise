@@ -7,4 +7,5 @@ export interface Turno {
   end: string;
   taxi: Taxi;
   motorista: Motorista;
+  isAtivo?: boolean;
 }

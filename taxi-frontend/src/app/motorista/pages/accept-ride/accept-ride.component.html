@@ -1,1 +1,19 @@
-<p>accept-ride works!</p>
+<div class="accept-ride-container">
+  <h2>Viagens Pendentes</h2>
+
+  <div *ngIf="viagensPendentes.length === 0" class="empty-msg">
+    Não há viagens pendentes disponíveis no momento.
+  </div>
+
+  <ul *ngIf="viagensPendentes.length > 0" class="viagens-lista">
+    <li *ngFor="let viagem of viagensPendentes" class="viagem-item">
+      <div class="info">
+        <p><strong>Passageiros:</strong> {{ viagem.num_pessoas}}</p>
+        <p><strong>Origem:</strong> {{ viagem.origem.rua }} + {{ viagem.origem.numPorta }}</p>
+        <p><strong>Destino:</strong> {{ viagem.destino.rua }} + {{ viagem.destino.numPorta }}</p>
+        <p><strong>Distância:</strong> {{ viagem.distanciaKm }} km</p>
+      </div>
+      <button (click)="aceitarViagem(viagem)" class="btn-aceitar">Aceitar</button>
+    </li>
+  </ul>
+</div>

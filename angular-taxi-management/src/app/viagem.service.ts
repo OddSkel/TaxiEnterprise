@@ -22,42 +22,42 @@ export class ViagemService {
   ) {}
 
   // Pedir uma nova viagem
-pedirViagem(viagem: any): Observable<Viagem> {
-  const url = `${this.clienteUrl}/pedirViagem`;
-  return this.http.post<Viagem>(url, viagem, this.httpOptions).pipe(
-    tap((v: Viagem) => this.log(`viagem pedida com id=${v._id}`)),
-    catchError(this.handleError<Viagem>('pedirViagem'))
-  );
-}
+  pedirViagem(viagem: any): Observable<Viagem> {
+    const url = `${this.clienteUrl}/pedirViagem`;
+    return this.http.post<Viagem>(url, viagem, this.httpOptions).pipe(
+      tap((v: Viagem) => this.log(`viagem pedida com id=${v._id}`)),
+      catchError(this.handleError<Viagem>('pedirViagem'))
+    );
+  }
 
-// Confirmar uma viagem
-confirmarViagem(clienteId: string, viagemId: string): Observable<Viagem> {
-  const url = `${this.clienteUrl}/${clienteId}/confirmar/${viagemId}`;
-  return this.http.post<Viagem>(url, {}, this.httpOptions).pipe(
-    tap((v: Viagem) => this.log(`viagem confirmada id=${v._id}`)),
-    catchError(this.handleError<Viagem>('confirmarViagem'))
-  );
-}
+  // Confirmar uma viagem
+  confirmarViagem(clienteId: string, viagemId: string): Observable<Viagem> {
+    const url = `${this.clienteUrl}/${clienteId}/confirmar/${viagemId}`;
+    return this.http.post<Viagem>(url, {}, this.httpOptions).pipe(
+      tap((v: Viagem) => this.log(`viagem confirmada id=${v._id}`)),
+      catchError(this.handleError<Viagem>('confirmarViagem'))
+    );
+  }
 
-// Rejeitar uma viagem
-rejeitarViagem(clienteId: string, viagemId: string): Observable<Viagem> {
-  const url = `${this.clienteUrl}/${clienteId}/rejeitar/${viagemId}`;
-  return this.http.post<Viagem>(url, {}, this.httpOptions).pipe(
-    tap((v: Viagem) => this.log(`viagem rejeitada id=${v._id}`)),
-    catchError(this.handleError<Viagem>('rejeitarViagem'))
-  );
-}
-
+  // Rejeitar uma viagem
+  rejeitarViagem(clienteId: string, viagemId: string): Observable<Viagem> {
+    const url = `${this.clienteUrl}/${clienteId}/rejeitar/${viagemId}`;
+    return this.http.post<Viagem>(url, {}, this.httpOptions).pipe(
+      tap((v: Viagem) => this.log(`viagem rejeitada id=${v._id}`)),
+      catchError(this.handleError<Viagem>('rejeitarViagem'))
+    );
+  }
 
   // Obter viagens pendentes próximas para o motorista
   getViagensPendentes(motoristaId: string): Observable<Viagem[]> {
     const url = `${this.viagemUrl}/${motoristaId}/viagens-pendentes`;
     return this.http.get<Viagem[]>(url).pipe(
-        tap((_) => this.log(`fetched pedidos pendentes do motorista ${motoristaId}`)),
-        catchError(this.handleError<Viagem[]>('getPedidosPendentes', []))
+      tap((_) =>
+        this.log(`fetched pedidos pendentes do motorista ${motoristaId}`)
+      ),
+      catchError(this.handleError<Viagem[]>('getPedidosPendentes', []))
     );
   }
-
 
   // Aceitar pedido de viagem
   aceitarViagem(motoristaId: string, viagemId: string): Observable<Viagem> {
@@ -65,6 +65,30 @@ rejeitarViagem(clienteId: string, viagemId: string): Observable<Viagem> {
     return this.http.post<Viagem>(url, {}, this.httpOptions).pipe(
       tap((_) => this.log(`Pedido aceite para viagem ${viagemId}`)),
       catchError(this.handleError<Viagem>('aceitarPedido'))
+    );
+  }
+
+  inicioViagem(viagemId: string, data: any): Observable<Viagem> {
+    const url = `${this.viagemUrl}/detalhes/${viagemId}/start`;
+    return this.http.post<Viagem>(url, data).pipe(
+      tap((_) => this.log(`Pedido iniciado pelo motorista ${viagemId}`)),
+      catchError(this.handleError<Viagem>('inicioViagem'))
+    );
+  }
+
+  fimViagem(viagemId: string): Observable<Viagem> {
+    const url = `${this.viagemUrl}/detalhes/${viagemId}/end`;
+    return this.http.post<Viagem>(url, {}).pipe(
+      tap((_) => this.log(`Pedido terminado pelo motorista ${viagemId}`)),
+      catchError(this.handleError<Viagem>('inicioViagem'))
+    );
+  }
+
+  getViagensByMotorista(viagemId: string): Observable<Viagem[]> {
+    const url = `${this.viagemUrl}/detalhes/${viagemId}/viagens`;
+    return this.http.get<Viagem[]>(url).pipe(
+      tap((_) => this.log(`Pedido terminado pelo motorista ${viagemId}`)),
+      catchError(this.handleError<Viagem[]>('inicioViagem'))
     );
   }
 

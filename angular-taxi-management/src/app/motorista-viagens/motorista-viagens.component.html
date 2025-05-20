@@ -1,0 +1,41 @@
+<h2>Viagens Pendentes</h2>
+<div *ngIf="viagensPendentes.length > 0; else noPendentes">
+  <div *ngFor="let viagem of viagensPendentes" class="card mb-3 p-3 border">
+    <button (click)="iniciarViagem(viagem)" class="btn btn-success">
+      Iniciar Viagem
+    </button>
+  </div>
+</div>
+<ng-template #noPendentes>
+  <p>Sem viagens pendentes.</p>
+</ng-template>
+
+<hr />
+
+<h2>Viagens Concluídas ou Aceites</h2>
+<div *ngIf="viagens.length > 0; else noViagens">
+  <div *ngFor="let viagem of viagens" class="card mb-3 p-3 border">
+    <button
+      *ngIf="viagem.estado === 'aceite'"
+      (click)="terminarViagem(viagem)"
+      class="btn btn-danger"
+    >
+      Terminar Viagem
+    </button>
+
+    <div *ngIf="viagem.estado === 'concluída'">
+      <p>Viagem número: {{ viagem.seq }}</p>
+      <p>
+        <strong>Distância percorrida:</strong>
+        {{ viagem.quilometros | number : "1.2-2" }} km
+      </p>
+      <p>
+        <strong>Pagamento total:</strong>
+        {{ viagem.custo_total | number : "1.2-2" }} €
+      </p>
+    </div>
+  </div>
+</div>
+<ng-template #noViagens>
+  <p>Sem viagens registadas.</p>
+</ng-template>

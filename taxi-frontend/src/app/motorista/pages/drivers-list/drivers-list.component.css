@@ -1,0 +1,134 @@
+.container {
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: 1.5rem 2rem;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.07);
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 1.8rem;
+  color: #222;
+  font-weight: 700;
+  font-size: 1.9rem;
+}
+
+.search-bar {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.search-bar input[type="text"] {
+  flex: 1;
+  padding: 0.6rem 1rem;
+  font-size: 1rem;
+  border: 1.5px solid #bbb;
+  border-radius: 6px;
+  transition: border-color 0.3s ease;
+}
+
+.search-bar input[type="text"]:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 6px rgba(0,123,255,0.4);
+}
+
+.search-bar button {
+  padding: 0.6rem 1.4rem;
+  font-size: 1rem;
+  background-color: #007bff;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0,123,255,0.4);
+}
+
+.search-bar button:hover,
+.search-bar button:focus {
+  background-color: #0056b3;
+  outline: none;
+  box-shadow: 0 4px 12px rgba(0,86,179,0.6);
+}
+
+.error-message {
+  margin-bottom: 1.5rem;
+  padding: 0.75rem 1rem;
+  background-color: #f8d7da;
+  color: #721c24;
+  border-radius: 6px;
+  border: 1px solid #f5c6cb;
+  font-weight: 600;
+  text-align: center;
+}
+
+.motoristas-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.motorista-item {
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  transition: background-color 0.3s ease;
+}
+
+.motorista-item:hover,
+.motorista-item:focus-within {
+  background-color: #e6f0ff;
+}
+
+.motorista-link {
+  display: flex;
+  text-decoration: none;
+  color: #222;
+  padding: 1rem 1.2rem;
+  border-radius: 8px;
+  align-items: center;
+  transition: color 0.3s ease;
+}
+
+.motorista-link:hover,
+.motorista-link:focus {
+  color: #007bff;
+  outline: none;
+}
+
+.motorista-info h3 {
+  margin: 0 0 0.3rem 0;
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+
+.motorista-info p {
+  margin: 0;
+  color: #555;
+  font-size: 1rem;
+  line-height: 1.3;
+}
+
+/* Responsividade */
+
+@media (max-width: 480px) {
+  .container {
+    padding: 1rem 1.2rem;
+    margin: 1rem;
+  }
+
+  .search-bar {
+    flex-direction: column;
+  }
+
+  .search-bar button {
+    width: 100%;
+  }
+}

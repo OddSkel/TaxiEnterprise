@@ -1,0 +1,129 @@
+.driver-detail-container {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 1.5rem 2rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: #fff;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #222;
+  font-weight: 700;
+  font-size: 1.8rem;
+}
+
+.details-section {
+  margin-bottom: 1.5rem;
+}
+
+.details-section h3 {
+  border-bottom: 2px solid #007bff;
+  padding-bottom: 0.4rem;
+  color: #007bff;
+  margin-bottom: 0.8rem;
+  font-weight: 600;
+  font-size: 1.2rem;
+}
+
+.details-section p {
+  font-size: 1rem;
+  margin: 0.4rem 0;
+  color: #333;
+  line-height: 1.4;
+}
+
+.button-group {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+}
+
+button {
+  padding: 0.65rem 1.5rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0,123,255,0.4);
+}
+
+button:hover,
+button:focus {
+  background-color: #0056b3;
+  outline: none;
+  box-shadow: 0 4px 12px rgba(0,86,179,0.6);
+}
+
+.turnos-section {
+  margin-top: 2.5rem;
+}
+
+.turnos-lista {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.turno-card {
+  background-color: #f9f9f9;
+  border-left: 6px solid #ccc;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, border-left-color 0.3s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.turnos-lista li.ativo .turno-card {
+  border-left-color: #28a745; /* verde */
+  background-color: #e6f7e6;
+  box-shadow: 0 2px 8px rgba(40,167,69,0.3);
+}
+
+.ativo-label {
+  color: #28a745;
+  font-weight: 700;
+  margin-top: 0.5rem;
+  display: inline-block;
+}
+
+.agendado-label {
+  color: #949799;
+  font-weight: 700;
+  margin-top: 0.5rem;
+  display: inline-block;
+}
+
+.sem-turnos {
+  margin-top: 2rem;
+  font-style: italic;
+  color: #888;
+  text-align: center;
+}
+
+/* Responsividade */
+@media (max-width: 480px) {
+  .driver-detail-container {
+    padding: 1rem 1.2rem;
+    margin: 1rem;
+  }
+  
+  .button-group {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  button {
+    width: 100%;
+  }
+}

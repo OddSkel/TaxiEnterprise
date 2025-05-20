@@ -1,5 +1,8 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 
 import { ClienteRoutingModule } from './cliente-routing.module';
 import { ClienteComponent } from './cliente.component';
@@ -17,7 +20,10 @@ import { WaitingDriverComponent } from './pages/waiting-driver/waiting-driver.co
   ],
   imports: [
     CommonModule,
-    ClienteRoutingModule
+    ClienteRoutingModule,
+    FormsModule,
+    HttpClientModule,
+    RouterModule
   ]
 })
 export class ClienteModule { }

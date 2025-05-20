@@ -1,6 +1,6 @@
 import { Pessoa } from "./pessoa";
 
-export interface Client {
+export interface Cliente {
     _id: string;
     pessoa: Pessoa;
 }

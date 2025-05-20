@@ -50,9 +50,13 @@ rejeitarViagem(clienteId: string, viagemId: string): Observable<Viagem> {
 
 
   // Obter viagens pendentes próximas para o motorista
-  getViagensPendentes(motoristaId: string): Observable<Viagem[]> {
+  getViagensPendentes(motoristaId: string, lat: number, lon: number): Observable<Viagem[]> {
+    const params = {
+      lat: lat.toString(),
+      lon: lon.toString(),
+    };
     const url = `${this.baseUrlMotorista}/${motoristaId}/viagens-pendentes`;
-    return this.http.get<Viagem[]>(url).pipe(
+    return this.http.get<Viagem[]>(url, { params }).pipe(
         tap((_) => this.log(`fetched pedidos pendentes do motorista ${motoristaId}`)),
         catchError(this.handleError<Viagem[]>('getPedidosPendentes', []))
     );
