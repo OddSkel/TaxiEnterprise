@@ -8,26 +8,44 @@ import { HttpClient } from '@angular/common/http';
 @Component({
   selector: 'app-cliente',
   templateUrl: './cliente.component.html',
-  styleUrls: ['./cliente.component.css']
+  styleUrls: ['./cliente.component.css'],
 })
 export class ClienteComponent implements OnInit {
   cliente: Client = {
     pessoa: { nome: '', nif: '', genero: '', _id: '' },
-    _id: ''
+    _id: '',
   };
 
   novaViagem: Viagem = {
     cliente: this.cliente,
     origem: {
-      _id: '', rua: '', numPorta: '', codigoPostal: '', localidade: '',
-      coordenadas: { latitude: 0, longitude: 0 }
+      _id: '',
+      rua: '',
+      numPorta: '',
+      codigoPostal: '',
+      localidade: '',
+      coordenadas: { latitude: 0, longitude: 0 },
     },
     destino: {
-      _id: '', rua: '', numPorta: '', codigoPostal: '', localidade: '',
-      coordenadas: { latitude: 0, longitude: 0 }
+      _id: '',
+      rua: '',
+      numPorta: '',
+      codigoPostal: '',
+      localidade: '',
+      coordenadas: { latitude: 0, longitude: 0 },
     },
-    conforto: '', num_pessoas: 1, _id: '', motorista: undefined,
-    taxi: undefined, estado: '', seq: undefined, turno: undefined
+    conforto: '',
+    num_pessoas: 1,
+    _id: '',
+    motorista: undefined,
+    taxi: undefined,
+    estado: '',
+    seq: undefined,
+    turno: undefined,
+    custo_total: 0,
+    quilometros: 0,
+    inicio: new Date(),
+    fim: new Date(),
   };
 
   origem: string = '';
@@ -53,47 +71,50 @@ export class ClienteComponent implements OnInit {
   initMap(): void {
     this.map = L.map('map').setView([38.736946, -9.142685], 12);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: 'Leaflet © OpenStreetMap contributors'
+      attribution: 'Leaflet © OpenStreetMap contributors',
     }).addTo(this.map);
 
     this.map.on('click', (e: any) => {
       const latLon = e.latlng;
       this.destino = `${latLon.lat}, ${latLon.lng}`;
-      this.novaViagem.destino.coordenadas = { latitude: latLon.lat, longitude: latLon.lng };
+      this.novaViagem.destino.coordenadas = {
+        latitude: latLon.lat,
+        longitude: latLon.lng,
+      };
       this.marcarDestinoNoMapa(latLon);
     });
   }
 
-  marcarDestinoNoMapa(coords: { lat: number, lon: number }): void {
-    console.log("Coordenadas na função marcarDestinoNoMapa:", coords);
-    
+  marcarDestinoNoMapa(coords: { lat: number; lon: number }): void {
+    console.log('Coordenadas na função marcarDestinoNoMapa:', coords);
+
     // Verificar se as coordenadas são válidas
     if (isNaN(coords.lat) || isNaN(coords.lon)) {
-      alert("Coordenadas inválidas.");
+      alert('Coordenadas inválidas.');
       return;
     }
 
     // Criar e adicionar o marcador no mapa
     const marcador = L.marker([coords.lat, coords.lon]).addTo(this.map);
-    
+
     // Adicionar o marcador de destino à lista para poder removê-lo depois
-    this.markers.push(marcador); 
-    
+    this.markers.push(marcador);
+
     // Centralizar o mapa no destino com zoom fixo
     this.map.setView([coords.lat, coords.lon], 13);
   }
 
-  marcarOrigemNoMapa(coords: { lat: number, lon: number }) {
-    console.log("Coordenadas na função marcarOrigemNoMapa:", coords);
+  marcarOrigemNoMapa(coords: { lat: number; lon: number }) {
+    console.log('Coordenadas na função marcarOrigemNoMapa:', coords);
 
     // Verificar se as coordenadas são válidas
     if (isNaN(coords.lat) || isNaN(coords.lon)) {
-      alert("Coordenadas inválidas.");
+      alert('Coordenadas inválidas.');
       return;
     }
 
     // Remover os marcadores antigos antes de adicionar o novo marcador de origem
-    this.removerMarcadores(); 
+    this.removerMarcadores();
 
     // Criar e adicionar o marcador de origem no mapa
     const marcadorOrigem = L.marker([coords.lat, coords.lon]).addTo(this.map);
@@ -108,10 +129,10 @@ export class ClienteComponent implements OnInit {
   // Função para remover todos os marcadores do mapa
   removerMarcadores(): void {
     // Iterar sobre todos os marcadores e removê-los do mapa
-    this.markers.forEach(marker => {
+    this.markers.forEach((marker) => {
       this.map.removeLayer(marker);
     });
-    
+
     // Limpar a lista de marcadores
     this.markers = [];
   }
@@ -127,19 +148,21 @@ export class ClienteComponent implements OnInit {
         this.marcarOrigemNoMapa({ lat, lon });
       });
     } else {
-      alert("Geolocalização não suportada.");
+      alert('Geolocalização não suportada.');
     }
   }
 
   async geocodificarEndereco(endereco: string): Promise<{
-    lat: number,
-    lon: number,
-    rua: string,
-    numPorta: string,
-    codigoPostal: string,
-    localidade: string
+    lat: number;
+    lon: number;
+    rua: string;
+    numPorta: string;
+    codigoPostal: string;
+    localidade: string;
   } | null> {
-    const url = `https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&q=${encodeURIComponent(endereco)}`;
+    const url = `https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&q=${encodeURIComponent(
+      endereco
+    )}`;
     try {
       const resposta: any = await this.http.get(url).toPromise();
       if (resposta.length > 0) {
@@ -151,15 +174,14 @@ export class ClienteComponent implements OnInit {
           rua: address.road || '',
           numPorta: address.house_number || '',
           codigoPostal: address.postcode || '',
-          localidade: address.city || address.town || address.village || ''
+          localidade: address.city || address.town || address.village || '',
         };
       }
     } catch {
-      alert("Erro ao converter endereço.");
+      alert('Erro ao converter endereço.');
     }
     return null;
   }
-
 
   async obterEnderecoPorCoordenadas(latitude: number, longitude: number) {
     const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`;
@@ -171,14 +193,14 @@ export class ClienteComponent implements OnInit {
         rua: data.address.road || '',
         numPorta: data.address.house_number || '',
         codigoPostal: data.address.postcode || '',
-        localidade: data.address.city || data.address.town || data.address.village || '',
+        localidade:
+          data.address.city || data.address.town || data.address.village || '',
       };
     } catch (error) {
       console.error('Erro ao obter endereço pelas coordenadas:', error);
       return null;
     }
   }
-
 
   async pedirViagem(): Promise<void> {
     let origemCoords, destinoCoords;
@@ -190,29 +212,29 @@ export class ClienteComponent implements OnInit {
     if (/^-?\d+(\.\d+)?\s*,\s*-?\d+(\.\d+)?$/.test(this.origem.trim())) {
       const [lat, lon] = this.origem.split(',').map(Number);
       if (isNaN(lat) || isNaN(lon)) {
-        alert("Coordenadas de origem inválidas.");
+        alert('Coordenadas de origem inválidas.');
         return;
       }
       origemCoords = { latitude: lat, longitude: lon };
       const endereco = await this.obterEnderecoPorCoordenadas(lat, lon);
-      if (!endereco) return; 
+      if (!endereco) return;
       this.novaViagem.origem = {
         _id: '',
         rua: endereco.rua,
         numPorta: endereco.numPorta,
         codigoPostal: endereco.codigoPostal,
         localidade: endereco.localidade,
-        coordenadas: origemCoords
+        coordenadas: origemCoords,
       };
       this.marcarOrigemNoMapa({ lat, lon });
     } else {
       const coords = await this.geocodificarEndereco(this.origem);
       if (!coords || isNaN(Number(coords.lat)) || isNaN(Number(coords.lon))) {
-        alert("Falha ao obter coordenadas válidas da origem.");
+        alert('Falha ao obter coordenadas válidas da origem.');
         return;
       }
 
-      console.log("Coordenadas geocodificadas da origem:", coords);
+      console.log('Coordenadas geocodificadas da origem:', coords);
 
       if (!coords) return;
       origemCoords = { latitude: coords.lat, longitude: coords.lon };
@@ -222,7 +244,7 @@ export class ClienteComponent implements OnInit {
         numPorta: '',
         codigoPostal: '',
         localidade: coords.localidade,
-        coordenadas: origemCoords
+        coordenadas: origemCoords,
       };
       this.marcarOrigemNoMapa({ lat: coords.lat, lon: coords.lon });
     }
@@ -231,7 +253,7 @@ export class ClienteComponent implements OnInit {
     if (/^-?\d+(\.\d+)?\s*,\s*-?\d+(\.\d+)?$/.test(this.destino.trim())) {
       const [lat, lon] = this.destino.split(',').map(Number);
       if (isNaN(lat) || isNaN(lon)) {
-        alert("Coordenadas de destino inválidas.");
+        alert('Coordenadas de destino inválidas.');
         return;
       }
       destinoCoords = { latitude: lat, longitude: lon };
@@ -245,18 +267,18 @@ export class ClienteComponent implements OnInit {
         numPorta: endereco.numPorta,
         codigoPostal: endereco.codigoPostal,
         localidade: endereco.localidade,
-        coordenadas: destinoCoords
+        coordenadas: destinoCoords,
       };
 
       this.marcarDestinoNoMapa({ lat, lon });
     } else {
       const coords = await this.geocodificarEndereco(this.destino);
       if (!coords || isNaN(Number(coords.lat)) || isNaN(Number(coords.lon))) {
-        alert("Falha ao obter coordenadas válidas do destino.");
+        alert('Falha ao obter coordenadas válidas do destino.');
         return;
       }
 
-      console.log("Coordenadas geocodificadas da origem:", coords);
+      console.log('Coordenadas geocodificadas da origem:', coords);
 
       if (!coords) return;
       destinoCoords = { latitude: coords.lat, longitude: coords.lon };
@@ -266,7 +288,7 @@ export class ClienteComponent implements OnInit {
         numPorta: '',
         codigoPostal: '',
         localidade: coords.localidade,
-        coordenadas: destinoCoords
+        coordenadas: destinoCoords,
       };
       this.marcarDestinoNoMapa({ lat: coords.lat, lon: coords.lon });
     }
@@ -278,12 +300,12 @@ export class ClienteComponent implements OnInit {
       cliente: {
         nome: this.cliente.pessoa.nome,
         nif: this.cliente.pessoa.nif,
-        genero: this.cliente.pessoa.genero
+        genero: this.cliente.pessoa.genero,
       },
       origem: this.novaViagem.origem,
       destino: this.novaViagem.destino,
       conforto: this.conforto,
-      num_pessoas: this.numPessoas
+      num_pessoas: this.numPessoas,
     };
 
     console.log('JSON a ser enviado:', JSON.stringify(viagem, null, 2));
@@ -294,10 +316,9 @@ export class ClienteComponent implements OnInit {
         this.viagemConfirmada = false;
         this.motoristaResposta = null;
       },
-      error: () => alert('Erro ao pedir viagem.')
+      error: () => alert('Erro ao pedir viagem.'),
     });
   }
-
 
   aceitarViagem(): void {
     if (!this.motoristaResposta) return alert('Sem dados do motorista.');
@@ -307,7 +328,7 @@ export class ClienteComponent implements OnInit {
         this.viagemConfirmada = true;
         alert('Viagem confirmada!');
       },
-      error: () => alert('Erro ao confirmar viagem.')
+      error: () => alert('Erro ao confirmar viagem.'),
     });
   }
 
@@ -316,7 +337,7 @@ export class ClienteComponent implements OnInit {
     const { motoristaId, viagemId } = this.motoristaResposta;
     this.viagemService.rejeitarViagem(motoristaId, viagemId).subscribe({
       next: () => alert('Viagem rejeitada!'),
-      error: () => alert('Erro ao rejeitar viagem.')
+      error: () => alert('Erro ao rejeitar viagem.'),
     });
   }
 

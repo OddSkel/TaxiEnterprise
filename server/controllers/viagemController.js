@@ -6,6 +6,7 @@ const Motorista = require("../models/motorista");
 const Pessoa = require("../models/pessoa");
 const Conforto = require("../models/conforto");
 const Taxi = require("../models/taxi");
+const turno = require("../models/turno");
 
 exports.pedirViagem = async (req, res) => {
   try {
@@ -205,7 +206,7 @@ exports.listarPedidos = async (req, res) => {
         .json({ message: "Motorista não tem turno ativo." });
     }
 
-    const viagens = await Viagem.find()
+    const viagens = await Viagem.find({ estado: "pendente" })
       .populate("origem")
       .populate("destino")
       .populate("cliente");
@@ -232,7 +233,10 @@ exports.listarPedidos = async (req, res) => {
         return {
           _id: viagem._id,
           cliente: viagem.cliente,
-          nr_pessoas: viagem.nr_pessoas,
+          motorista: viagem.motorista,
+          taxi: viagem.taxi,
+          turno: turnoAtivo,
+          nr_pessoas: viagem.num_pessoas,
           origem: origem.endereco,
           coordenadas_origem: origem.coordenadas,
           destino: destino.endereco,
@@ -407,7 +411,7 @@ exports.clienteRejeitar = async (req, res) => {
 exports.startViagem = async (req, res) => {
   try {
     const { id } = req.params;
-    const { motoristaId, turnoId, taxiId, clienteId, numCompanions } = req.body;
+    const { turnoId, clienteId, numCompanions } = req.body;
 
     const viagem = await Viagem.findById(id);
     if (!viagem) {
@@ -415,11 +419,11 @@ exports.startViagem = async (req, res) => {
     }
 
     const turno = await Turno.findById(turnoId);
-    const taxi = await Taxi.findById(taxiId);
-    const motorista = await Motorista.findById(motoristaId);
+    console.log("Turno:", turno);
     const cliente = await Cliente.findById(clienteId);
+    console.log("Cliente:", cliente);
 
-    if (!turno || !taxi || !motorista || !cliente) {
+    if (!turno || !cliente) {
       return res
         .status(400)
         .json({ message: "Turno, táxi ou motorista inválido." });
@@ -431,16 +435,16 @@ exports.startViagem = async (req, res) => {
       });
     }
 
-    viagem.motorista = motorista._id;
     viagem.turno = turno._id;
     viagem.cliente = cliente._id;
-    viagem.taxi = taxi._id;
     let now = new Date();
     now.setHours(now.getHours() + 1);
     viagem.inicio = now;
     viagem.num_pessoas = numCompanions;
     viagem.estado = "aceite";
     viagem.fim = null;
+    viagem.motorista = turno.motorista;
+    viagem.taxi = turno.taxi;
 
     const lastViagem = await Viagem.find({ turno: turno._id })
       .sort({ seq: -1 })
@@ -450,7 +454,7 @@ exports.startViagem = async (req, res) => {
 
     await viagem.save();
 
-    res.status(200).json({ message: "Viagem iniciada com sucesso.", viagem });
+    res.status(200).json(viagem);
   } catch (error) {
     console.error("Erro ao iniciar a viagem:", error);
     res.status(500).json({ message: "Erro interno ao iniciar a viagem." });
@@ -465,7 +469,8 @@ exports.endViagem = async (req, res) => {
       .populate("origem")
       .populate("destino")
       .populate("turno")
-      .populate("taxi");
+      .populate("taxi")
+      .populate("motorista");
 
     if (!viagem) {
       return res.status(404).json({ message: "Viagem não encontrada." });
@@ -502,6 +507,19 @@ exports.endViagem = async (req, res) => {
         .status(400)
         .json({ message: "O motorista já tem outra viagem nesse período." });
     }
+    if (!viagem.origem?.coordenadas || !viagem.destino?.coordenadas) {
+      return res.status(400).json({
+        message: "Origem ou destino não possuem coordenadas válidas.",
+      });
+    }
+    if (
+      !viagem.origem?.coordenadas?.latitude ||
+      !viagem.destino?.coordenadas?.latitude
+    ) {
+      return res.status(400).json({
+        message: "Origem ou destino inválidos ou sem coordenadas.",
+      });
+    }
 
     const km = calcularDistancia(
       viagem.origem.coordenadas.latitude,
@@ -537,7 +555,7 @@ exports.endViagem = async (req, res) => {
 
     await viagem.save();
 
-    res.status(200).json({ message: "Viagem concluída com sucesso.", viagem });
+    res.status(200).json(viagem);
   } catch (error) {
     console.error("Erro ao concluir a viagem:", error);
     res.status(500).json({ message: "Erro interno ao concluir a viagem." });
@@ -546,8 +564,14 @@ exports.endViagem = async (req, res) => {
 
 exports.listarViagensMotorista = async (req, res) => {
   const { id } = req.params;
+  console.log("Motorista ID:", id);
   const viagens = await Viagem.find({ motorista: id, estado: "concluída" })
     .sort({ inicio: -1 })
-    .populate("cliente origem destino");
+    .populate("cliente")
+    .populate("origem")
+    .populate("destino")
+    .populate("motorista")
+    .populate("taxi")
+    .populate("turno");
   res.json(viagens);
 };

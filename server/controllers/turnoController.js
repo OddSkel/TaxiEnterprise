@@ -37,7 +37,7 @@ exports.requestTaxiforShift = async (req, res) => {
         .json({ error: "Shift can't be for more than 8 hours!" });
     }
     let now = new Date();
-    now.setHours(now.getHours() + 1);
+    now.setMinutes(now.getMinutes() + 1);
 
     if (startTime < now) {
       return res.status(400).json({ error: "Shift can't begin in the past!" });

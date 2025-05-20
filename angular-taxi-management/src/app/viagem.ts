@@ -17,4 +17,8 @@ export interface Viagem {
   estado: string;
   seq: number | undefined;
   turno: Turno | undefined;
+  custo_total: number | undefined;
+  quilometros: number | undefined;
+  inicio: Date | undefined;
+  fim: Date | undefined;
 }

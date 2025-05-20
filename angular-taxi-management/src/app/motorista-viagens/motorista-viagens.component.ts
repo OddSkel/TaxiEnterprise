@@ -10,6 +10,8 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class MotoristaViagensComponent {
   viagem: Viagem | null = null;
+  viagens: Viagem[] = [];
+  viagensPendentes: Viagem[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -17,46 +19,92 @@ export class MotoristaViagensComponent {
   ) {}
 
   ngOnInit(): void {
-    console.log('MotoristaViagensComponent initialized');
     const id = this.route.snapshot.paramMap.get('id');
-    console.log('Route param ID:', id);
     if (id) {
-      this.viagemService.getViagensPendentes(id).subscribe({
-        next: (data) => {
-          console.log('Viagens pendentes:', data);
-          this.viagem = data[0] ?? null;
-        },
-        error: (err) => console.error('Erro ao carregar viagem:', err),
-      });
+      this.getViagens();
+      this.getViagensPendentes();
     }
   }
 
-  iniciarViagem() {
-    if (!this.viagem) return;
+  iniciarViagem(viagem: Viagem) {
+    console.log('iniciarViagem triggered!');
+    if (!viagem) {
+      console.log('here');
+      return;
+    }
+
+    const clienteId = viagem.cliente._id;
+    const numCompanions = viagem.num_pessoas ?? 1;
+    const turnoId = viagem.turno?._id;
+    console.log(clienteId);
+    console.log(turnoId);
+
+    if (!clienteId || !turnoId) {
+      alert('Dados incompletos para iniciar a viagem.');
+      return;
+    }
+    console.log('PAssou!');
     const body = {
-      motoristaId: this.viagem.motorista,
-      turnoId: this.viagem.turno,
-      taxiId: this.viagem.taxi,
-      clienteId: this.viagem.cliente,
-      numCompanions: this.viagem.num_pessoas ?? 1,
+      turnoId,
+      clienteId,
+      numCompanions,
     };
-    this.viagemService.inicioViagem(this.viagem._id, body).subscribe({
-      next: (v) => {
-        alert('Viagem iniciada!');
-        this.viagem!.estado = v.estado;
+    console.log('body ', body);
+
+    this.viagemService.inicioViagem(viagem._id, body).subscribe({
+      next: (updatedViagem) => {
+        // Update local reference
+        Object.assign(viagem, updatedViagem);
+
+        // Remove from pendentes
+        this.viagensPendentes = this.viagensPendentes.filter(
+          (v) => v._id !== viagem._id
+        );
+
+        // Add to main viagens array
+        this.viagens.push(viagem);
+        this.sortViagens(this.viagens);
       },
-      error: (err) => console.error('Erro ao iniciar viagem:', err),
+      error: (err) => console.error(err),
     });
   }
 
-  terminarViagem() {
-    if (!this.viagem) return;
-    this.viagemService.fimViagem(this.viagem._id).subscribe({
-      next: (v) => {
-        alert('Viagem concluída!');
-        this.viagem!.estado = v.estado;
+  terminarViagem(viagem: Viagem) {
+    if (!viagem) return;
+    this.viagemService.fimViagem(viagem._id).subscribe({
+      next: (updatedViagem) => {
+        Object.assign(viagem, updatedViagem);
       },
-      error: (err) => console.error('Erro ao terminar viagem:', err),
+      error: (err) => console.error(err),
+    });
+  }
+
+  sortViagens(viagens: Viagem[]) {
+    viagens.sort(
+      (a, b) => new Date(b.inicio!).getTime() - new Date(a.inicio!).getTime()
+    );
+  }
+
+  getViagens() {
+    const motoristaId = this.route.snapshot.paramMap.get('id');
+    if (!motoristaId) return;
+    this.viagemService.getViagensByMotorista(motoristaId).subscribe({
+      next: (data) => {
+        this.viagens = data;
+        this.sortViagens(this.viagens);
+      },
+      error: (err) => console.error('Erro ao carregar viagens:', err),
+    });
+  }
+  getViagensPendentes() {
+    const id = this.route.snapshot.paramMap.get('id');
+    if (!id) return;
+    this.viagemService.getViagensPendentes(id).subscribe({
+      next: (data) => {
+        this.viagensPendentes = data;
+        this.sortViagens(this.viagensPendentes);
+      },
+      error: (err) => console.error('Erro ao carregar viagem:', err),
     });
   }
 }
