@@ -13,6 +13,8 @@ import { Router } from '@angular/router';
   styleUrls: ['./request-ride.component.css']
 })
 export class RequestRideComponent {
+  viagemPedida:Viagem | undefined;
+
   cliente: Cliente = {
     pessoa: { nome: '', nif: '', genero: '', _id: '' },
     _id: ''
@@ -186,7 +188,44 @@ export class RequestRideComponent {
   }
 
   async pedirViagem(): Promise<void> {
+    this.errorMessage = ''; // Limpa mensagens anteriores
     let origemCoords, destinoCoords;
+
+    // Verificações adicionais
+    if (!this.cliente.pessoa.nome || this.cliente.pessoa.nome.trim() === '') {
+      this.errorMessage = 'O campo nome é obrigatório.';
+      return;
+    }
+
+    if (!this.cliente.pessoa.nif || this.cliente.pessoa.nif.trim() === '') {
+      this.errorMessage = 'O campo NIF é obrigatório.';
+      return;
+    }
+
+    if (!this.cliente.pessoa.genero || this.cliente.pessoa.genero.trim() === '') {
+      this.errorMessage = 'O campo genero é obrigatório.';
+      return;
+    }
+
+    if (!this.origem || this.origem.trim() === '') {
+      this.errorMessage = 'O campo origem é obrigatório.';
+      return;
+    }
+
+    if (!this.destino || this.destino.trim() === '') {
+      this.errorMessage = 'O campo destino é obrigatório.';
+      return;
+    }
+
+    if (!this.conforto || this.conforto.trim() === '') {
+      this.errorMessage = 'O campo conforto é obrigatório.';
+      return;
+    }
+
+    if (!this.numPessoas || this.numPessoas < 1 || this.numPessoas > 6) {
+      this.errorMessage = 'O número de pessoas deve ser entre 1 e 6.';
+      return;
+    }
 
     console.log(this.origem);
     console.log(this.destino);
@@ -200,7 +239,10 @@ export class RequestRideComponent {
       }
       origemCoords = { latitude: lat, longitude: lng };
       const endereco = await this.obterEnderecoPorCoordenadas(lat, lng);
-      if (!endereco) return;
+      if (!endereco) {
+        this.errorMessage = "Erro ao obter endereço a partir da origem.";
+        return;
+      }
       this.novaViagem.origem = {
         _id: '',
         rua: endereco.rua,
@@ -241,7 +283,10 @@ export class RequestRideComponent {
       destinoCoords = { latitude: lat, longitude: lng };
 
       const endereco = await this.obterEnderecoPorCoordenadas(lat, lng);
-      if (!endereco) return;
+      if (!endereco) {
+        this.errorMessage = "Erro ao obter endereço a partir do destino.";
+        return;
+      }
 
       this.novaViagem.destino = {
         _id: '',
@@ -274,6 +319,8 @@ export class RequestRideComponent {
       this.marcarDestinoNoMapa({ lat: coords.lat, lng: coords.lng });
     }
 
+   
+
     this.novaViagem.origem.coordenadas = origemCoords;
     this.novaViagem.destino.coordenadas = destinoCoords;
 
@@ -293,10 +340,12 @@ export class RequestRideComponent {
 
     this.viagemService.pedirViagem(viagem).subscribe({
       next: (viagem) => {
-        this.router.navigate(['/cliente/cliente', viagem._id, 'waiting' ]);
+        this.viagemPedida = viagem;
+        this.errorMessage = '';
+        this.router.navigate(['/motorista/motoristas/', this.viagemPedida._id, 'waiting']);
       },
       error: (error) => {
-        alert("Erro ao pedir viagem.");
+        this.errorMessage = "Erro ao pedir viagem.";
         console.error(error);
       }
     });

@@ -1,6 +1,11 @@
 <div class="container">
   <h2>Pedir Viagem</h2>
 
+  <!-- Mensagem de erro -->
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+
   <form (ngSubmit)="pedirViagem()" class="viagem-form">
     <h3>Dados do Cliente</h3>
     <label>

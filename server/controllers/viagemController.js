@@ -143,9 +143,9 @@ exports.pedirViagem = async (req, res) => {
     });
 
     await viagem.save();
+    console.log("Viagem criada com sucesso:", viagem);
 
     res.status(201).json({ message: "Viagem criada com sucesso!", viagem });
-    return viagem;
   } catch (error) {
     console.error("Erro ao pedir viagem:", error);
     res.status(500).json({
