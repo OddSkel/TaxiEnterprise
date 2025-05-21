@@ -21,15 +21,33 @@ export class RequestRideComponent {
   novaViagem: Viagem = {
     cliente: this.cliente,
     origem: {
-      _id: '', rua: '', numPorta: '', codigoPostal: '', localidade: '',
-      coordenadas: { latitude: 0, longitude: 0 }
+      _id: '',
+      rua: '',
+      numPorta: '',
+      codigoPostal: '',
+      localidade: '',
+      coordenadas: { latitude: 0, longitude: 0 },
     },
     destino: {
-      _id: '', rua: '', numPorta: '', codigoPostal: '', localidade: '',
-      coordenadas: { latitude: 0, longitude: 0 }
+      _id: '',
+      rua: '',
+      numPorta: '',
+      codigoPostal: '',
+      localidade: '',
+      coordenadas: { latitude: 0, longitude: 0 },
     },
-    conforto: '', num_pessoas: 1, _id: '', motorista: undefined,
-    taxi: undefined, estado: '', seq: undefined, turno: undefined
+    conforto: '',
+    num_pessoas: 1,
+    _id: '',
+    motorista: undefined,
+    taxi: undefined,
+    estado: '',
+    seq: undefined,
+    turno: undefined,
+    custo_total: 0,
+    quilometros: 0,
+    inicio: new Date(),
+    fim: new Date(),
   };
 
   origem: string = '';
@@ -44,6 +62,8 @@ export class RequestRideComponent {
 
   viagemConfirmada = false;
   motoristaResposta: any = null;
+
+  errorMessage: string = '';
 
   constructor(
     private viagemService: ViagemService, 
@@ -73,7 +93,7 @@ export class RequestRideComponent {
     console.log("Coordenadas na função marcarDestinoNoMapa:", coords);
 
     if (isNaN(coords.lat) || isNaN(coords.lng)) {
-      alert("Coordenadas inválidas.");
+      this.errorMessage = "Coordenadas Destino inválidas.";
       return;
     }
 
@@ -90,7 +110,7 @@ export class RequestRideComponent {
     console.log("Coordenadas na função marcarOrigemNoMapa:", coords);
 
     if (isNaN(coords.lat) || isNaN(coords.lng)) {
-      alert("Coordenadas inválidas.");
+      this.errorMessage = "Coordenadas Origem inválidas.";
       return;
     }
 
@@ -175,7 +195,7 @@ export class RequestRideComponent {
     if (/^-?\d+(\.\d+)?\s*,\s*-?\d+(\.\d+)?$/.test(this.origem.trim())) {
       const [lat, lng] = this.origem.split(',').map(Number);
       if (isNaN(lat) || isNaN(lng)) {
-        alert("Coordenadas de origem inválidas.");
+        this.errorMessage = "Coordenadas Origem inválidas.";
         return;
       }
       origemCoords = { latitude: lat, longitude: lng };
@@ -193,7 +213,7 @@ export class RequestRideComponent {
     } else {
       const coords = await this.geocodificarEndereco(this.origem);
       if (!coords || isNaN(Number(coords.lat)) || isNaN(Number(coords.lng))) {
-        alert("Falha ao obter coordenadas válidas da origem.");
+        this.errorMessage = "Falha a geocodificar origem.";
         return;
       }
 
@@ -215,7 +235,7 @@ export class RequestRideComponent {
     if (/^-?\d+(\.\d+)?\s*,\s*-?\d+(\.\d+)?$/.test(this.destino.trim())) {
       const [lat, lng] = this.destino.split(',').map(Number);
       if (isNaN(lat) || isNaN(lng)) {
-        alert("Coordenadas de destino inválidas.");
+        this.errorMessage = "Coordenadas Destino inválidas.";
         return;
       }
       destinoCoords = { latitude: lat, longitude: lng };
@@ -236,7 +256,7 @@ export class RequestRideComponent {
     } else {
       const coords = await this.geocodificarEndereco(this.destino);
       if (!coords || isNaN(Number(coords.lat)) || isNaN(Number(coords.lng))) {
-        alert("Falha ao obter coordenadas válidas do destino.");
+        this.errorMessage = "Falha a geocodificar destino.";
         return;
       }
 

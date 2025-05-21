@@ -3,7 +3,6 @@ import { Client } from './cliente';
 import { Motorista } from './motorista';
 import { Taxi } from './taxi';
 import { Morada } from './morada';
-import { Conforto } from './conforto';
 
 export interface Viagem {
   _id: string;

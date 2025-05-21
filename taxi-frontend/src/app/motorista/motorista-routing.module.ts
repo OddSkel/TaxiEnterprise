@@ -17,8 +17,8 @@ const routes: Routes = [
         { path: 'motoristas', component: DriversListComponent },
         { path: 'motoristas/:id', component: DriverDetailComponent },
         { path: 'motoristas/:id/newShift', component: RegisterShiftComponent },
-        { path: 'motoristas/:id/acceptRide', component: AcceptRideComponent },
-        { path: 'motoristas/:id/newRide', component: RegisterRideComponent },
+        { path: 'motoristas/:id/pendingRides', component: AcceptRideComponent },
+        { path: 'motoristas/:id/registeredRides', component: RegisterRideComponent },
       ]
     }
 ];

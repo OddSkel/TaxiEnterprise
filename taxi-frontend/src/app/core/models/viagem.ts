@@ -3,7 +3,6 @@ import { Cliente } from './cliente';
 import { Motorista } from './motorista';
 import { Taxi } from './taxi';
 import { Morada } from './morada';
-import { Conforto } from './conforto';
 
 export interface Viagem {
   _id: string;
@@ -12,12 +11,14 @@ export interface Viagem {
   taxi: Taxi | undefined;
   origem: Morada;
   destino: Morada;
-  conforto: string;
+  conforto: String;
   num_pessoas: number;
   estado: string;
   seq: number | undefined;
   turno: Turno | undefined;
-  distanciaKm?: number;
-  aguardandoConfirmacao?: boolean;
+  custo_total: number | undefined;
+  quilometros: number | undefined;
+  inicio: Date | undefined;
+  fim: Date | undefined;
+  distanciaKm?: number
 }
-

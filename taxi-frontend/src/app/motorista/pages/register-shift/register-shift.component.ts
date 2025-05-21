@@ -69,8 +69,8 @@ export class RegisterShiftComponent {
       return;
     }
 
-    // Ensure start time is at least 1 hour in the future
     const now = new Date();
+    now.setMinutes(now.getMinutes() + 1);
 
     const startIso = new Date(this.start).toISOString();
     const endIso = new Date(this.end).toISOString();
@@ -90,6 +90,7 @@ export class RegisterShiftComponent {
         next: (turnos) => {
           console.log('Shifts returned:', turnos);
           this.allShifts = turnos;
+          this.location.back();
         },
         error: (err) => {
           console.error('Error from backend:', err); // Log the error
@@ -107,6 +108,8 @@ export class RegisterShiftComponent {
 
   validateShiftTimes(): void {
     const now = new Date();
+    now.setMinutes(now.getMinutes() + 1);
+
     const startTime = new Date(this.start);
     const endTime = new Date(this.end);
 

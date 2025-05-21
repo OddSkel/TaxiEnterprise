@@ -15,8 +15,6 @@ const ViagemSchema = new Schema({
     type: String,
     enum: ["pendente", "aceite", "concluída", "cancelada"],
     default: "pendente",
-    enum: ["pendente", "aceite", "concluída", "cancelada"],
-    default: "pendente",
   },
   seq: { type: Number },
   turno: { type: Schema.Types.ObjectId, ref: "Turno" },

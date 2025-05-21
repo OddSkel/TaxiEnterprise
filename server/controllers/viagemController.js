@@ -140,13 +140,12 @@ exports.pedirViagem = async (req, res) => {
       conforto,
       num_pessoas,
       estado: "pendente",
-      motorista: null,
-      taxi: null,
     });
 
     await viagem.save();
 
     res.status(201).json({ message: "Viagem criada com sucesso!", viagem });
+    return viagem;
   } catch (error) {
     console.error("Erro ao pedir viagem:", error);
     res.status(500).json({
@@ -211,45 +210,7 @@ exports.listarPedidos = async (req, res) => {
       .populate("destino")
       .populate("cliente");
 
-    const viagensFiltradas = viagens
-      .map((viagem) => {
-        const origem = viagem.origem;
-        const destino = viagem.destino;
-
-        if (!origem?.coordenadas || !destino?.coordenadas) return null;
-
-        const distancia = calcularDistancia(
-          lat,
-          lon,
-          origem.coordenadas.latitude,
-          origem.coordenadas.longitude
-        );
-
-        const tempoRestanteMin = (new Date(turnoAtivo.end) - now) / 60000;
-        const tempoEstimado = (distancia / 40) * 60;
-
-        if (tempoEstimado > tempoRestanteMin) return null;
-
-        return {
-          _id: viagem._id,
-          cliente: viagem.cliente,
-          motorista: viagem.motorista,
-          taxi: viagem.taxi,
-          turno: turnoAtivo,
-          nr_pessoas: viagem.num_pessoas,
-          origem: origem.endereco,
-          coordenadas_origem: origem.coordenadas,
-          destino: destino.endereco,
-          coordenadas_destino: destino.coordenadas,
-          distanciaKm: distancia.toFixed(2),
-          estimativaMin: Math.ceil(tempoEstimado),
-          estado: viagem.estado,
-        };
-      })
-      .filter((v) => v !== null)
-      .sort((a, b) => a.distanciaKm - b.distanciaKm);
-
-    return res.status(200).json(viagensFiltradas);
+    return res.status(200).json(viagens);
   } catch (err) {
     console.error("Erro ao listar pedidos:", err);
     return res
@@ -284,7 +245,7 @@ exports.aceitarPedido = async (req, res) => {
         .json({ message: "A viagem já foi aceite por outro motorista." });
     }
 
-    const now = new Date(Date.now() + 3600000);
+    const now = new Date();
 
     // Verificar se o motorista tem um turno ativo
     const turnoAtivo = await Turno.findOne({
@@ -303,6 +264,7 @@ exports.aceitarPedido = async (req, res) => {
     viagem.motorista = motoristaId;
     viagem.turno = turnoAtivo._id; // Guarda o ID do turno
     viagem.seq = await gerarSeqViagem(turnoAtivo); // Gere o seq se necessário
+    viagem.estado = "aceite";
 
     // Salvar a viagem
     await viagem.save();

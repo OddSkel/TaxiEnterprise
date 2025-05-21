@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Location } from '@angular/common';
 
 import { Viagem } from 'src/app/core/models/viagem';
 import { ViagemService } from 'src/app/core/services/viagem.service';
@@ -25,7 +26,8 @@ export class AcceptRideComponent {
   constructor(
     private viagensService: ViagemService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private location: Location
   ) {}
 
   ngOnInit(): void {
@@ -56,6 +58,8 @@ export class AcceptRideComponent {
     const { latitude, longitude } = this.posicaoAtual ?? this.FCUL_COORDS;
 
     this.viagensService.getViagensPendentes(this.motoristaId, latitude, longitude).subscribe((viagens) => {
+      console.log('Viagens recebidas:', viagens);
+
       this.viagensPendentes = viagens
         .map(viagem => {
           if (viagem.origem?.coordenadas) {
@@ -65,8 +69,6 @@ export class AcceptRideComponent {
               viagem.origem.coordenadas.latitude,
               viagem.origem.coordenadas.longitude
             );
-          } else {
-            viagem.distanciaKm = Infinity;
           }
           return viagem;
         })
@@ -78,7 +80,11 @@ export class AcceptRideComponent {
     if (!this.motoristaId || !viagem._id) return;
 
     this.viagensService.aceitarViagem(this.motoristaId, viagem._id).subscribe({
-      next: () => this.getViagensPendentes(),
+      next: () => {
+        console.log('Viagem aceita com sucesso.');
+        this.getViagensPendentes();
+        this.router.navigate([`/motorista/motoristas/${this.motoristaId}/registeredRides`]);        
+      },
       error: (err) => console.error('Erro ao aceitar viagem:', err)
     });
   }
@@ -97,5 +103,9 @@ export class AcceptRideComponent {
 
   toRad(value: number): number {
     return value * Math.PI / 180;
+  }
+
+  goBack(): void {
+    this.location.back();
   }
 }

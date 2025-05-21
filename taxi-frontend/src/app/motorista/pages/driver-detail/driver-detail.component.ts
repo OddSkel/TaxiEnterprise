@@ -66,10 +66,10 @@ export class DriverDetailComponent {
   }
 
   goToAcceptRide(): void {
-    this.router.navigate(['/motorista/motoristas', this.motorista?._id, 'acceptRide']);
+    this.router.navigate(['/motorista/motoristas', this.motorista?._id, 'pendingRides']);
   }
 
   goToRegisterRide(): void {
-    this.router.navigate(['/motorista/motoristas', this.motorista?._id, 'newRide']);
+    this.router.navigate(['/motorista/motoristas', this.motorista?._id, 'registeredRides']);
   }
 }
