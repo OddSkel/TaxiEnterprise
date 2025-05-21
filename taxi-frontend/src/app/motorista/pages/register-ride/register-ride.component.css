@@ -1,36 +1,36 @@
 .area-motorista {
   max-width: 900px;
   margin: 30px auto;
-  padding: 20px 25px;
+  padding: 30px 35px;
   background: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: #333;
 }
 
 .titulo {
   font-size: 2rem;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
   text-align: center;
   color: #2c3e50;
 }
 
-.btn-voltar {
-  display: block;
-  margin: 0 auto 30px;
-  padding: 8px 20px;
-  background-color: #3498db;
-  border: none;
-  border-radius: 20px;
-  color: white;
+.back-button {
+  background-color: #bdc3c7;
+  color: #2c3e50;
   font-weight: 600;
+  border: none;
+  border-radius: 30px;
+  padding: 10px 24px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  margin-bottom: 25px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-.btn-voltar:hover {
-  background-color: #2980b9;
+.back-button:hover {
+  background-color: #95a5a6;
+  transform: scale(1.05);
 }
 
 .secao-viagens {
@@ -44,7 +44,7 @@
   margin-bottom: 15px;
   color: #34495e;
   border-bottom: 1px solid #ddd;
-  padding-bottom: 5px;
+  padding-bottom: 6px;
 }
 
 .lista-viagens {
@@ -55,13 +55,13 @@
 
 .viagem {
   background-color: white;
-  padding: 15px 20px;
-  margin-bottom: 12px;
-  border-radius: 6px;
-  box-shadow: 0 1px 4px rgb(0 0 0 / 0.1);
+  padding: 18px 22px;
+  margin-bottom: 14px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 }
 
 .viagem .descricao {
@@ -71,35 +71,35 @@
 }
 
 .viagem .estado {
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   color: #666;
 }
 
 .viagem-aceite {
-  border-left: 5px solid #27ae60; /* verde */
+  border-left: 6px solid #27ae60;
 }
 
 .viagem-ativa {
-  border-left: 5px solid #f39c12; /* laranja */
+  border-left: 6px solid #f39c12;
 }
 
 .viagem-concluida {
-  border-left: 5px solid #7f8c8d; /* cinza */
+  border-left: 6px solid #7f8c8d;
 }
 
 .acoes {
-  margin-top: 10px;
+  margin-top: 12px;
   display: flex;
   gap: 10px;
 }
 
 .btn {
-  padding: 7px 18px;
+  padding: 8px 22px;
   border: none;
-  border-radius: 18px;
+  border-radius: 20px;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease;
   color: white;
   user-select: none;
 }
@@ -110,6 +110,7 @@
 
 .btn.iniciar:hover {
   background-color: #219150;
+  transform: scale(1.05);
 }
 
 .btn.terminar {
@@ -118,20 +119,37 @@
 
 .btn.terminar:hover {
   background-color: #992d22;
+  transform: scale(1.05);
 }
 
-/* Responsividade simples */
+/* Responsivo */
 @media (max-width: 600px) {
   .area-motorista {
-    padding: 15px 10px;
+    padding: 20px 15px;
   }
+
   .titulo {
     font-size: 1.6rem;
   }
+
   .secao-viagens h2 {
     font-size: 1.3rem;
   }
+
   .viagem {
-    padding: 12px 15px;
+    padding: 14px 16px;
+  }
+
+  .acoes {
+    flex-direction: column;
+  }
+
+  .btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .btn-voltar {
+    width: 100%;
   }
 }

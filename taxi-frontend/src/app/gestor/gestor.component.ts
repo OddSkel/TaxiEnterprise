@@ -8,9 +8,10 @@ import { Router } from '@angular/router';
 })
 export class GestorComponent {
 
-  constructor(private router: Router) {}
-
-  goTo(route: string) {
-    this.router.navigate([route]);
+  constructor(
+    private router: Router
+  ) { }
+  goHome() {
+    this.router.navigate(['/']);
   }
 }

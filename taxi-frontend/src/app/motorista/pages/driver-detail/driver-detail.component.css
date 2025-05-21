@@ -1,91 +1,98 @@
 .driver-detail-container {
-  max-width: 900px;
-  margin: 30px auto;
-  padding: 25px 30px;
-  background: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
+  max-width: 750px;
+  margin: 50px auto;
+  padding: 35px 40px;
+  background-color: #fff;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  color: #333;
-}
-
-.driver-detail-container .back-button {
-  display: inline-block;
-  margin-bottom: 25px;
-  padding: 8px 20px;
-  background-color: #3498db;
-  border: none;
-  border-radius: 20px;
-  color: white;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.driver-detail-container .back-button:hover {
-  background-color: #2980b9;
+  color: #2c3e50;
 }
 
 .driver-detail-container h2 {
-  font-size: 1.5rem;
-  margin-bottom: 20px;
-  color: #34495e;
-  border-bottom: 1px solid #ddd;
-  padding-bottom: 5px;
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 30px;
 }
 
 .details-section {
-  background: white;
-  padding: 18px 22px;
-  border-radius: 6px;
-  box-shadow: 0 1px 5px rgb(0 0 0 / 0.1);
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 }
 
 .details-section h3 {
-  margin-top: 0;
-  color: #2c3e50;
-  border-bottom: 1px solid #ccc;
-  padding-bottom: 6px;
-  margin-bottom: 12px;
-  font-size: 1.2rem;
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 15px;
+  color: #34495e;
+  border-bottom: 2px solid #ccc;
+  padding-bottom: 5px;
 }
 
 .details-section p {
-  margin: 6px 0;
   font-size: 1rem;
+  margin: 6px 0;
+}
+
+.details-section strong {
+  font-weight: 600;
+}
+
+.back-button {
+  background-color: #bdc3c7;
   color: #2c3e50;
+  font-weight: 600;
+  border: none;
+  border-radius: 30px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  margin-bottom: 20px;
+}
+
+.back-button:hover {
+  background-color: #95a5a6;
+  transform: scale(1.05);
 }
 
 .button-group {
   display: flex;
-  gap: 15px;
-  margin-bottom: 30px;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 35px 0;
 }
 
 .button-group button {
   flex: 1;
-  padding: 10px 0;
-  background-color: #27ae60;
+  min-width: 160px;
+  padding: 14px 20px;
+  font-weight: 700;
+  font-size: 1rem;
+  border-radius: 30px;
   border: none;
-  border-radius: 20px;
-  color: white;
-  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-  user-select: none;
+  background-color: #3498db;
+  color: #fff;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .button-group button:hover {
-  background-color: #219150;
+  background-color: #2980b9;
+  transform: scale(1.05);
+}
+
+.turnos-section {
+  margin-top: 40px;
 }
 
 .turnos-section h3 {
   font-size: 1.3rem;
-  margin-bottom: 15px;
+  font-weight: 600;
+  margin-bottom: 20px;
   color: #34495e;
-  border-bottom: 1px solid #ddd;
-  padding-bottom: 6px;
+  border-bottom: 2px solid #ccc;
+  padding-bottom: 5px;
 }
 
 .turnos-lista {
@@ -94,65 +101,53 @@
   margin: 0;
 }
 
-.turnos-lista li {
-  background: white;
-  border-radius: 6px;
-  box-shadow: 0 1px 5px rgb(0 0 0 / 0.1);
-  padding: 15px 20px;
-  margin-bottom: 12px;
+.turno-card {
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.1);
+  transition: background-color 0.3s ease;
 }
 
-.turnos-lista li.ativo {
-  border-left: 6px solid #27ae60;
+.turnos-lista li.ativo .turno-card {
+  border-left: 6px solid #2ecc71;
 }
 
 .turno-card p {
-  margin: 5px 0;
-  font-size: 1rem;
-  color: #2c3e50;
+  margin: 6px 0;
 }
 
 .ativo-label {
-  color: #27ae60;
-  font-weight: 700;
-  margin-top: 8px;
+  color: #2ecc71;
+  font-weight: 600;
 }
 
 .agendado-label {
-  color: #7f8c8d;
-  font-style: italic;
-  margin-top: 8px;
+  color: #f39c12;
+  font-weight: 600;
 }
 
 .sem-turnos {
   text-align: center;
-  font-style: italic;
+  margin-top: 30px;
+  font-weight: 500;
   color: #7f8c8d;
-  padding: 25px 10px;
-  font-size: 1rem;
 }
 
-/* Responsividade simples */
-@media (max-width: 600px) {
+/* Responsivo */
+@media (max-width: 720px) {
   .driver-detail-container {
-    padding: 20px 15px;
+    padding: 20px;
+    margin: 20px;
   }
-  .driver-detail-container h2 {
-    font-size: 1.3rem;
-  }
-  .details-section {
-    padding: 15px 18px;
-  }
-  .details-section h3 {
-    font-size: 1.1rem;
-  }
+
   .button-group {
     flex-direction: column;
+    gap: 12px;
   }
+
   .button-group button {
     width: 100%;
-  }
-  .turnos-lista li {
-    padding: 12px 15px;
   }
 }

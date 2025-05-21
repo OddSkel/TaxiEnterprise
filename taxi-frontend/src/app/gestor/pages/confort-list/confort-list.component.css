@@ -1,17 +1,33 @@
 .confort-list-container {
-  max-width: 800px;
-  margin: 2rem auto;
-  padding: 1rem;
-  background-color: #fdfdfd;
-  border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  max-width: 900px;
+  margin: 60px auto;
+  padding: 30px 40px;
+  background-color: #fff;
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.07);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .confort-list-container h2 {
   text-align: center;
-  font-size: 1.8rem;
-  margin-bottom: 1.5rem;
-  color: #333;
+  font-size: 2rem;
+  color: #2c3e50;
+  margin-bottom: 30px;
+}
+
+.back-button {
+  background-color: transparent;
+  border: none;
+  color: #3498db;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-bottom: 20px;
+  transition: color 0.3s ease;
+}
+
+.back-button:hover {
+  color: #1a73e8;
 }
 
 .confort-list {
@@ -24,53 +40,68 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #ffffff;
-  margin-bottom: 1rem;
-  padding: 1rem 1.5rem;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  transition: box-shadow 0.2s ease-in-out;
+  padding: 18px 20px;
+  border-bottom: 1px solid #e1e4e8;
+  transition: background-color 0.2s ease;
 }
 
 .confort-item:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  background-color: #f9fafd;
 }
 
 .confort-info h3 {
-  margin: 0;
+  margin: 0 0 6px 0;
+  color: #34495e;
   font-size: 1.2rem;
-  color: #222;
 }
 
 .confort-info p {
-  margin: 0.2rem 0;
-  color: #666;
-}
-
-.actions {
-  display: flex;
-  gap: 0.5rem;
+  margin: 2px 0;
+  color: #596069;
+  font-size: 0.95rem;
 }
 
 .actions button {
-  padding: 0.5rem 1rem;
+  background-color: #2c3e50;
+  color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: 30px;
+  padding: 8px 18px;
+  font-size: 0.95rem;
+  font-weight: 600;
   cursor: pointer;
-  font-weight: 500;
-  transition: background-color 0.2s ease-in-out;
+  margin-left: 12px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .actions button:hover {
-  opacity: 0.9;
+  background-color: #1a252f;
+  transform: scale(1.05);
 }
 
-.actions button:first-child {
-  background-color: #007bff;
-  color: white;
+.actions .simulate {
+  background-color: #3498db;
 }
 
-.actions button.simulate {
-  background-color: #28a745;
-  color: white;
+.actions .simulate:hover {
+  background-color: #1f78c1;
+}
+
+/* Responsivo */
+@media (max-width: 600px) {
+  .confort-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .actions {
+    margin-top: 12px;
+  }
+
+  .actions button {
+    margin-left: 0;
+    margin-right: 12px;
+    padding: 10px 20px;
+    width: 100%;
+  }
 }

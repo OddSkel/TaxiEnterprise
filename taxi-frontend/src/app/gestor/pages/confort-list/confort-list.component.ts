@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { Location } from '@angular/common';
 
 import { Conforto } from 'src/app/core/models/conforto';
 import { ConfortoService } from 'src/app/core/services/conforto.service';
@@ -14,7 +15,8 @@ export class ConfortListComponent {
 
   constructor(
     private confortoService: ConfortoService,
-    private router: Router
+    private router: Router,
+    private location: Location
   ) {}
 
   ngOnInit(): void {

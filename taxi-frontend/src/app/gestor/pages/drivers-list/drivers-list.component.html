@@ -19,8 +19,8 @@
     <li *ngFor="let motorista of motoristas" class="motorista-item">
       <a [routerLink]="['/gestor/motoristas', motorista._id]" class="motorista-link">
         <div class="motorista-info">
-          <p><strong>Nome:</strong> {{ motorista.pessoa.nome }}</p>
-          <p><strong>Nif:</strong> {{ motorista.pessoa.nif }}</p>
+          <h3>{{ motorista.pessoa.nome }}</h3>
+          <p>NIF: {{ motorista.pessoa.nif }}</p>
         </div>
       </a>
       <button

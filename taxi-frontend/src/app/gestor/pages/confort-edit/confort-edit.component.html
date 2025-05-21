@@ -1,37 +1,45 @@
 <div *ngIf="conforto" class="edit-conforto-wrapper">
   <h2>Editar Conforto: <span class="conforto-nome">{{ conforto.name }}</span></h2>
 
-  <form #confortoForm="ngForm" (ngSubmit)="save()">
-    <div class="form-group">
-      <label for="preco">Preço por minuto (€)</label>
-      <input
-        id="preco"
-        name="preco"
-        type="number"
-        [(ngModel)]="conforto.preco"
-        required
-        min="0.01"
-        #precoModel="ngModel"
-        placeholder="Insira o preço por minuto"
-      />
-      <div *ngIf="precoModel.invalid && precoModel.touched" class="field-error">
-        O preço deve ser um número positivo (mínimo: 0.01).
-      </div>
-    </div>
+  <form #confortoForm="ngForm" (ngSubmit)="save()" novalidate>
+      <label for="preco">
+        Preço por minuto (€)
+        <input
+          id="preco"
+          name="preco"
+          type="number"
+          [(ngModel)]="conforto.preco"
+          required
+          min="0.01"
+          #precoModel="ngModel"
+          placeholder="Insira o preço por minuto"
+        />
+        <div *ngIf="precoModel.invalid && precoModel.touched" class="field-error">
+          O preço deve ser um número positivo (mínimo: 0.01).
+        </div>
+      </label>
 
-    <div class="form-group">
-      <label for="acrescimo">Acréscimo período (%)</label>
-      <input
-        id="acrescimo"
-        name="acrescimo"
-        type="number"
-        [(ngModel)]="conforto.acrescimo"
-        required
-        min="0"
-        max="100"
-        #acrescimoModel="ngModel"
-        placeholder="Insira o acréscimo percentual"
-      />
-      <div *ngIf="acrescimoModel.invalid && acrescimoModel.touched" class="field-error">
-        O acréscimo deve estar entre 0% e 100%.
-      </div>
+      <label for="acrescimo">
+        Acréscimo período (%)
+        <input
+          id="acrescimo"
+          name="acrescimo"
+          type="number"
+          [(ngModel)]="conforto.acrescimo"
+          required
+          min="0"
+          max="100"
+          #acrescimoModel="ngModel"
+          placeholder="Insira o acréscimo percentual"
+        />
+        <div *ngIf="acrescimoModel.invalid && acrescimoModel.touched" class="field-error">
+          O acréscimo deve estar entre 0% e 100%.
+        </div>
+      </label>
+
+    <div class="form-actions">
+      <button type="submit" [disabled]="confortoForm.invalid">Guardar</button>
+      <button type="button" class="secondary" (click)="goBack()">Cancelar</button>
+    </div>
+  </form>
+</div>
