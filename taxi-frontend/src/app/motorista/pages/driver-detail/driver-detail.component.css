@@ -1,71 +1,91 @@
 .driver-detail-container {
-  max-width: 600px;
-  margin: 2rem auto;
-  padding: 1.5rem 2rem;
-  border: 1px solid #ccc;
+  max-width: 900px;
+  margin: 30px auto;
+  padding: 25px 30px;
+  background: #f9f9f9;
   border-radius: 8px;
-  background: #fff;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  color: #333;
 }
 
-h2 {
-  text-align: center;
-  margin-bottom: 1.5rem;
-  color: #222;
-  font-weight: 700;
-  font-size: 1.8rem;
+.driver-detail-container .back-button {
+  display: inline-block;
+  margin-bottom: 25px;
+  padding: 8px 20px;
+  background-color: #3498db;
+  border: none;
+  border-radius: 20px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.driver-detail-container .back-button:hover {
+  background-color: #2980b9;
+}
+
+.driver-detail-container h2 {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  color: #34495e;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 5px;
 }
 
 .details-section {
-  margin-bottom: 1.5rem;
+  background: white;
+  padding: 18px 22px;
+  border-radius: 6px;
+  box-shadow: 0 1px 5px rgb(0 0 0 / 0.1);
+  margin-bottom: 20px;
 }
 
 .details-section h3 {
-  border-bottom: 2px solid #007bff;
-  padding-bottom: 0.4rem;
-  color: #007bff;
-  margin-bottom: 0.8rem;
-  font-weight: 600;
+  margin-top: 0;
+  color: #2c3e50;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 6px;
+  margin-bottom: 12px;
   font-size: 1.2rem;
 }
 
 .details-section p {
+  margin: 6px 0;
   font-size: 1rem;
-  margin: 0.4rem 0;
-  color: #333;
-  line-height: 1.4;
+  color: #2c3e50;
 }
 
 .button-group {
   display: flex;
-  justify-content: center;
-  gap: 1rem;
-  margin-top: 1.5rem;
-  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 30px;
 }
 
-button {
-  padding: 0.65rem 1.5rem;
-  font-size: 1rem;
+.button-group button {
+  flex: 1;
+  padding: 10px 0;
+  background-color: #27ae60;
   border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  background-color: #007bff;
+  border-radius: 20px;
   color: white;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 2px 6px rgba(0,123,255,0.4);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  user-select: none;
 }
 
-button:hover,
-button:focus {
-  background-color: #0056b3;
-  outline: none;
-  box-shadow: 0 4px 12px rgba(0,86,179,0.6);
+.button-group button:hover {
+  background-color: #219150;
 }
 
-.turnos-section {
-  margin-top: 2.5rem;
+.turnos-section h3 {
+  font-size: 1.3rem;
+  margin-bottom: 15px;
+  color: #34495e;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 6px;
 }
 
 .turnos-lista {
@@ -74,56 +94,65 @@ button:focus {
   margin: 0;
 }
 
-.turno-card {
-  background-color: #f9f9f9;
-  border-left: 6px solid #ccc;
-  padding: 1rem 1.25rem;
-  margin-bottom: 1rem;
-  border-radius: 8px;
-  transition: background-color 0.3s ease, border-left-color 0.3s ease;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+.turnos-lista li {
+  background: white;
+  border-radius: 6px;
+  box-shadow: 0 1px 5px rgb(0 0 0 / 0.1);
+  padding: 15px 20px;
+  margin-bottom: 12px;
 }
 
-.turnos-lista li.ativo .turno-card {
-  border-left-color: #28a745; /* verde */
-  background-color: #e6f7e6;
-  box-shadow: 0 2px 8px rgba(40,167,69,0.3);
+.turnos-lista li.ativo {
+  border-left: 6px solid #27ae60;
+}
+
+.turno-card p {
+  margin: 5px 0;
+  font-size: 1rem;
+  color: #2c3e50;
 }
 
 .ativo-label {
-  color: #28a745;
+  color: #27ae60;
   font-weight: 700;
-  margin-top: 0.5rem;
-  display: inline-block;
+  margin-top: 8px;
 }
 
 .agendado-label {
-  color: #949799;
-  font-weight: 700;
-  margin-top: 0.5rem;
-  display: inline-block;
+  color: #7f8c8d;
+  font-style: italic;
+  margin-top: 8px;
 }
 
 .sem-turnos {
-  margin-top: 2rem;
-  font-style: italic;
-  color: #888;
   text-align: center;
+  font-style: italic;
+  color: #7f8c8d;
+  padding: 25px 10px;
+  font-size: 1rem;
 }
 
-/* Responsividade */
-@media (max-width: 480px) {
+/* Responsividade simples */
+@media (max-width: 600px) {
   .driver-detail-container {
-    padding: 1rem 1.2rem;
-    margin: 1rem;
+    padding: 20px 15px;
   }
-  
+  .driver-detail-container h2 {
+    font-size: 1.3rem;
+  }
+  .details-section {
+    padding: 15px 18px;
+  }
+  .details-section h3 {
+    font-size: 1.1rem;
+  }
   .button-group {
     flex-direction: column;
-    gap: 0.75rem;
   }
-
-  button {
+  .button-group button {
     width: 100%;
+  }
+  .turnos-lista li {
+    padding: 12px 15px;
   }
 }

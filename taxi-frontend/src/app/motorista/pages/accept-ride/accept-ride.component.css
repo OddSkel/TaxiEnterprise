@@ -1,23 +1,44 @@
 .accept-ride-container {
-  max-width: 600px;
-  margin: 20px auto;
-  font-family: Arial, sans-serif;
-  padding: 15px;
-  background-color: #f9f9f9;
+  max-width: 900px;
+  margin: 30px auto;
+  padding: 20px 25px;
+  background: #f9f9f9;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
 }
 
-h2 {
-  text-align: center;
-  color: #333;
+.back-button {
+  display: inline-block;
+  margin-bottom: 25px;
+  padding: 8px 20px;
+  background-color: #3498db;
+  border: none;
+  border-radius: 20px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.back-button:hover {
+  background-color: #2980b9;
+}
+
+.accept-ride-container h2 {
+  font-size: 1.5rem;
   margin-bottom: 20px;
+  color: #34495e;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 5px;
 }
 
 .empty-msg {
-  text-align: center;
   font-style: italic;
-  color: #777;
+  color: #7f8c8d;
+  text-align: center;
+  padding: 20px 0;
 }
 
 .viagens-lista {
@@ -27,38 +48,54 @@ h2 {
 }
 
 .viagem-item {
+  background-color: white;
+  padding: 15px 20px;
+  margin-bottom: 12px;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.1);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #fff;
-  border: 1px solid #ddd;
-  padding: 12px 15px;
-  margin-bottom: 12px;
-  border-radius: 6px;
-  transition: background-color 0.3s ease;
+  gap: 15px;
 }
 
-.viagem-item:hover {
-  background-color: #e6f7ff;
-}
-
-.info p {
+.viagem-item .info p {
   margin: 4px 0;
-  font-size: 14px;
-  color: #444;
+  font-size: 1rem;
+  color: #2c3e50;
 }
 
 .btn-aceitar {
-  background-color: #007bff;
+  padding: 8px 22px;
+  background-color: #27ae60;
   border: none;
+  border-radius: 20px;
   color: white;
-  padding: 8px 14px;
-  border-radius: 4px;
-  cursor: pointer;
   font-weight: 600;
+  cursor: pointer;
   transition: background-color 0.3s ease;
+  user-select: none;
 }
 
 .btn-aceitar:hover {
-  background-color: #0056b3;
+  background-color: #219150;
+}
+
+/* Responsividade simples */
+@media (max-width: 600px) {
+  .accept-ride-container {
+    padding: 15px 10px;
+  }
+  .accept-ride-container h2 {
+    font-size: 1.3rem;
+  }
+  .viagem-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .btn-aceitar {
+    width: 100%;
+    margin-top: 10px;
+    text-align: center;
+  }
 }

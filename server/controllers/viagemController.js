@@ -197,7 +197,7 @@ exports.listarPedidos = async (req, res) => {
       motorista: motoristaId,
       start: { $lte: now },
       end: { $gte: now },
-    });
+    }).populate("taxi");
 
     if (!turnoAtivo) {
       return res
@@ -205,10 +205,14 @@ exports.listarPedidos = async (req, res) => {
         .json({ message: "Motorista não tem turno ativo." });
     }
 
-    const viagens = await Viagem.find({ estado: "pendente" })
+    const viagens = await Viagem.find({ estado: "pendente", conforto: turnoAtivo.taxi.nivel_conforto })
       .populate("origem")
       .populate("destino")
-      .populate("cliente");
+      .populate("cliente")
+      .populate("motorista")
+      .populate("taxi")
+      .populate("turno")
+      .exec();
 
     return res.status(200).json(viagens);
   } catch (err) {
@@ -260,9 +264,11 @@ exports.aceitarPedido = async (req, res) => {
         .json({ message: "Motorista não tem turno ativo." });
     }
 
+
     // Atribuir motorista e turno à viagem
     viagem.motorista = motoristaId;
     viagem.turno = turnoAtivo._id; // Guarda o ID do turno
+    viagem.taxi = turnoAtivo.taxi;
     viagem.seq = await gerarSeqViagem(turnoAtivo); // Gere o seq se necessário
     viagem.estado = "aceite";
 
@@ -299,7 +305,7 @@ exports.clienteConfirmar = async (req, res) => {
       return res.status(404).json({ message: "Viagem não encontrada." });
     }
 
-    if (viagem.estado !== "pendente") {
+    if (viagem.estado !== "aceite") {
       return res
         .status(400)
         .json({ message: "A viagem já foi confirmada ou rejeitada." });
@@ -313,7 +319,7 @@ exports.clienteConfirmar = async (req, res) => {
     }
 
     // Alterar o estado da viagem
-    viagem.estado = "aceite";
+    viagem.estado = "confirmada";
     await viagem.save();
 
     return res.status(200).json({
@@ -339,7 +345,7 @@ exports.clienteRejeitar = async (req, res) => {
       return res.status(404).json({ message: "Viagem não encontrada." });
     }
 
-    if (viagem.estado !== "pendente") {
+    if (viagem.estado !== "aceite") {
       return res
         .status(400)
         .json({ message: "A viagem já foi confirmada ou rejeitada." });
@@ -403,7 +409,7 @@ exports.startViagem = async (req, res) => {
     now.setHours(now.getHours() + 1);
     viagem.inicio = now;
     viagem.num_pessoas = numCompanions;
-    viagem.estado = "aceite";
+    viagem.estado = "iniciada";
     viagem.fim = null;
     viagem.motorista = turno.motorista;
     viagem.taxi = turno.taxi;
@@ -527,13 +533,14 @@ exports.endViagem = async (req, res) => {
 exports.listarViagensMotorista = async (req, res) => {
   const { id } = req.params;
   console.log("Motorista ID:", id);
-  const viagens = await Viagem.find({ motorista: id, estado: "concluída" })
+  const viagens = await Viagem.find({ motorista: id})
     .sort({ inicio: -1 })
     .populate("cliente")
     .populate("origem")
     .populate("destino")
     .populate("motorista")
     .populate("taxi")
-    .populate("turno");
+    .populate("turno")
+    .exec();
   res.json(viagens);
 };

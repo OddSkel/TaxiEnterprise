@@ -1,0 +1,137 @@
+.area-motorista {
+  max-width: 900px;
+  margin: 30px auto;
+  padding: 20px 25px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+}
+
+.titulo {
+  font-size: 2rem;
+  margin-bottom: 15px;
+  text-align: center;
+  color: #2c3e50;
+}
+
+.btn-voltar {
+  display: block;
+  margin: 0 auto 30px;
+  padding: 8px 20px;
+  background-color: #3498db;
+  border: none;
+  border-radius: 20px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-voltar:hover {
+  background-color: #2980b9;
+}
+
+.secao-viagens {
+  margin-bottom: 40px;
+  border-top: 2px solid #3498db;
+  padding-top: 20px;
+}
+
+.secao-viagens h2 {
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+  color: #34495e;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 5px;
+}
+
+.lista-viagens {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.viagem {
+  background-color: white;
+  padding: 15px 20px;
+  margin-bottom: 12px;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.viagem .descricao {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #2c3e50;
+}
+
+.viagem .estado {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.viagem-aceite {
+  border-left: 5px solid #27ae60; /* verde */
+}
+
+.viagem-ativa {
+  border-left: 5px solid #f39c12; /* laranja */
+}
+
+.viagem-concluida {
+  border-left: 5px solid #7f8c8d; /* cinza */
+}
+
+.acoes {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+}
+
+.btn {
+  padding: 7px 18px;
+  border: none;
+  border-radius: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  color: white;
+  user-select: none;
+}
+
+.btn.iniciar {
+  background-color: #27ae60;
+}
+
+.btn.iniciar:hover {
+  background-color: #219150;
+}
+
+.btn.terminar {
+  background-color: #c0392b;
+}
+
+.btn.terminar:hover {
+  background-color: #992d22;
+}
+
+/* Responsividade simples */
+@media (max-width: 600px) {
+  .area-motorista {
+    padding: 15px 10px;
+  }
+  .titulo {
+    font-size: 1.6rem;
+  }
+  .secao-viagens h2 {
+    font-size: 1.3rem;
+  }
+  .viagem {
+    padding: 12px 15px;
+  }
+}

@@ -1,1 +1,57 @@
-<p>register-ride works!</p>
+<div class="area-motorista">
+  <h1 class="titulo">Registo de viagens</h1>
+  <button (click)="goBack()" class="btn-voltar">Voltar</button>
+
+  <!-- Viagens Aceites -->
+  <section class="secao-viagens">
+    <h2>Viagens Aceites</h2>
+    <ul class="lista-viagens">
+      <li *ngFor="let v of viagensAceites" class="viagem viagem-aceite">
+        <p class="descricao">
+          {{ v.origem.rua }} → {{ v.destino.rua }}
+        </p>
+        <p class="estado">
+          Estado: {{ v.estado }}
+        </p>
+      </li>
+    </ul>
+  </section>
+
+  <!-- Viagens Ativas -->
+  <section class="secao-viagens">
+    <h2>Viagens Ativas</h2>
+    <ul class="lista-viagens">
+      <li *ngFor="let v of viagensAtivas" class="viagem viagem-ativa">
+        <p class="descricao">
+          {{ v.origem.rua }} → {{ v.destino.rua }}
+        </p>
+        <p class="estado">
+          Estado: {{ v.estado }}
+        </p>
+        <div class="acoes">
+          <button *ngIf="v.estado === 'confirmada'" (click)="iniciarViagem(v)" class="btn iniciar">
+            Iniciar
+          </button>
+          <button *ngIf="v.estado === 'iniciada'" (click)="terminarViagem(v)" class="btn terminar">
+            Terminar
+          </button>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <!-- Viagens Concluídas -->
+  <section class="secao-viagens">
+    <h2>Viagens Concluídas</h2>
+    <ul class="lista-viagens">
+      <li *ngFor="let v of viagensConcluidas" class="viagem viagem-concluida">
+        <p class="descricao">
+          {{ v.origem.rua }} → {{ v.destino.rua }}
+        </p>
+        <p class="estado">
+          Finalizada em: {{ v.fim | date:'short' }}
+        </p>
+      </li>
+    </ul>
+  </section>
+</div>

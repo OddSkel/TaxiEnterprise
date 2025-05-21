@@ -72,6 +72,30 @@ rejeitarViagem(clienteId: string, viagemId: string): Observable<Viagem> {
     );
   }
 
+  inicioViagem(viagemId: string, data: any): Observable<Viagem> {
+    const url = `${this.baseUrlMotorista}/detalhes/${viagemId}/start`;
+    return this.http.post<Viagem>(url, data).pipe(
+      tap((_) => this.log(`Pedido iniciado pelo motorista ${viagemId}`)),
+      catchError(this.handleError<Viagem>('inicioViagem'))
+    );
+  }
+
+  fimViagem(viagemId: string): Observable<Viagem> {
+    const url = `${this.baseUrlMotorista}/detalhes/${viagemId}/end`;
+    return this.http.post<Viagem>(url, {}).pipe(
+      tap((_) => this.log(`Pedido terminado pelo motorista ${viagemId}`)),
+      catchError(this.handleError<Viagem>('inicioViagem'))
+    );
+  }
+
+  getViagensByMotorista(viagemId: string): Observable<Viagem[]> {
+    const url = `${this.baseUrlMotorista}/detalhes/${viagemId}/viagens`;
+    return this.http.get<Viagem[]>(url).pipe(
+      tap((_) => this.log(`Pedido terminado pelo motorista ${viagemId}`)),
+      catchError(this.handleError<Viagem[]>('inicioViagem'))
+    );
+  }
+
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
       console.error(error);
