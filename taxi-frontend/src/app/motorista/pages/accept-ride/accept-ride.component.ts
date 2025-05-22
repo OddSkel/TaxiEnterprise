@@ -71,7 +71,7 @@ export class AcceptRideComponent {
           }
           return viagem;
         })
-        .sort((a, b) => (a.distanciaCliente || Infinity) - (b.distanciaCliente || Infinity));
+        .sort((a, b) =>  (b.distanciaCliente || Infinity) - (a.distanciaCliente || Infinity));
     });
   }
 

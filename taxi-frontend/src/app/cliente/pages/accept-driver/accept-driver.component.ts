@@ -110,7 +110,7 @@ export class AcceptDriverComponent {
   }
 
   rejeitar() {
-    this.viagemService.rejeitarViagem(this.viagem?.motorista?._id || '', this.viagemId).subscribe({
+    this.viagemService.rejeitarViagem(this.viagem?.cliente?._id || '', this.viagemId).subscribe({
       next: () => {
         this.router.navigate(['/cliente/cliente', this.viagemId, 'waiting']);
       },

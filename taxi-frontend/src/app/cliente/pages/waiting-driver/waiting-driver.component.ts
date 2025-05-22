@@ -30,7 +30,7 @@ export class WaitingDriverComponent implements OnInit, OnDestroy{
       return;
     }
 
-    this.sub = interval(5000).pipe(
+    this.sub = interval(500).pipe(
       switchMap(() => this.viagemService.getViagemById(this.viagemId!))
     ).subscribe(viagem => {
       this.viagem = viagem;
