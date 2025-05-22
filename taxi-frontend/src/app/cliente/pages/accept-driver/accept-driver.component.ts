@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Conforto } from 'src/app/core/models/conforto';
 import { Viagem } from 'src/app/core/models/viagem';
 import { ConfortoService } from 'src/app/core/services/conforto.service';
+import { MotoristaService } from 'src/app/core/services/motorista.service';
 import { ViagemService } from 'src/app/core/services/viagem.service';
 
 @Component({
@@ -15,8 +16,12 @@ export class AcceptDriverComponent {
   viagemId!: string;
   proposta: any;
   errorMessage = '';
+  viagem: Viagem | null = null;
+  
 
   constructor(
+    private confortoService: ConfortoService,
+    private motoristaService: MotoristaService,
     private route: ActivatedRoute,
     private viagemService: ViagemService,
     private router: Router
@@ -28,9 +33,15 @@ export class AcceptDriverComponent {
   }
 
   carregarProposta() {
+    console.log("ID da viagem:", this.viagemId);
     this.viagemService.getViagemById(this.viagemId).subscribe({
       next: (viagem) => {
-        if (viagem?.motorista && viagem.taxi) {
+        if (!viagem) {
+          this.errorMessage = "A viagem não foi encontrada.";
+          return;
+        }
+        console.log("Viagem:", viagem);
+        this.viagem = viagem;
 
           const distanciaViagem = calcularDistanciaViagem(
             viagem.origem.coordenadas?.latitude || 0,
@@ -38,23 +49,73 @@ export class AcceptDriverComponent {
             viagem.destino.coordenadas?.latitude || 0, 
             viagem.destino.coordenadas?.longitude || 0
           );
+          const tempoViagem = calculateTime(distanciaViagem);
 
-          this.proposta = {
-            motoristaNome: viagem.motorista.pessoa.nome,
-            distanciaKm: viagem.distanciaKm,
-            tempoEspera: viagem.tempoEstimado = calculateTime(viagem.distanciaKm ?? 0),
-            custoEstimado: viagem.custoEstimado = calculateEstimatedPrice(distanciaViagem, viagem.taxi.nivel_conforto, viagem.tempoEstimado ?? 0),
-            taxi: {
-              marca: viagem.taxi.marca,
-              modelo: viagem.taxi.modelo,
-              matricula: viagem.taxi.matricula,
-              conforto: viagem.taxi.nivel_conforto,
+          console.log("Tempo Viagem:", tempoViagem);
+
+          this.confortoService.getConfortoByName(viagem.taxi!.nivel_conforto).subscribe({
+            next: (c: Conforto) => {
+              const tempoEstimado = calculateTime(viagem.distanciaCliente || 0);
+              const custo = calculate(tempoViagem, c.preco, c.acrescimo, tempoEstimado);
+              viagem.tempoEstimado = tempoEstimado
+              viagem.custoEstimado = custo;
+            
+              this.motoristaService.getMotorista(viagem.motorista?._id || '').subscribe({
+                next: (motorista) => {
+                  viagem.motorista = motorista;
+                  
+                  this.proposta = {
+                    motorista: viagem.motorista!.pessoa.nome,
+                    distanciaKm: this.viagem?.distanciaCliente,
+                    tempoEspera: viagem.tempoEstimado,
+                    custoEstimado: viagem.custoEstimado,
+                    taxi: {
+                      marca: viagem.taxi?.marca,
+                      modelo: viagem.taxi?.modelo,
+                      matricula: viagem.taxi?.matricula,
+                      conforto: viagem.taxi?.nivel_conforto,
+                    }
+                  };
+
+                  console.log("Proposta:", this.proposta);
+                },
+                error: () => {
+                  this.errorMessage = "Erro ao obter dados do motorista.";
+                }
+              });
+
+              
+            },
+            error: () => {
+              this.errorMessage = "Erro ao obter dados de conforto.";
             }
-          };
-        }
+        });
       },
       error: () => {
         this.errorMessage = "Erro ao carregar dados da viagem.";
+      }
+    });
+  }
+
+
+  aceitar() {
+    this.viagemService.confirmarViagem(this.viagem?.cliente?._id || '', this.viagemId).subscribe({
+      next: () => {
+        this.router.navigate(['/cliente/cliente', this.viagemId, 'waiting']);
+      },
+      error: () => {
+        this.errorMessage = "Erro ao aceitar viagem.";
+      }
+    });
+  }
+
+  rejeitar() {
+    this.viagemService.rejeitarViagem(this.viagem?.motorista?._id || '', this.viagemId).subscribe({
+      next: () => {
+        this.router.navigate(['/cliente/cliente', this.viagemId, 'waiting']);
+      },
+      error: () => {
+        this.errorMessage = "Erro ao rejeitar viagem.";
       }
     });
   }
@@ -80,15 +141,7 @@ function toRad(value: number): number {
   return value * Math.PI / 180;
 }
 
-function calculateEstimatedPrice(distancia: number, conforto: string, tempoChegada: number ): number {
-  const tempoViagem = calculateTime(distancia);
-  const c : Conforto = ConfortoService.getConfortoByName(conforto);
-  return calculate(tempoViagem, c.preco, c.acrescimo, tempoChegada);
-  
-}
-
-
-function calculate(duracaoMinutos: number, preco: number, acrescimoP: number, tempoChegada: number): number {
+function calculate(duracaoMinutos: number, preco: number, acrescimoP: number, tempoChegadaMotorista: number): number {
   const acrescimo = 1 + (acrescimoP / 100);
 
   const noiteInicio = 21 * 60; // 21:00 em minutos
@@ -99,7 +152,7 @@ function calculate(duracaoMinutos: number, preco: number, acrescimoP: number, te
   const minutoAtual = now.getHours() * 60 + now.getMinutes();
 
   // minuto inicial da viagem (agora + tempoChegada)
-  let minutoInicioViagem = (minutoAtual + tempoChegada) % (24 * 60);
+  let minutoInicioViagem = (minutoAtual + tempoChegadaMotorista) % (24 * 60);
 
   let total = 0;
 

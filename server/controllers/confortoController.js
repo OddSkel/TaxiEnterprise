@@ -38,13 +38,20 @@ exports.conforto_update = async(req,res,next) => {
   }
 };
 
-exports.getConfortoByName = async(req, res) => {
-  const conforto = await Conforto.find({name: req.params.id})
-  if (conforto === null) {
-    const err = new Error("Conforto não foi encontrado!");
-    res.status(404).json({message: err});
-  }
+exports.getConfortoByName = async (req, res,next) => {
+  try {
+    const conforto = await Conforto.findOne({ name: req.params.id });
 
-  console.log("Conforto: ", conforto);
-  res.status(200).json(conforto);
+    if (conforto === null) {
+      const err = new Error("Conforto não foi encontrado!");
+      return res.status(404).json({ message: err.message }); // <-- return aqui
+    }
+
+    console.log("Conforto: ", conforto);
+    return res.status(200).json(conforto);
+
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Erro ao buscar conforto." });
+  }
 };

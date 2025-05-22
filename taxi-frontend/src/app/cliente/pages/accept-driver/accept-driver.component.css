@@ -1,0 +1,76 @@
+.proposta-container {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #f9fbfd;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+  transition: all 0.3s ease;
+}
+
+.proposta-container h2,
+.proposta-container h3 {
+  color: #3f51b5;
+  margin-bottom: 1rem;
+}
+
+.info-block {
+  margin-bottom: 1.5rem;
+}
+
+.info-block p {
+  font-size: 1rem;
+  margin: 0.4rem 0;
+}
+
+.info-block p strong {
+  color: #555;
+}
+
+.botoes {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+button {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-aceitar {
+  background-color: #4caf50;
+  color: white;
+}
+
+.btn-aceitar:hover {
+  background-color: #43a047;
+  transform: scale(1.02);
+}
+
+.btn-rejeitar {
+  background-color: #e53935;
+  color: white;
+}
+
+.btn-rejeitar:hover {
+  background-color: #d32f2f;
+  transform: scale(1.02);
+}
+
+.error {
+  margin: 2rem auto;
+  padding: 1rem;
+  max-width: 600px;
+  color: #fff;
+  background-color: #f44336;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}

@@ -12,7 +12,7 @@
         <p><strong>Passageiros:</strong> {{ viagem.num_pessoas}}</p>
         <p><strong>Origem:</strong> {{ viagem.origem.rua }} {{ viagem.origem.numPorta }}</p>
         <p><strong>Destino:</strong> {{ viagem.destino.rua }} {{ viagem.destino.numPorta }}</p>
-        <p><strong>Distância até cliente:</strong> {{ viagem.distanciaKm }} km</p>
+        <p><strong>Distância até cliente:</strong> {{ viagem.distanciaCliente }} km</p>
       </div>
       <button (click)="aceitarViagem(viagem)" class="btn-aceitar">Aceitar</button>
     </li>

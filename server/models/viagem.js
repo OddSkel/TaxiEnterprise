@@ -13,7 +13,7 @@ const ViagemSchema = new Schema({
   seq: { type: Number },
   estado: {
     type: String,
-    enum: ["pendente", "aceite", "confirmada", "iniciada", "concluída", "cancelada"],
+    enum: ["pendente", "aceite", "confirmada", "iniciada", "concluida", "cancelada"],
     default: "pendente",
   },
   seq: { type: Number },
@@ -22,6 +22,7 @@ const ViagemSchema = new Schema({
   fim: { type: Date },
   quilometros: { type: Number, min: 0 },
   custo_total: { type: Number, min: 0 },
+  distanciaCliente: { type: Number, min: 0 },
 });
 
 // Índice parcial: apenas aplica a restrição de unicidade quando turno está definido

@@ -20,8 +20,8 @@ export interface Viagem {
   quilometros: number | undefined;
   inicio: Date | undefined;
   fim: Date | undefined;
+  distanciaCliente: number | undefined;
 
-  distanciaKm?: number;
   tempoEstimado?: number;
   custoEstimado?: number;
 

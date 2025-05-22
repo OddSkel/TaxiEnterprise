@@ -1,18 +1,24 @@
-<div *ngIf="proposta">
+<div class="proposta-container" *ngIf="proposta">
   <h2>Proposta do Motorista</h2>
-  <p><strong>Nome:</strong> {{ proposta.motoristaNome }}</p>
-  <p><strong>Distância até si:</strong> {{ proposta.distanciaKm }} km</p>
-  <p><strong>Tempo estimado de chegada:</strong> {{ proposta.tempoEspera.hours??0 }} horas e {{ proposta.tempoEspera.minutes??0 }} minutos</p>
-  <p><strong>Custo estimado da viagem:</strong> € {{ proposta.custoEstimado }}</p>
+  <div class="info-block">
+    <p><strong>Nome:</strong> {{ proposta.motorista }}</p>
+    <p><strong>Distância até si:</strong> {{ proposta.distanciaKm }} km</p>
+    <p><strong>Tempo estimado de chegada:</strong> {{ proposta.tempoEspera }} minutos</p>
+    <p><strong>Custo estimado da viagem:</strong> € {{ proposta.custoEstimado }}</p>
+  </div>
 
   <h3>Detalhes do Táxi</h3>
-  <p><strong>Marca:</strong> {{ proposta.taxi.marca }}</p>
-  <p><strong>Modelo:</strong> {{ proposta.taxi.modelo }}</p>
-  <p><strong>Matrícula:</strong> {{ proposta.taxi.matricula }}</p>
-  <p><strong>Conforto:</strong> {{ proposta.taxi.conforto }}</p>
+  <div class="info-block">
+    <p><strong>Marca:</strong> {{ proposta.taxi.marca }}</p>
+    <p><strong>Modelo:</strong> {{ proposta.taxi.modelo }}</p>
+    <p><strong>Matrícula:</strong> {{ proposta.taxi.matricula }}</p>
+    <p><strong>Conforto:</strong> {{ proposta.taxi.conforto }}</p>
+  </div>
 
-  <button (click)="aceitar()" class="btn-aceitar">Aceitar</button>
-  <button (click)="rejeitar()" class="btn-rejeitar">Rejeitar</button>
+  <div class="botoes">
+    <button (click)="aceitar()" class="btn-aceitar">Aceitar</button>
+    <button (click)="rejeitar()" class="btn-rejeitar">Rejeitar</button>
+  </div>
 </div>
 
-<div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+<div class="error" *ngIf="errorMessage">{{ errorMessage }}</div>

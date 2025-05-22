@@ -59,11 +59,10 @@ export class AcceptRideComponent {
 
     this.viagensService.getViagensPendentes(this.motoristaId, latitude, longitude).subscribe((viagens) => {
       console.log('Viagens recebidas:', viagens);
-
       this.viagensPendentes = viagens
         .map(viagem => {
           if (viagem.origem?.coordenadas) {
-            viagem.distanciaKm = this.calcularDistanciaKm(
+            viagem.distanciaCliente = this.calcularDistanciaKm(
               latitude,
               longitude,
               viagem.origem.coordenadas.latitude,
@@ -72,16 +71,16 @@ export class AcceptRideComponent {
           }
           return viagem;
         })
-        .sort((a, b) => (a.distanciaKm || Infinity) - (b.distanciaKm || Infinity));
+        .sort((a, b) => (a.distanciaCliente || Infinity) - (b.distanciaCliente || Infinity));
     });
   }
 
   aceitarViagem(viagem: Viagem): void {
     if (!this.motoristaId || !viagem._id) return;
 
-    this.viagensService.aceitarViagem(this.motoristaId, viagem._id).subscribe({
+    this.viagensService.aceitarViagem(this.motoristaId, viagem._id, viagem.distanciaCliente || 0).subscribe({
       next: () => {
-        console.log('Viagem aceita com sucesso.');
+        console.log('Viagem aceita com sucesso.', viagem);
         this.getViagensPendentes();
         this.router.navigate([`/motorista/motoristas/${this.motoristaId}/registeredRides`]);        
       },

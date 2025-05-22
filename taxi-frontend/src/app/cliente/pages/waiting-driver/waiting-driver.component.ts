@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription, interval } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+import { Viagem } from 'src/app/core/models/viagem';
 
 import { ViagemService } from 'src/app/core/services/viagem.service';
 
@@ -14,6 +15,7 @@ export class WaitingDriverComponent implements OnInit, OnDestroy{
   viagemId!: string | null;
   estado!: string;
   sub!: Subscription;
+  viagem: Viagem | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -31,6 +33,7 @@ export class WaitingDriverComponent implements OnInit, OnDestroy{
     this.sub = interval(5000).pipe(
       switchMap(() => this.viagemService.getViagemById(this.viagemId!))
     ).subscribe(viagem => {
+      this.viagem = viagem;
       if (!viagem) {
         console.warn("Viagem não encontrada.");
         return;
@@ -43,10 +46,21 @@ export class WaitingDriverComponent implements OnInit, OnDestroy{
         console.log("Viagem aceite!");
         this.router.navigate(['/cliente/cliente', this.viagemId, 'answer-driver']);
       }
+
+      if (viagem.estado === 'concluída') {
+        console.log("Viagem concluída!");
+        this.router.navigate(['/cliente/cliente']);
+      }
     });
   }
 
   ngOnDestroy(): void {
     if (this.sub) this.sub.unsubscribe();
+  }
+
+  cancelarViagem() {
+    this.viagemService.cancelarViagem(this.viagem?.cliente?._id || '', this.viagemId!).subscribe(() => {
+      this.router.navigate(['/cliente/cliente']);
+    });
   }
 }

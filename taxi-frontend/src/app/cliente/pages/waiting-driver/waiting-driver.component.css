@@ -1,0 +1,49 @@
+.status-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 60vh;
+  padding: 2rem;
+  background-color: #f2f6fc;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+}
+
+.status-message {
+  background: white;
+  padding: 2rem 3rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  text-align: center;
+  max-width: 600px;
+  width: 100%;
+  transition: all 0.3s ease;
+}
+
+.status-message h2 {
+  font-size: 1.8rem;
+  color: #3f51b5;
+  margin-bottom: 1rem;
+}
+
+.estado-indicador {
+  font-size: 1rem;
+  color: #666;
+  margin-top: 0.5rem;
+}
+
+.btn-cancelar {
+  margin-top: 1.5rem;
+  padding: 0.7rem 1.5rem;
+  background-color: #e53935;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-cancelar:hover {
+  background-color: #c62828;
+}

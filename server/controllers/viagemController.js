@@ -140,6 +140,14 @@ exports.pedirViagem = async (req, res) => {
       conforto,
       num_pessoas,
       estado: "pendente",
+      turno: null,
+      taxi: null,
+      seq: null,
+      custo_total: null,
+      quilometros: null,
+      inicio: null,
+      fim: null,
+      distanciaCliente: null,
     });
 
     await viagem.save();
@@ -175,7 +183,7 @@ function calcularDistancia(lat1, lon1, lat2, lon2) {
 exports.listarPedidos = async (req, res) => {
   try {
     const { motoristaId } = req.params;
-    let { lat, lon } = req.query;
+    let { lat, lon, } = req.query;
 
     // Coordenadas padrão (Faculdade de Ciências)
     if (!lat || !lon) {
@@ -226,6 +234,7 @@ exports.listarPedidos = async (req, res) => {
 exports.aceitarPedido = async (req, res) => {
   try {
     const { motoristaId, viagemId } = req.params;
+    const { distanciaKm } = req.body;
 
     // Verificar se o motorista existe
     const motorista = await Motorista.findById(motoristaId);
@@ -268,12 +277,14 @@ exports.aceitarPedido = async (req, res) => {
     // Atribuir motorista e turno à viagem
     viagem.motorista = motoristaId;
     viagem.turno = turnoAtivo._id; // Guarda o ID do turno
-    viagem.taxi = turnoAtivo.taxi;
+    viagem.taxi = turnoAtivo.taxi; 
+    viagem.distanciaCliente = distanciaKm;
     viagem.seq = await gerarSeqViagem(turnoAtivo); // Gere o seq se necessário
     viagem.estado = "aceite";
 
     // Salvar a viagem
     await viagem.save();
+    console.log("Viagem aceite:", viagem);
 
     return res.status(200).json({
       message: "Pedido aceite. A aguardar confirmação do cliente.",
@@ -359,8 +370,11 @@ exports.clienteRejeitar = async (req, res) => {
     }
 
     // Rejeitar o pedido e remover o motorista da viagem
-    viagem.estado = "cancelada";
+    viagem.estado = "pendente";
     viagem.motorista = null; // Remover o motorista da viagem
+    viagem.turno = null;
+    viagem.taxi = null;
+    viagem.seq = null;
     await viagem.save();
 
     return res.status(200).json({
@@ -371,6 +385,46 @@ exports.clienteRejeitar = async (req, res) => {
     console.error("Erro ao rejeitar pedido:", err);
     return res.status(500).json({
       message: "Erro interno ao rejeitar pedido.",
+      erro: err.message,
+    });
+  }
+};
+
+exports.clienteCancelar = async (req, res) => {
+  try {
+    const { clienteId, viagemId } = req.params;
+
+    // Verificar se a viagem existe e está pendente
+    const viagem = await Viagem.findById(viagemId);
+    if (!viagem) {
+      return res.status(404).json({ message: "Viagem não encontrada." });
+    }
+
+    if (viagem.estado !== "pendente") {
+      return res
+        .status(400)
+        .json({ message: "A viagem já foi aceite por um Motorista." });
+    }
+
+    // Verificar se o cliente está associado a esta viagem
+    if (viagem.cliente.toString() !== clienteId) {
+      return res
+        .status(400)
+        .json({ message: "Esta viagem não pertence a este cliente." });
+    }
+
+    // Cancelar a viagem
+    viagem.estado = "cancelada";
+    await viagem.save();
+
+    return res.status(200).json({
+      message: "Viagem cancelada.",
+      viagem,
+    });
+  } catch (err) {
+    console.error("Erro ao cancelar pedido:", err);
+    return res.status(500).json({
+      message: "Erro interno ao cancelar pedido.",
       erro: err.message,
     });
   }

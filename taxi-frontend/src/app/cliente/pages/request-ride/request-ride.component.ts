@@ -50,6 +50,7 @@ export class RequestRideComponent {
     quilometros: 0,
     inicio: new Date(),
     fim: new Date(),
+    distanciaCliente: 0
   };
 
   origem: string = '';
