@@ -17,19 +17,13 @@ router.post("/turnos/motoristas/:id/", turno_controller.requestTaxiforShift);
 
 router.get("/turnos/motoristas/:id/", turno_controller.getAllShifts);
 
-router.get(
-  "/turnos/motoristas/:id/turno",
-  turno_controller.getAvailableTaxisForShift
-);
+router.get("/turnos/motoristas/:id/turno", turno_controller.getAvailableTaxisForShift);
 
 //VIAGEM ROUTES
 
 router.get("/:motoristaId/viagens-pendentes/", viagem_controller.listarPedidos);
 
-router.post(
-  "/:motoristaId/aceitar-viagem/:viagemId",
-  viagem_controller.aceitarPedido
-);
+router.post("/:motoristaId/aceitar-viagem/:viagemId", viagem_controller.aceitarPedido);
 
 router.post("/detalhes/:id/start", viagem_controller.startViagem);
 

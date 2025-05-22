@@ -145,7 +145,7 @@ exports.pedirViagem = async (req, res) => {
     await viagem.save();
     console.log("Viagem criada com sucesso:", viagem);
 
-    res.status(201).json({ message: "Viagem criada com sucesso!", viagem });
+    res.status(201).json(viagem);
   } catch (error) {
     console.error("Erro ao pedir viagem:", error);
     res.status(500).json({
@@ -544,3 +544,27 @@ exports.listarViagensMotorista = async (req, res) => {
     .exec();
   res.json(viagens);
 };
+
+exports.getViagemById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const viagem = await Viagem.findById(id)
+      .populate("cliente")
+      .populate("motorista")
+      .populate("taxi")
+      .populate("origem")
+      .populate("destino")
+      .populate("turno")
+      .exec();
+
+    if (!viagem) {
+      return res.status(404).json({ message: "Viagem não encontrada." });
+    }
+
+    res.status(200).json(viagem);
+  } catch (error) {
+    console.error("Erro ao obter viagem por ID:", error);
+    res.status(500).json({ message: "Erro ao obter viagem." });
+  }
+};
+

@@ -109,4 +109,6 @@ router.put("/conforto/:id", conforto_controller.conforto_update);
 
 router.get("/conforto/simular/:id", conforto_controller.conforto_details);
 
+router.get("/conforto/nome/:id", conforto_controller.getConfortoByName);
+
 module.exports = router;

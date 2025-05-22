@@ -319,8 +319,6 @@ export class RequestRideComponent {
       this.marcarDestinoNoMapa({ lat: coords.lat, lng: coords.lng });
     }
 
-   
-
     this.novaViagem.origem.coordenadas = origemCoords;
     this.novaViagem.destino.coordenadas = destinoCoords;
 
@@ -339,10 +337,10 @@ export class RequestRideComponent {
     console.log("Objeto viagem a enviar:", viagem);
 
     this.viagemService.pedirViagem(viagem).subscribe({
-      next: (viagem) => {
-        this.viagemPedida = viagem;
+      next: (res) => {
+        console.log("Viagem recebida:", res);
         this.errorMessage = '';
-        this.router.navigate(['/motorista/motoristas/', this.viagemPedida._id, 'waiting']);
+        this.router.navigate(['/cliente/cliente', res._id, 'waiting']);
       },
       error: (error) => {
         this.errorMessage = "Erro ao pedir viagem.";

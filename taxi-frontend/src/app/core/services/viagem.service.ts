@@ -84,17 +84,29 @@ rejeitarViagem(clienteId: string, viagemId: string): Observable<Viagem> {
     const url = `${this.baseUrlMotorista}/detalhes/${viagemId}/end`;
     return this.http.post<Viagem>(url, {}).pipe(
       tap((_) => this.log(`Pedido terminado pelo motorista ${viagemId}`)),
-      catchError(this.handleError<Viagem>('inicioViagem'))
+      catchError(this.handleError<Viagem>('fimViagem'))
     );
   }
 
   getViagensByMotorista(viagemId: string): Observable<Viagem[]> {
     const url = `${this.baseUrlMotorista}/detalhes/${viagemId}/viagens`;
     return this.http.get<Viagem[]>(url).pipe(
-      tap((_) => this.log(`Pedido terminado pelo motorista ${viagemId}`)),
-      catchError(this.handleError<Viagem[]>('inicioViagem'))
+      tap((_) => this.log(`Fetched viagens pelo motorista ${viagemId}`)),
+      catchError(this.handleError<Viagem[]>('getViagensMotorista',[]))
     );
   }
+
+  getViagemById(viagemId: string): Observable<Viagem | null> {
+    const url = `${this.baseUrlCliente}/getViagem/${viagemId}`;
+    return this.http.get<Viagem>(url).pipe(
+      tap(() => this.log(`Fetched viagem ${viagemId}`)),
+      catchError((err) => {
+        console.error("Erro ao buscar viagem por ID:", err);
+        return of(null); // <--- Retorna null para ser tratado no subscribe
+      })
+    );
+  }
+
 
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {

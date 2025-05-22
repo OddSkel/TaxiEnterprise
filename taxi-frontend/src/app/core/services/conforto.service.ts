@@ -11,6 +11,9 @@ import { MessageService } from './message.service';
   providedIn: 'root'
 })
 export class ConfortoService {
+  static getConfortoByName(conforto: string): Conforto {
+    throw new Error('Method not implemented.');
+  }
   private confortoUrl = 'http://localhost:3000/gestor/conforto'; // URL to web api
 
   httpOptions = {
@@ -29,11 +32,19 @@ export class ConfortoService {
     );
   }
 
-  getConforto(id: String): Observable<Conforto> {
+  getConforto(id: string): Observable<Conforto> {
     const url = `${this.confortoUrl}/${id}`;
     return this.http.get<Conforto>(url).pipe(
       tap(_ => this.log(`fetched conforto id=${id}`)),
       catchError(this.handleError<Conforto>(`getConforto id=${id}`))
+    )
+  }
+
+  getConfortoByName(name: string): Observable<Conforto> {
+    const url = `${this.confortoUrl}/nome/${name}`;
+    return this.http.get<Conforto>(url).pipe(
+      tap(_ => this.log(`fetched conforto name=${name}`)),
+      catchError(this.handleError<Conforto>(`getConforto name=${name}`))
     )
   }
 

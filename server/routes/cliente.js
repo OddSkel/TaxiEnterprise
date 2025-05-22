@@ -9,4 +9,6 @@ router.post("/:clienteId/confirmar/:viagemId", viagem_controller.clienteConfirma
 
 router.post("/:clienteId/rejeitar/:viagemId", viagem_controller.clienteRejeitar);
 
+router.get("/getViagem/:id",viagem_controller.getViagemById);
+
 module.exports = router;
