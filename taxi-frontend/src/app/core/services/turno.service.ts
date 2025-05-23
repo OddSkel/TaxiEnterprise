@@ -11,8 +11,8 @@ import { Taxi } from '../models/taxi';
   providedIn: 'root',
 })
 export class TurnoService {
-  private turnoUrl = 'http://localhost:3000/motorista/turnos/motoristas';
-  private gestorUrl = 'http://localhost:3000/gestor/';
+  private turnoUrl = 'http://localhost:3063/motorista/turnos/motoristas';
+  private gestorUrl = 'http://localhost:3063/gestor/';
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
@@ -71,17 +71,19 @@ export class TurnoService {
   }
 
   getAllTaxiShifts(taxiId: string): Observable<Turno[]> {
-    return this.http.get<Turno[]>(`${this.gestorUrl}/taxi/${taxiId}/turnos`).pipe(
-      map((shifts) =>
-        shifts.map((shift) => ({
-          ...shift,
-          periodo: {
-            start: shift.start,
-            end: shift.end,
-          },
-        }))
-      )
-    );
+    return this.http
+      .get<Turno[]>(`${this.gestorUrl}/taxi/${taxiId}/turnos`)
+      .pipe(
+        map((shifts) =>
+          shifts.map((shift) => ({
+            ...shift,
+            periodo: {
+              start: shift.start,
+              end: shift.end,
+            },
+          }))
+        )
+      );
   }
 
   private handleError<T>(operation = 'operation', result?: T) {

@@ -9,7 +9,7 @@ import { MessageService } from './message.service';
 
 @Injectable({ providedIn: 'root' })
 export class MotoristaService {
-  private motoristaUrl = 'http://localhost:3000/gestor/motoristas'; // adapta à tua API
+  private motoristaUrl = 'http://localhost:3063/gestor/motoristas'; // adapta à tua API
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
@@ -85,7 +85,6 @@ export class MotoristaService {
         catchError(this.handleError<any>('updateMotorista'))
       );
   }
-
 
   // Remover um motorista
   deleteMotorista(id: string): Observable<any> {
