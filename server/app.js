@@ -22,7 +22,7 @@ const mongoDB =
 
 const PORT = 3063;
 app.listen(PORT, () => {
-  console.log(`Server listening on http://localhost:${PORT}`);
+  console.log(`Server listening on http://0.0.0.0:${PORT}`);
 });
 
 main().catch((err) => console.log(err));
