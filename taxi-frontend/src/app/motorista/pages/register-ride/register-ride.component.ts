@@ -88,6 +88,7 @@ export class RegisterRideComponent {
   terminarViagem(viagem: Viagem) {
     if (!viagem) return;
 
+    console.log(viagem);
     this.viagemService.fimViagem(viagem._id).subscribe({
       next: (updatedViagem) => {
         Object.assign(viagem, updatedViagem);

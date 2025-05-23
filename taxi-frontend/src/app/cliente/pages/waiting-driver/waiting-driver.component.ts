@@ -63,4 +63,8 @@ export class WaitingDriverComponent implements OnInit, OnDestroy{
       this.router.navigate(['/cliente/cliente']);
     });
   }
+
+  goBack() {
+    this.router.navigate(['/cliente/cliente']);
+  }
 }

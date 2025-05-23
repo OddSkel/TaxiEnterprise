@@ -4,15 +4,20 @@
       <h2 *ngSwitchCase="'pendente'">Estamos à procura de um motorista...</h2>
       <h2 *ngSwitchCase="'confirmada'">Viagem confirmada! O motorista está a caminho.</h2>
       <h2 *ngSwitchCase="'iniciada'">Viagem iniciada! O motorista começou a viagem.</h2>
-      <h2 *ngSwitchCase="'concluída'">Viagem concluída! Chegou ao destino.</h2>
+      <h2 *ngSwitchCase="'concluida'">Viagem concluída! Chegou ao destino.</h2>
       <h2 *ngSwitchDefault>Estado da viagem: {{ viagem.estado }}</h2>
     </ng-container>
 
     <p class="estado-indicador">Estado atual: <strong>{{ estado }}</strong></p>
 
     <!-- Botão visível apenas quando o estado for 'pendente' -->
-    <button *ngIf="viagem.estado === 'pendente'" class="btn-cancelar" (click)="cancelarViagem()">
-      Cancelar Viagem
-    </button>
+    <div class="btn-container" *ngIf="viagem.estado">
+      <button *ngIf="viagem.estado === 'pendente'" class="btn-cancelar" (click)="cancelarViagem()">
+        Cancelar Viagem
+      </button>
+      <button *ngIf="viagem.estado === 'concluida'" class="btn-voltar" (click)="goBack()">
+        Voltar a pedir uma viagem
+      </button>
+    </div>
   </div>
 </div>
