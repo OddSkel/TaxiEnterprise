@@ -48,11 +48,10 @@ export class TaxisListComponent {
 
     this.turnoService.getAllTaxiShifts(taxi._id).subscribe({
       next: (turnos) => {
-        const now = new Date();
-        this.turnos = turnos.filter(turno => new Date(turno.end) >= now);
+        this.turnos = turnos;
 
         if (this.turnos.length > 0) {
-          this.errorMessage = 'Taxi ainda tem turnos.';
+          this.errorMessage = 'Taxi já foi utilizado em turnos.';
           return;
         }
 

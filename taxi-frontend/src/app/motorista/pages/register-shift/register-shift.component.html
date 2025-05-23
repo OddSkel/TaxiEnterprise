@@ -1,6 +1,5 @@
 <div class="register-shift-container" *ngIf="motorista">
-    <button class="back-button" (click)="goBack()">Voltar</button>
-    <h2>Registar Turno</h2>
+  <h2>Registar Turno</h2>
 
   <form (ngSubmit)="validateShiftTimes()" class="shift-form">
     <div class="form-group">
@@ -10,13 +9,16 @@
 
     <div class="form-group">
       <label for="end">Fim do turno:</label>
-      <input type="datetime-local" id="end" [(ngModel)]="end" name="end" required />
+      <input type="datetime-local" [min]="" id="end" [(ngModel)]="end" name="end" required />
     </div>
 
     <div class="error" *ngIf="timeError">{{ timeError }}</div>
     <div class="error" *ngIf="overlapError">{{ overlapError }}</div>
 
-    <button type="submit" class="validate-button">Validar Turno</button>
+    <div class="button-group">
+      <button class="back-button" (click)="goBack()">Voltar</button>
+      <button type="submit" class="validate-button">Validar Turno</button>
+    </div>
   </form>
 
   <div *ngIf="shiftValidated" class="taxis-container">

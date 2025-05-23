@@ -117,14 +117,15 @@ exports.getAllShifts = async (req, res) => {
 };
 
 exports.getAllTaxiShifts = async (req, res) => {
-  const { id } = req.params;
+  const { taxiId } = req.params;
   try {
-    const turnos = await Turno.find({ taxi: id })
+    const turnos = await Turno.find({ taxi: taxiId })
       .populate("taxi")
       .populate("motorista")
       .sort({ start: 1 })
       .exec();
-    res.json(turnos);
+    
+    res.status(200).json(turnos);
   } catch (err) {
     res
       .status(500)

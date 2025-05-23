@@ -99,6 +99,8 @@ router.delete("/taxis/:id", taxi_controller.deleteTaxi);
 
 router.put("/taxis/:id", taxi_controller.updateTaxi);
 
+router.get("/taxi/:taxiId/turnos", turno_controller.getAllTaxiShifts);
+
 //CONFORTO ROUTES
 
 router.get("/conforto", conforto_controller.getConfortos);
