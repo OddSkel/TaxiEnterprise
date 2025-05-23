@@ -28,13 +28,13 @@ router.get("/init", async (req, res) => {
     await Cliente.deleteMany({});
 
     const confortoB = await Conforto.create({
-      nome: "BASICO",
+      name: "BASICO",
       acrescimo: "20",
       preco: "0.5",
     });
 
     const confortoL = await Conforto.create({
-      nome: "LUXUOSO",
+      name: "LUXUOSO",
       acrescimo: "50",
       preco: "0.75",
     });
