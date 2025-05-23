@@ -18,7 +18,7 @@ app.use(cors());
 const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
 const mongoDB =
-  "mongodb://PSI013:PSI013@localhost:27017/PSI013?retryWrites=true&authSource=PSI013";
+  "mongodb://psi013:psi013@localhost:27017/psi013?retryWrites=true&authSource=psi013";
 
 const PORT = 3063;
 app.listen(PORT, () => {

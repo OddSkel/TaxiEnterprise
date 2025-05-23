@@ -460,7 +460,6 @@ exports.startViagem = async (req, res) => {
     viagem.turno = turno._id;
     viagem.cliente = cliente._id;
     let now = new Date();
-    now.setHours(now.getHours() + 1);
     viagem.inicio = now;
     viagem.num_pessoas = numCompanions;
     viagem.estado = "iniciada";
@@ -507,7 +506,6 @@ exports.endViagem = async (req, res) => {
     }
 
     const fim = new Date();
-    fim.setHours(fim.getHours() + 1);
     console.log(fim);
 
     if (viagem.inicio >= fim) {
