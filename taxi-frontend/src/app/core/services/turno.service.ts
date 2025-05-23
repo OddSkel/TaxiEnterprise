@@ -11,8 +11,9 @@ import { Taxi } from '../models/taxi';
   providedIn: 'root',
 })
 export class TurnoService {
-  private turnoUrl = 'http://0.0.0.0:3063/motorista/turnos/motoristas';
-  private gestorUrl = 'http://0.0.0.0:3063/gestor/';
+  private turnoUrl =
+    'http://appserver.alunos.di.fc.ul.pt:3063/motorista/turnos/motoristas';
+  private gestorUrl = 'http://appserver.alunos.di.fc.ul.pt:3063/gestor/';
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' }),

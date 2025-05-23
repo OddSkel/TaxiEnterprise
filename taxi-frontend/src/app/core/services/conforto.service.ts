@@ -14,7 +14,8 @@ export class ConfortoService {
   static getConfortoByName(conforto: string): Conforto {
     throw new Error('Method not implemented.');
   }
-  private confortoUrl = 'http://0.0.0.0:3063/gestor/conforto'; // URL to web api
+  private confortoUrl =
+    'http://appserver.alunos.di.fc.ul.pt:3063/gestor/conforto'; // URL to web api
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' }),

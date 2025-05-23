@@ -9,7 +9,7 @@ import { MessageService } from './message.service';
 
 @Injectable({ providedIn: 'root' })
 export class TaxiService {
-  private taxisUrl = 'http://0.0.0.0:3063/gestor/taxis';
+  private taxisUrl = 'http://appserver.alunos.di.fc.ul.pt:3063/gestor/taxis';
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
