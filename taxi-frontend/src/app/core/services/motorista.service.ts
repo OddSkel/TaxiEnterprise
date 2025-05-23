@@ -9,7 +9,7 @@ import { MessageService } from './message.service';
 
 @Injectable({ providedIn: 'root' })
 export class MotoristaService {
-  private motoristaUrl = 'http://localhost:3063/gestor/motoristas'; // adapta à tua API
+  private motoristaUrl = 'http://0.0.0.0:3063/gestor/motoristas'; // adapta à tua API
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
