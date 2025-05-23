@@ -3,6 +3,7 @@ import { Taxi } from 'src/app/core/models/taxi';
 import { Viagem } from 'src/app/core/models/viagem';
 import { ViagemService } from 'src/app/core/services/viagem.service';
 import { TaxiService } from 'src/app/core/services/taxi.service';
+import { Router } from '@angular/router';
 
 interface TaxiStats {
   taxiId: string;
@@ -36,7 +37,8 @@ export class TaxiStatsComponent {
 
   constructor(
     private viagemService: ViagemService,
-    private taxiService: TaxiService
+    private taxiService: TaxiService,
+    private router: Router
   ) {}
 
   mostrartaxiStats() {
@@ -126,5 +128,9 @@ export class TaxiStatsComponent {
 
   toggleTaxiDetails(taxiId: string) {
     this.selectedTaxiId = this.selectedTaxiId === taxiId ? null : taxiId;
+  }
+
+  goBack() {
+    this.router.navigate(['/gestor/stats']);
   }
 }

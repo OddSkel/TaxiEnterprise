@@ -81,10 +81,11 @@ export class MotoristaService {
     return this.http
       .put(`${this.motoristaUrl}/${motorista._id}`, motorista)
       .pipe(
-        tap((_) => this.log(`updated Motorista =${motorista}`)),
-        catchError(this.handleError<any>('updateTaxi'))
+        tap(() => this.log(`updated Motorista id=${motorista._id}`)),
+        catchError(this.handleError<any>('updateMotorista'))
       );
   }
+
 
   // Remover um motorista
   deleteMotorista(id: string): Observable<any> {

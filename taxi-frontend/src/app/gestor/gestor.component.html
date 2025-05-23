@@ -5,10 +5,10 @@
   </header>
 
   <nav class="gestor-menu">
-    <a routerLink="/gestor/taxis" class="btn">Gerir Táxis</a>
-    <a routerLink="/gestor/motoristas" class="btn">Gerir Motoristas</a>
-    <a routerLink="/gestor/confortos" class="btn">Gerir Confortos</a>
-    <a routerLink="/gestor/stats" class="btn">Ver Estatísticas</a>
+    <a routerLink="/gestor/taxis" routerLinkActive="active" class="btn" [routerLinkActiveOptions]="{ exact: true }">Gerir Táxis</a>
+    <a routerLink="/gestor/motoristas" routerLinkActive="active" class="btn" [routerLinkActiveOptions]="{ exact: true }">Gerir Motoristas</a>
+    <a routerLink="/gestor/confortos" routerLinkActive="active" class="btn" [routerLinkActiveOptions]="{ exact: true }">Gerir Confortos</a>
+    <a routerLink="/gestor/stats" routerLinkActive="active" class="btn" [routerLinkActiveOptions]="{ exact: true }">Ver Estatísticas</a>
   </nav>
 
   <main class="gestor-conteudo">

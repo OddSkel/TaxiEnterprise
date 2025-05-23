@@ -84,11 +84,20 @@ export class RequestRideComponent {
       attribution: 'Leaflet © OpenStreetMap contributors'
     }).addTo(this.map);
 
-    this.map.on('click', (e: any) => {
+    this.map.on('click', async (e: any) => {
       const latLng = e.latlng;
-      this.destino = `${latLng.lat}, ${latLng.lng}`;
       this.novaViagem.destino.coordenadas = { latitude: latLng.lat, longitude: latLng.lng };
       this.marcarDestinoNoMapa(latLng);
+
+      const endereco = await this.obterEnderecoPorCoordenadas(latLng.lat, latLng.lng);
+      if (endereco) {
+        this.destino = this.formatarEnderecoParaString(endereco);
+        this.novaViagem.destino.rua = endereco.rua;
+        this.novaViagem.destino.numPorta = endereco.numPorta;
+        this.novaViagem.destino.localidade = endereco.localidade;
+      } else {
+        this.destino = `${latLng.lat}, ${latLng.lng}`;
+      }
     });
   }
 
@@ -127,19 +136,36 @@ export class RequestRideComponent {
   }
 
   usarLocalizacaoAtual(): void {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        const lat = position.coords.latitude;
-        const lng = position.coords.longitude;
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition((position) => {
+      const lat = position.coords.latitude;
+      const lng = position.coords.longitude;
+      
+      this.novaViagem.origem.coordenadas = { latitude: lat, longitude: lng };
+      this.marcarOrigemNoMapa({ lat, lng });
+      this.map.setView([lat, lng], 13);
+      
+      // Aqui usamos .then() porque obterEnderecoPorCoordenadas retorna uma Promise
+      this.obterEnderecoPorCoordenadas(lat, lng).then((endereco) => {
+        if (endereco) {
+          this.origem = this.formatarEnderecoParaString(endereco);
+          this.novaViagem.origem.rua = endereco.rua;
+          this.novaViagem.origem.numPorta = endereco.numPorta;
+          this.novaViagem.origem.localidade = endereco.localidade;
+        } else {
+          this.origem = `${lat}, ${lng}`;
+        }
+      }).catch(() => {
         this.origem = `${lat}, ${lng}`;
-        this.novaViagem.origem.coordenadas = { latitude: lat, longitude: lng };
-        this.map.setView([lat, lng], 13);
-        this.marcarOrigemNoMapa({ lat, lng });
       });
-    } else {
-      alert("Geolocalização não suportada.");
-    }
+    }, () => {
+      alert("Erro ao obter localização.");
+    });
+  } else {
+    alert("Geolocalização não suportada.");
   }
+}
+
 
   async geocodificarEndereco(endereco: string): Promise<{
     lat: number,
@@ -188,165 +214,125 @@ export class RequestRideComponent {
     }
   }
 
-  async pedirViagem(): Promise<void> {
-    this.errorMessage = ''; // Limpa mensagens anteriores
-    let origemCoords, destinoCoords;
-
-    // Verificações adicionais
-    if (!this.cliente.pessoa.nome || this.cliente.pessoa.nome.trim() === '') {
-      this.errorMessage = 'O campo nome é obrigatório.';
-      return;
-    }
-
-    if (!this.cliente.pessoa.nif || this.cliente.pessoa.nif.trim() === '') {
-      this.errorMessage = 'O campo NIF é obrigatório.';
-      return;
-    }
-
-    if (!this.cliente.pessoa.genero || this.cliente.pessoa.genero.trim() === '') {
-      this.errorMessage = 'O campo genero é obrigatório.';
-      return;
-    }
-
-    if (!this.origem || this.origem.trim() === '') {
-      this.errorMessage = 'O campo origem é obrigatório.';
-      return;
-    }
-
-    if (!this.destino || this.destino.trim() === '') {
-      this.errorMessage = 'O campo destino é obrigatório.';
-      return;
-    }
-
-    if (!this.conforto || this.conforto.trim() === '') {
-      this.errorMessage = 'O campo conforto é obrigatório.';
-      return;
-    }
-
-    if (!this.numPessoas || this.numPessoas < 1 || this.numPessoas > 6) {
-      this.errorMessage = 'O número de pessoas deve ser entre 1 e 6.';
-      return;
-    }
-
-    console.log(this.origem);
-    console.log(this.destino);
-
-    // Para a origem
-    if (/^-?\d+(\.\d+)?\s*,\s*-?\d+(\.\d+)?$/.test(this.origem.trim())) {
-      const [lat, lng] = this.origem.split(',').map(Number);
-      if (isNaN(lat) || isNaN(lng)) {
-        this.errorMessage = "Coordenadas Origem inválidas.";
-        return;
-      }
-      origemCoords = { latitude: lat, longitude: lng };
-      const endereco = await this.obterEnderecoPorCoordenadas(lat, lng);
-      if (!endereco) {
-        this.errorMessage = "Erro ao obter endereço a partir da origem.";
-        return;
-      }
-      this.novaViagem.origem = {
-        _id: '',
-        rua: endereco.rua,
-        numPorta: endereco.numPorta,
-        codigoPostal: endereco.codigoPostal,
-        localidade: endereco.localidade,
-        coordenadas: origemCoords
-      };
-      this.marcarOrigemNoMapa({ lat, lng });
-    } else {
-      const coords = await this.geocodificarEndereco(this.origem);
-      if (!coords || isNaN(Number(coords.lat)) || isNaN(Number(coords.lng))) {
-        this.errorMessage = "Falha a geocodificar origem.";
-        return;
-      }
-
-      console.log("Coordenadas geocodificadas da origem:", coords);
-
-      origemCoords = { latitude: coords.lat, longitude: coords.lng };
-      this.novaViagem.origem = {
-        _id: '',
-        rua: coords.rua,
-        numPorta: '',
-        codigoPostal: '',
-        localidade: coords.localidade,
-        coordenadas: origemCoords
-      };
-      this.marcarOrigemNoMapa({ lat: coords.lat, lng: coords.lng });
-    }
-
-    // Para o destino
-    if (/^-?\d+(\.\d+)?\s*,\s*-?\d+(\.\d+)?$/.test(this.destino.trim())) {
-      const [lat, lng] = this.destino.split(',').map(Number);
-      if (isNaN(lat) || isNaN(lng)) {
-        this.errorMessage = "Coordenadas Destino inválidas.";
-        return;
-      }
-      destinoCoords = { latitude: lat, longitude: lng };
-
-      const endereco = await this.obterEnderecoPorCoordenadas(lat, lng);
-      if (!endereco) {
-        this.errorMessage = "Erro ao obter endereço a partir do destino.";
-        return;
-      }
-
-      this.novaViagem.destino = {
-        _id: '',
-        rua: endereco.rua,
-        numPorta: endereco.numPorta,
-        codigoPostal: endereco.codigoPostal,
-        localidade: endereco.localidade,
-        coordenadas: destinoCoords
-      };
-
-      this.marcarDestinoNoMapa({ lat, lng });
-    } else {
-      const coords = await this.geocodificarEndereco(this.destino);
-      if (!coords || isNaN(Number(coords.lat)) || isNaN(Number(coords.lng))) {
-        this.errorMessage = "Falha a geocodificar destino.";
-        return;
-      }
-
-      console.log("Coordenadas geocodificadas do destino:", coords);
-
-      destinoCoords = { latitude: coords.lat, longitude: coords.lng };
-      this.novaViagem.destino = {
-        _id: '',
-        rua: coords.rua,
-        numPorta: '',
-        codigoPostal: '',
-        localidade: coords.localidade,
-        coordenadas: destinoCoords
-      };
-      this.marcarDestinoNoMapa({ lat: coords.lat, lng: coords.lng });
-    }
-
-    this.novaViagem.origem.coordenadas = origemCoords;
-    this.novaViagem.destino.coordenadas = destinoCoords;
-
-    const viagem = {
-      cliente: {
-        nome: this.cliente.pessoa.nome,
-        nif: this.cliente.pessoa.nif,
-        genero: this.cliente.pessoa.genero
-      },
-      origem: this.novaViagem.origem,
-      destino: this.novaViagem.destino,
-      conforto: this.conforto,
-      num_pessoas: this.numPessoas
-    };
-
-    console.log("Objeto viagem a enviar:", viagem);
-
-    this.viagemService.pedirViagem(viagem).subscribe({
-      next: (res) => {
-        console.log("Viagem recebida:", res);
-        this.errorMessage = '';
-        this.router.navigate(['/cliente/cliente', res._id, 'waiting']);
-      },
-      error: (error) => {
-        this.errorMessage = "Erro ao pedir viagem.";
-        console.error(error);
-      }
-    });
+  validarCampos(): boolean {
+  if (!this.cliente.pessoa.nome?.trim()) {
+    this.errorMessage = 'O campo nome é obrigatório.';
+    return false;
   }
+  if (!this.cliente.pessoa.nif?.trim()) {
+    this.errorMessage = 'O campo NIF é obrigatório.';
+    return false;
+  }
+  if (!this.cliente.pessoa.genero?.trim()) {
+    this.errorMessage = 'O campo gênero é obrigatório.';
+    return false;
+  }
+  if (!this.origem?.trim()) {
+    this.errorMessage = 'O campo origem é obrigatório.';
+    return false;
+  }
+  if (!this.destino?.trim()) {
+    this.errorMessage = 'O campo destino é obrigatório.';
+    return false;
+  }
+  if (!this.conforto?.trim()) {
+    this.errorMessage = 'O campo conforto é obrigatório.';
+    return false;
+  }
+  if (!this.numPessoas || this.numPessoas < 1 || this.numPessoas > 6) {
+    this.errorMessage = 'O número de pessoas deve ser entre 1 e 6.';
+    return false;
+  }
+  this.errorMessage = '';
+  return true;
+}
+
+async montarLocalizacao(enderecoOuCoords: string): Promise<{
+  endereco: any,
+  coords: { latitude: number, longitude: number }
+} | null> {
+  // Detecta se é coordenada (lat,lng)
+  if (/^-?\d+(\.\d+)?\s*,\s*-?\d+(\.\d+)?$/.test(enderecoOuCoords.trim())) {
+    const [lat, lng] = enderecoOuCoords.split(',').map(Number);
+    if (isNaN(lat) || isNaN(lng)) return null;
+    const endereco = await this.obterEnderecoPorCoordenadas(lat, lng);
+    if (!endereco) return null;
+    return { endereco, coords: { latitude: lat, longitude: lng } };
+  } else {
+    // Se não for coordenada, geocodifica
+    const coords = await this.geocodificarEndereco(enderecoOuCoords);
+    if (!coords) return null;
+    return { endereco: coords, coords: { latitude: coords.lat, longitude: coords.lng } };
+  }
+}
+
+async pedirViagem(): Promise<void> {
+  if (!this.validarCampos()) return;
+
+  const origemData = await this.montarLocalizacao(this.origem);
+  if (!origemData) {
+    this.errorMessage = "Falha ao obter origem.";
+    return;
+  }
+  this.novaViagem.origem = {
+    _id: '',
+    rua: origemData.endereco.rua,
+    numPorta: origemData.endereco.numPorta || '',
+    codigoPostal: origemData.endereco.codigoPostal || '',
+    localidade: origemData.endereco.localidade,
+    coordenadas: origemData.coords
+  };
+  this.marcarOrigemNoMapa({ lat: origemData.coords.latitude, lng: origemData.coords.longitude });
+
+  const destinoData = await this.montarLocalizacao(this.destino);
+  if (!destinoData) {
+    this.errorMessage = "Falha ao obter destino.";
+    return;
+  }
+  this.novaViagem.destino = {
+    _id: '',
+    rua: destinoData.endereco.rua,
+    numPorta: destinoData.endereco.numPorta || '',
+    codigoPostal: destinoData.endereco.codigoPostal || '',
+    localidade: destinoData.endereco.localidade,
+    coordenadas: destinoData.coords
+  };
+  this.marcarDestinoNoMapa({ lat: destinoData.coords.latitude, lng: destinoData.coords.longitude });
+
+  const viagem = {
+    cliente: {
+      nome: this.cliente.pessoa.nome,
+      nif: this.cliente.pessoa.nif,
+      genero: this.cliente.pessoa.genero
+    },
+    origem: this.novaViagem.origem,
+    destino: this.novaViagem.destino,
+    conforto: this.conforto,
+    num_pessoas: this.numPessoas
+  };
+
+  this.viagemService.pedirViagem(viagem).subscribe({
+    next: (res) => {
+      this.errorMessage = '';
+      this.router.navigate(['/cliente/cliente', res._id, 'waiting']);
+    },
+    error: (error) => {
+      this.errorMessage = "Erro ao pedir viagem.";
+      console.error(error);
+    }
+  });
+}
+
+
+  formatarEnderecoParaString(endereco: { rua: string, numPorta: string, localidade: string }): string {
+    let enderecoStr = endereco.rua || '';
+    if (endereco.numPorta) {
+      enderecoStr += ` ${endereco.numPorta}`;
+    }
+    if (endereco.localidade) {
+      enderecoStr += `, ${endereco.localidade}`;
+    }
+    return enderecoStr;
+  }
+
 }

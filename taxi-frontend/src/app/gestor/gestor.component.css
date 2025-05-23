@@ -65,6 +65,16 @@ header h1 {
   min-height: 200px;
 }
 
+
+.gestor-menu .active {
+  background-color: #084c74;
+  color: white;
+}
+
+.gestor-menu .active:hover {
+  background-color: #2980b9;
+}
+
 /* Responsivo */
 @media (max-width: 600px) {
   .gestor-menu {

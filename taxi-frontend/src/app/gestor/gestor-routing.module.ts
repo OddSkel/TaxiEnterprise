@@ -36,6 +36,7 @@ const routes: Routes = [
       { path: 'confortos', component: ConfortListComponent },
       { path: 'confortos/:id/edit', component: ConfortEditComponent },
       { path: 'confortos/:id/simulate', component: SimulateRideComponent },
+      
       { path: 'stats', component: StatsComponent },
       { path: 'taxi-stats', component: TaxiStatsComponent },
       { path: 'driver-stats', component: DriverStatsComponent },

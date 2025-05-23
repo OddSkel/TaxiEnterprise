@@ -5,7 +5,7 @@
     {{ errorMessage }}
   </div>
 
-  <form (ngSubmit)="save()" #form="ngForm" novalidate>
+  <form *ngIf="motorista && motorista._id" (ngSubmit)="save()" #form="ngForm" novalidate>
     <fieldset>
       <legend>Dados Pessoais</legend>
 
@@ -99,7 +99,7 @@
     </fieldset>
 
     <div class="form-actions">
-      <button type="submit" [disabled]="!valid">Guardar</button>
+      <button type="submit" [disabled]="!valid || !form.dirty">Guardar</button>
       <button type="button" class="secondary" (click)="goBack()">Cancelar</button>
     </div>
   </form>

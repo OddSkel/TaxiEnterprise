@@ -125,23 +125,41 @@ exports.deleteMotorista = async (req, res) => {
 exports.updateMotorista = async (req, res) => {
   try {
     const motoristaId = req.params.id;
-    const { nome, genero, nif, anoNascimento, cartaConducao } = req.body;
-    const motorista = await Motorista.findById(motoristaId).exec();
+    const { pessoa, anoNascimento, cartaConducao, morada } = req.body;
+
+    const motorista = await Motorista.findById(motoristaId).populate("pessoa").populate("morada").exec();
     if (!motorista)
-      return res.status(404).json({ erro: "Motorista nao encontrado" });
-    motorista.pessoa.nome = nome;
-    motorista.pessoa.genero = genero;
-    motorista.pessoa.nif = nif;
+      return res.status(404).json({ erro: "Motorista não encontrado" });
+
+    motorista.pessoa.nome = pessoa.nome;
+    motorista.pessoa.genero = pessoa.genero;
+    motorista.pessoa.nif = pessoa.nif;
     motorista.anoNascimento = anoNascimento;
     motorista.cartaConducao = cartaConducao;
+
+    if (morada) {
+      motorista.morada.rua = morada.rua;
+      motorista.morada.numPorta = morada.numPorta;
+      motorista.morada.codigoPostal = morada.codigoPostal;
+      motorista.morada.localidade = morada.localidade;
+    }
+
+    await motorista.pessoa.save();
+    await motorista.morada.save();
     await motorista.save();
-    res.json(motorista);
+
+    const motoristaAtualizado = await Motorista.findById(motoristaId)
+      .populate("pessoa")
+      .populate("morada")
+      .exec();
+      
+    res.status(200).json(motoristaAtualizado);
   } catch (err) {
-    res
-      .status(500)
-      .json({ erro: "Erro ao atualizar motorista", detalhes: err.message });
+    console.error('Erro na atualização do motorista:', err);
+    res.status(500).json({ erro: "Erro ao atualizar motorista", detalhes: err.message });
   }
 };
+
 
 exports.getMotoristaByNIF = async (req, res) => {
   try {

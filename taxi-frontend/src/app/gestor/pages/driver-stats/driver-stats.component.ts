@@ -3,6 +3,7 @@ import { Motorista } from 'src/app/core/models/motorista';
 import { Viagem } from 'src/app/core/models/viagem';
 import { ViagemService } from 'src/app/core/services/viagem.service';
 import { MotoristaService } from 'src/app/core/services/motorista.service';
+import { Router } from '@angular/router';
 
 interface DriverStats {
   driverId: string;
@@ -36,7 +37,8 @@ export class DriverStatsComponent {
 
   constructor(
     private viagemService: ViagemService,
-    private motoristaService: MotoristaService
+    private motoristaService: MotoristaService,
+    private router: Router
   ) {}
 
   mostrarmotoristaStats() {
@@ -128,5 +130,9 @@ export class DriverStatsComponent {
   toggleDriverDetails(driverId: string) {
     this.selectedDriverId =
       this.selectedDriverId === driverId ? null : driverId;
+  }
+
+  goBack(): void {
+    this.router.navigate(['/gestor/stats']);
   }
 }

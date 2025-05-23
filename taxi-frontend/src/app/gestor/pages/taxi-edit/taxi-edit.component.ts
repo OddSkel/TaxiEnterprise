@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Location } from '@angular/common';
 
 import { Taxi } from 'src/app/core/models/taxi';
 import { TaxiService } from 'src/app/core/services/taxi.service';
@@ -28,7 +27,6 @@ export class TaxiEditComponent implements OnInit {
     private route: ActivatedRoute,
     private taxiService: TaxiService,
     private router: Router,
-    private location: Location
   ) {}
 
   ngOnInit(): void {
@@ -39,7 +37,10 @@ export class TaxiEditComponent implements OnInit {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.taxiService.getTaxi(id).subscribe({
-        next: (taxi) => this.taxi = taxi,
+        next: (taxi) => {
+          this.taxi = taxi;
+          this.validate();  // valida imediatamente ao carregar os dados
+        },
         error: (err) => this.errorMessage = 'Erro ao carregar táxi: ' + err.message
       });
     }
@@ -52,17 +53,18 @@ export class TaxiEditComponent implements OnInit {
     }
     if (!this.validate()) {
       this.errorMessage = 'Corrija os erros do formulário antes de salvar.';
+      this.valid = true;
       return;
     }
     this.taxiService.updateTaxi(this.taxi).subscribe({
-      next: () => this.router.navigate(['/taxis', this.taxi._id]),
+      next: () => this.router.navigate(['/gestor/taxis', this.taxi._id]),
       error: (err) => this.errorMessage = 'Erro ao salvar: ' + err.message
     });
   }
 
 
   goBack(): void {
-    this.location.back();
+    this.router.navigate(['/gestor/taxis/', this.taxi._id]);
   }
 
   validate(): boolean {

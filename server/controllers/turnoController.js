@@ -116,6 +116,22 @@ exports.getAllShifts = async (req, res) => {
   }
 };
 
+exports.getAllTaxiShifts = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const turnos = await Turno.find({ taxi: id })
+      .populate("taxi")
+      .populate("motorista")
+      .sort({ start: 1 })
+      .exec();
+    res.json(turnos);
+  } catch (err) {
+    res
+      .status(500)
+      .json({ erro: "Erro ao listar turnos", detalhes: err.message });
+  }
+};
+
 exports.getAvailableTaxisForShift = async (req, res) => {
   try {
     const driver_id = req.params.id;

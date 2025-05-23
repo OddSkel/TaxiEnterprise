@@ -34,7 +34,7 @@ export class DriverDetailComponent {
   }
 
   goBack(): void {
-    this.location.back();
+    this.router.navigate(['/gestor/motoristas']);
   }
 
   goToEditMotorista(): void {

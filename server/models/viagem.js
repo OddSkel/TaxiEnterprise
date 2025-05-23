@@ -13,7 +13,7 @@ const ViagemSchema = new Schema({
   seq: { type: Number },
   estado: {
     type: String,
-    enum: ["pendente", "aceite", "confirmada", "iniciada", "concluída", "cancelada"],
+    enum: ["pendente", "aceite", "confirmada", "iniciada", "concluida", "cancelada"],
     default: "pendente",
   },
   seq: { type: Number },

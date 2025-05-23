@@ -114,6 +114,19 @@ label select:focus {
   transform: scale(1.05);
 }
 
+.form-actions button[type='submit']:disabled {
+  background-color: #bdc3c7;
+  color: #ecf0f1;             
+  cursor: not-allowed;
+  transform: none;           
+}
+
+.form-actions button[type='submit']:disabled:hover {
+  background-color: #bdc3c7;
+  transform: none;
+}
+
+
 @media (max-width: 600px) {
   .register-driver-container {
     padding: 25px 20px;

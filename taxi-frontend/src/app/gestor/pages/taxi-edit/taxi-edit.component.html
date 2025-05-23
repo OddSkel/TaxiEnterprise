@@ -1,7 +1,7 @@
 <div class="edit-container">
   <h2>Editar Táxi</h2>
 
-  <form (ngSubmit)="save()" *ngIf="taxi" novalidate>
+  <form *ngIf="taxi && taxi._id" (ngSubmit)="save()" #form="ngForm" novalidate>
     <!-- Matrícula -->
     <div class="form-group">
       <label for="matricula">Matrícula</label>
@@ -92,7 +92,7 @@
 
     <!-- Botões -->
     <div class="button-group">
-      <button type="submit" [disabled]="!valid">Guardar</button>
+      <button type="submit" [disabled]="!valid || !form.dirty">Guardar</button>
       <button type="button" class="secondary" (click)="goBack()">Cancelar</button>
     </div>
   </form>

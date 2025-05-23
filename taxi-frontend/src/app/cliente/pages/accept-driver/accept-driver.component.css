@@ -45,22 +45,22 @@ button {
 }
 
 .btn-aceitar {
-  background-color: #4caf50;
+  background-color: #27ae60;
   color: white;
 }
 
 .btn-aceitar:hover {
-  background-color: #43a047;
+  background-color: #219150;
   transform: scale(1.02);
 }
 
 .btn-rejeitar {
-  background-color: #e53935;
+  background-color: #c0392b;
   color: white;
 }
 
 .btn-rejeitar:hover {
-  background-color: #d32f2f;
+  background-color: #992d22;
   transform: scale(1.02);
 }
 

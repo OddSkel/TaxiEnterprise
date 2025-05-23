@@ -69,6 +69,20 @@ export class TurnoService {
     );
   }
 
+  getAllTaxiShifts(taxiId: string): Observable<Turno[]> {
+    return this.http.get<Turno[]>(`${this.turnoUrl}/${taxiId}/`).pipe(
+      map((shifts) =>
+        shifts.map((shift) => ({
+          ...shift,
+          periodo: {
+            start: shift.start,
+            end: shift.end,
+          },
+        }))
+      )
+    );
+  }
+
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
       // TODO: send the error to remote logging infrastructure

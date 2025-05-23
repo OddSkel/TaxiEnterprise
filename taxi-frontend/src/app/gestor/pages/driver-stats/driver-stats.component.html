@@ -16,9 +16,12 @@
       {{ validationMessage }}
     </div>
 
-    <button class="validate-button" (click)="mostrarmotoristaStats()">
-      Gerar Relatório
-    </button>
+    <div class="button-group">
+      <button class="back-button" (click)="goBack()">Voltar</button>
+      <button class="validate-button" (click)="mostrarmotoristaStats()">
+        Gerar Relatório
+      </button>
+    </div>
   </div>
 
   <div class="taxis-container" *ngIf="stats.length > 0">

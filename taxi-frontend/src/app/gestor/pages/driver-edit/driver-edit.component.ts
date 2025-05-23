@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 
@@ -10,7 +10,7 @@ import { MotoristaService } from 'src/app/core/services/motorista.service';
   templateUrl: './driver-edit.component.html',
   styleUrls: ['./driver-edit.component.css']
 })
-export class DriverEditComponent {
+export class DriverEditComponent implements OnInit {
   motorista: Motorista = {
     _id: '',
     pessoa: {
@@ -31,7 +31,7 @@ export class DriverEditComponent {
   };
 
   errorMessage = '';
-  fieldErrors: any;
+  fieldErrors: any = {};
   valid: boolean = false;
 
   constructor(
@@ -66,16 +66,19 @@ export class DriverEditComponent {
     }
     if (!this.valid) {
       this.errorMessage = 'Corrija os erros do formulário antes de salvar.';
+      this.valid = true;
       return;
     }
     this.motoristaService.updateMotorista(this.motorista).subscribe({
-      next: () => this.router.navigate(['/motoristas', this.motorista._id]),
+      next: (motorista) => {
+        this.router.navigate(['/gestor/motoristas', this.motorista._id])
+      },
       error: (err) => (this.errorMessage = 'Erro ao salvar: ' + err.message),
     });
   }
 
   goBack(): void {
-    this.location.back();
+    this.router.navigate(['/gestor/motoristas', this.motorista._id]);
   }
 
    onCodigoPostalChange(): void {
