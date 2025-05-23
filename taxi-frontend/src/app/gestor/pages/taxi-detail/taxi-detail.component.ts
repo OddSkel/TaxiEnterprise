@@ -34,7 +34,7 @@ export class TaxiDetailComponent {
   }
 
   goBack(): void {
-    this.location.back();
+    this.router.navigate(['/gestor/taxis', this.taxi?._id]);
   }
 
   goToEditTaxi(): void {
