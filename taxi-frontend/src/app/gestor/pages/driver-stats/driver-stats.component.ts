@@ -41,6 +41,23 @@ export class DriverStatsComponent {
     private router: Router
   ) {}
 
+  ngOnInit() {
+    const today = new Date();
+
+    // Set startDate to today at 00:00
+    const start = new Date(today);
+    start.setHours(0, 0, 0, 0);
+    start.setHours(start.getHours() + 1);
+
+    // Set endDate to today at 08:00
+    const end = new Date(today);
+    end.setHours(23, 59, 0, 0);
+    end.setHours(end.getHours() + 1);
+
+    this.startDate = start.toISOString().slice(0, 16);
+    this.endDate = end.toISOString().slice(0, 16);
+  }
+
   mostrarmotoristaStats() {
     this.showValidation = false;
     this.validationMessage = '';
@@ -64,13 +81,6 @@ export class DriverStatsComponent {
         if (start >= end) {
           this.validationMessage =
             'A data de início deve ser anterior à data de fim.';
-          this.showValidation = true;
-          return;
-        }
-
-        if (diffInHours > 8) {
-          this.validationMessage =
-            'O período de tempo não pode ser superior a 8 horas.';
           this.showValidation = true;
           return;
         }
