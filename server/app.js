@@ -20,7 +20,7 @@ mongoose.set("strictQuery", false);
 const mongoDB =
   "mongodb://PSI013:PSI013@localhost:27017/PSI013?retryWrites=true&authSource=PSI013";
 
-const PORT = 3000;
+const PORT = 3063;
 app.listen(PORT, () => {
   console.log(`Server listening on http://localhost:${PORT}`);
 });
