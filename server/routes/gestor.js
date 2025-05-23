@@ -8,6 +8,7 @@ const Motorista = require("../models/motorista");
 const Cliente = require("../models/cliente");
 const Viagem = require("../models/viagem");
 const Turno = require("../models/turno");
+const Conforto = require("../models/conforto");
 
 motorista_controller = require("../controllers/motoristaController");
 taxi_controller = require("../controllers/taxiController");
@@ -25,6 +26,18 @@ router.get("/init", async (req, res) => {
     await Turno.deleteMany({});
     await Viagem.deleteMany({});
     await Cliente.deleteMany({});
+
+    const confortoB = await Conforto.create({
+      nome: "BASICO",
+      acrescimo: "20",
+      preco: "0.5",
+    });
+
+    const confortoL = await Conforto.create({
+      nome: "LUXUOSO",
+      acrescimo: "50",
+      preco: "0.75",
+    });
 
     const pessoa = await Pessoa.create({
       nome: "Augusto",
