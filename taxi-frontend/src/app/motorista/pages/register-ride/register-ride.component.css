@@ -75,6 +75,14 @@
   color: #666;
 }
 
+/* NOVO: Estilo para o cliente nas viagens */
+.viagem .cliente {
+  font-size: 0.95rem;
+  color: #444;
+  font-weight: 500;
+}
+
+/* Viagens específicas com bordas coloridas */
 .viagem-aceite {
   border-left: 6px solid #27ae60;
 }
@@ -86,6 +94,55 @@
 .viagem-concluida {
   border-left: 6px solid #7f8c8d;
 }
+
+
+
+/* Viagens concluídas: layout em cards */
+.viagem-concluida.card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.info-principal {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.trajeto {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #2c3e50;
+}
+
+.preco {
+  font-weight: 700;
+  color: #27ae60;
+  font-size: 1rem;
+}
+
+.info-secundaria {
+  font-size: 0.95rem;
+  color: #2c3e50;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 6px;
+  line-height: 1.3;
+}
+
+.info-secundaria p {
+  margin: 0;
+}
+
+.info-secundaria strong {
+  color: #2c3e50;
+  font-weight: 600;
+}
+
 
 .acoes {
   margin-top: 12px;
@@ -138,6 +195,12 @@
 
   .viagem {
     padding: 14px 16px;
+  }
+
+  .viagem-concluida.card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
   }
 
   .acoes {

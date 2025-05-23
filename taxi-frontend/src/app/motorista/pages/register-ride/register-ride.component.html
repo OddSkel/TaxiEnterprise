@@ -7,35 +7,36 @@
     <h2>Viagens Ativas</h2>
     <ul class="lista-viagens">
       <li *ngFor="let v of viagensAtivas" class="viagem viagem-ativa">
-        <p class="descricao">
-          {{ v.origem.rua }} → {{ v.destino.rua }}
-        </p>
-        <p class="estado">
-          Estado: {{ v.estado }}
-        </p>
+        <div class="info-principal">
+          <span class="trajeto">{{ v.origem.rua }} → {{ v.destino.rua }}</span>
+        </div>
+        <div class="info-secundaria">
+          <p><strong>Cliente:</strong> {{ v.cliente.pessoa.nome }}</p>
+          <p><strong>Estado:</strong> {{ v.estado }}</p>
+          <p class="inicio" *ngIf="v.estado === 'iniciada'">
+            <strong>Início:</strong> {{ v.inicio | date:'short' }}
+          </p>
+        </div>
         <div class="acoes">
-          <button *ngIf="v.estado === 'confirmada'" (click)="iniciarViagem(v)" class="btn iniciar">
-            Iniciar
-          </button>
-          <button *ngIf="v.estado === 'iniciada'" (click)="terminarViagem(v)" class="btn terminar">
-            Terminar
-          </button>
+          <button *ngIf="v.estado === 'confirmada'" (click)="iniciarViagem(v)" class="btn iniciar">Iniciar</button>
+          <button *ngIf="v.estado === 'iniciada'" (click)="terminarViagem(v)" class="btn terminar">Terminar</button>
         </div>
       </li>
     </ul>
   </section>
-  
+
   <!-- Viagens Aceites -->
   <section class="secao-viagens">
     <h2>Viagens Aceites</h2>
     <ul class="lista-viagens">
       <li *ngFor="let v of viagensAceites" class="viagem viagem-aceite">
-        <p class="descricao">
-          {{ v.origem.rua }} → {{ v.destino.rua }}
-        </p>
-        <p class="estado">
-          Estado: {{ v.estado }}
-        </p>
+        <div class="info-principal">
+          <span class="trajeto">{{ v.origem.rua }} → {{ v.destino.rua }}</span>
+        </div>
+        <div class="info-secundaria">
+          <p><strong>Cliente:</strong> {{ v.cliente.pessoa.nome }}</p>
+          <p><strong>Estado:</strong> {{ v.estado }}</p>
+        </div>
       </li>
     </ul>
   </section>
@@ -45,12 +46,15 @@
     <h2>Viagens Concluídas</h2>
     <ul class="lista-viagens">
       <li *ngFor="let v of viagensConcluidas" class="viagem viagem-concluida">
-        <p class="descricao">
-          {{ v.origem.rua }} → {{ v.destino.rua }}
-        </p>
-        <p class="estado">
-          Finalizada em: {{ v.fim | date:'short' }}
-        </p>
+        <div class="info-principal">
+          <span class="trajeto">{{ v.origem.rua }} → {{ v.destino.rua }}</span>
+          <span class="preco">{{ v.custo_total | currency:'EUR' }}</span>
+        </div>
+        <div class="info-secundaria">
+          <p><strong>Cliente:</strong> {{ v.cliente.pessoa.nome }}</p>
+          <p><strong>Início:</strong> {{ v.inicio | date:'short' }}</p>
+          <p><strong>Fim:</strong> {{ v.fim | date:'short' }}</p>
+        </div>
       </li>
     </ul>
   </section>

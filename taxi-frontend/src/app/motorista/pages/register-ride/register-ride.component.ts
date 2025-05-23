@@ -25,7 +25,9 @@ export class RegisterRideComponent {
   ngOnInit(): void {
     const motoristaId = this.route.snapshot.paramMap.get('id');
     if (motoristaId) {
-      this.getViagens(motoristaId);
+      setInterval(() => {
+        this.getViagens(motoristaId);
+      }, 500);
     }
   }
 

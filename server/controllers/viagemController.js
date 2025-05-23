@@ -140,9 +140,7 @@ exports.pedirViagem = async (req, res) => {
       conforto,
       num_pessoas,
       estado: "pendente",
-      turno: null,
       taxi: null,
-      seq: null,
       custo_total: null,
       quilometros: null,
       inicio: null,
@@ -589,7 +587,12 @@ exports.listarViagensMotorista = async (req, res) => {
   console.log("Motorista ID:", id);
   const viagens = await Viagem.find({ motorista: id})
     .sort({ inicio: -1 })
-    .populate("cliente")
+    .populate({
+      path: "cliente",
+      populate: {
+        path: "pessoa", // isto vai buscar pessoa dentro de cliente
+      },
+    })
     .populate("origem")
     .populate("destino")
     .populate("motorista")

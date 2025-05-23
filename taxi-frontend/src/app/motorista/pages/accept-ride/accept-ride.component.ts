@@ -33,6 +33,9 @@ export class AcceptRideComponent {
   ngOnInit(): void {
     this.motoristaId = this.route.snapshot.paramMap.get('id') || '';
     this.obterLocalizacaoAtual();
+    setInterval(() => {
+      this.getViagensPendentes();
+    }, 500);
   }
 
   obterLocalizacaoAtual(): void {
@@ -71,7 +74,7 @@ export class AcceptRideComponent {
           }
           return viagem;
         })
-        .sort((a, b) =>  (b.distanciaCliente || Infinity) - (a.distanciaCliente || Infinity));
+        .sort((a, b) => (a.distanciaCliente || Infinity) - (b.distanciaCliente || Infinity));
     });
   }
 
