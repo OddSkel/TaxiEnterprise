@@ -1,0 +1,82 @@
+<div class="register-shift-container">
+  <h2>Relatório de Motoristas</h2>
+
+  <div class="shift-form">
+    <div class="form-group">
+      <label for="inicio">Início:</label>
+      <input type="datetime-local" id="inicio" [(ngModel)]="startDate" />
+    </div>
+
+    <div class="form-group">
+      <label for="fim">Fim:</label>
+      <input type="datetime-local" id="fim" [(ngModel)]="endDate" />
+    </div>
+
+    <div *ngIf="showValidation" class="error">
+      {{ validationMessage }}
+    </div>
+
+    <button class="validate-button" (click)="mostrarmotoristaStats()">
+      Gerar Relatório
+    </button>
+  </div>
+
+  <div class="taxis-container" *ngIf="stats.length > 0">
+    <h3>Resumo por Motorista</h3>
+
+    <div class="taxi-card" *ngFor="let stat of stats">
+      <div>
+        <p><strong>Motorista:</strong> {{ stat.name }}</p>
+        <p><strong>Total de Viagens:</strong> {{ stat.totalTrips }}</p>
+        <p>
+          <strong>Horas de viagem:</strong>
+          {{ stat.totalHours | number : "1.2-2" }}
+        </p>
+        <p>
+          <strong>Quilómetros:</strong>
+          {{ stat.totalDistance | number : "1.2-2" }}
+        </p>
+        <p>
+          <strong>Receita:</strong> {{ stat.totalRevenue | currency : "EUR" }}
+        </p>
+      </div>
+      <div>
+        <button (click)="toggleDriverDetails(stat.driverId)">
+          {{
+            selectedDriverId === stat.driverId
+              ? "Esconder Detalhes"
+              : "Mostrar Detalhes"
+          }}
+        </button>
+      </div>
+      <div
+        *ngIf="selectedDriverId === stat.driverId"
+        class="taxi-card"
+        style="background-color: #dff9fb"
+      >
+        <h4>Detalhes das Viagens</h4>
+        <ul *ngFor="let viagem of driverTripsMap[stat.driverId]">
+          <li><strong>Viagem nº:</strong> {{ viagem.seq }}</li>
+          <li>
+            <strong>Início:</strong>
+            {{ viagem.inicio | date : "short" : "UTC" }}
+          </li>
+          <li>
+            <strong>Fim:</strong> {{ viagem.fim | date : "short" : "UTC" }}
+          </li>
+          <li><strong>Táxi:</strong> {{ viagem.taxi?.matricula }}</li>
+          <li>
+            <strong>Quilómetros:</strong>
+            {{ viagem.quilometros | number : "1.2-2" }}
+          </li>
+          <li>
+            <strong>Receita:</strong>
+            {{ viagem.custo_total | currency : "EUR" }}
+          </li>
+          <li>-----------------------------------------------------</li>
+          <br />
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

@@ -6,7 +6,7 @@ import { TaxiService } from 'src/app/core/services/taxi.service';
 @Component({
   selector: 'app-register-taxi',
   templateUrl: './register-taxi.component.html',
-  styleUrls: ['./register-taxi.component.css']
+  styleUrls: ['./register-taxi.component.css'],
 })
 export class RegisterTaxiComponent {
   taxi: Taxi = {
@@ -21,10 +21,7 @@ export class RegisterTaxiComponent {
   fieldErrors: { [key: string]: string } = {};
   formValid: boolean = false;
 
-  constructor(
-    private taxiService: TaxiService,
-    private location: Location
-  ) {}
+  constructor(private taxiService: TaxiService, private location: Location) {}
 
   add(): void {
     this.fieldErrors = {};
@@ -40,7 +37,7 @@ export class RegisterTaxiComponent {
     this.taxiService.addTaxi(this.taxi).subscribe({
       next: () => {
         this.clearForm();
-        this.location.back(); 
+        this.location.back();
         this.fieldErrors = {};
         this.errorMessage = '';
       },
@@ -50,7 +47,8 @@ export class RegisterTaxiComponent {
         if (err?.fieldErrors) {
           this.fieldErrors = err.fieldErrors;
         } else {
-          this.errorMessage = err?.error || 'Ocorreu um erro ao submeter o formulário.';
+          this.errorMessage =
+            err?.error || 'Ocorreu um erro ao submeter o formulário.';
         }
       },
     });
@@ -75,23 +73,23 @@ export class RegisterTaxiComponent {
 
     // Expressões regulares para os 4 formatos permitidos
     const validFormats = [
-      /^[A-Z]{2}-\d{2}-\d{2}$/, // AA-00-00
-      /^\d{2}-\d{2}-[A-Z]{2}$/, // 00-00-AA
-      /^\d{2}-[A-Z]{2}-\d{2}$/, // 00-AA-00
-      /^[A-Z]{2}-\d{2}-[A-Z]{2}$/ // AA-00-AA
+      /^[A-Z]{2}\d{2}\d{2}$/, // AA-00-00
+      /^\d{2}\d{2}[A-Z]{2}$/, // 00-00-AA
+      /^\d{2}[A-Z]{2}\d{2}$/, // 00-AA-00
+      /^[A-Z]{2}\d{2}[A-Z]{2}$/, // AA-00-AA
     ];
 
     const isValid = validFormats.some((regex) => regex.test(value));
 
     if (!isValid) {
-      this.fieldErrors['matricula'] = 'Formato de matrícula inválido. Exemplos válidos: AA-00-00, 00-00-AA, 00-AA-00, AA-00-AA';
+      this.fieldErrors['matricula'] =
+        'Formato de matrícula inválido. Exemplos válidos: AA0000, 0000AA, 00AA00, AA00AA';
     } else {
       delete this.fieldErrors['matricula'];
     }
 
     this.checkFormValidity();
   }
-
 
   validateAnos() {
     let current_Year = new Date().getFullYear();

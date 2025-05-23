@@ -12,9 +12,13 @@ import { DriverEditComponent } from './pages/driver-edit/driver-edit.component';
 import { ConfortListComponent } from './pages/confort-list/confort-list.component';
 import { ConfortEditComponent } from './pages/confort-edit/confort-edit.component';
 import { SimulateRideComponent } from './pages/simulate-ride/simulate-ride.component';
+import { StatsComponent } from './pages/stats/stats.component';
+import { TaxiStatsComponent } from './pages/taxi-stats/taxi-stats.component';
+import { DriverStatsComponent } from './pages/driver-stats/driver-stats.component';
+import { TripStatsComponent } from './pages/trip-stats/trip-stats.component';
 
 const routes: Routes = [
-  { 
+  {
     path: '',
     component: GestorComponent,
     children: [
@@ -32,12 +36,16 @@ const routes: Routes = [
       { path: 'confortos', component: ConfortListComponent },
       { path: 'confortos/:id/edit', component: ConfortEditComponent },
       { path: 'confortos/:id/simulate', component: SimulateRideComponent },
-    ]
-  }
+      { path: 'stats', component: StatsComponent },
+      { path: 'taxi-stats', component: TaxiStatsComponent },
+      { path: 'driver-stats', component: DriverStatsComponent },
+      { path: 'trip-stats', component: TripStatsComponent },
+    ],
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class GestorRoutingModule { }
+export class GestorRoutingModule {}

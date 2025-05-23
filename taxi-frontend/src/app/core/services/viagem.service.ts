@@ -11,6 +11,7 @@ import { Viagem } from '../models/viagem';
 export class ViagemService {
   private baseUrlMotorista = 'http://localhost:3000/motorista';
   private baseUrlCliente = 'http://localhost:3000/cliente';
+  private baseUrlgestor = 'http://localhost:3000/gestor';
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
@@ -22,58 +23,67 @@ export class ViagemService {
   ) {}
 
   // Pedir uma nova viagem
-pedirViagem(viagem: any): Observable<Viagem> {
-  const url = `${this.baseUrlCliente}/pedirViagem`;
-  return this.http.post<Viagem>(url, viagem, this.httpOptions).pipe(
-    tap((v: Viagem) => this.log(`viagem pedida com id=${v._id}`)),
-    catchError(this.handleError<Viagem>('pedirViagem'))
-  );
-}
+  pedirViagem(viagem: any): Observable<Viagem> {
+    const url = `${this.baseUrlCliente}/pedirViagem`;
+    return this.http.post<Viagem>(url, viagem, this.httpOptions).pipe(
+      tap((v: Viagem) => this.log(`viagem pedida com id=${v._id}`)),
+      catchError(this.handleError<Viagem>('pedirViagem'))
+    );
+  }
 
-// Confirmar uma viagem
-confirmarViagem(clienteId: string, viagemId: string): Observable<Viagem> {
-  const url = `${this.baseUrlCliente}/${clienteId}/confirmar/${viagemId}`;
-  return this.http.post<Viagem>(url, {}, this.httpOptions).pipe(
-    tap((v: Viagem) => this.log(`viagem confirmada id=${v._id}`)),
-    catchError(this.handleError<Viagem>('confirmarViagem'))
-  );
-}
+  // Confirmar uma viagem
+  confirmarViagem(clienteId: string, viagemId: string): Observable<Viagem> {
+    const url = `${this.baseUrlCliente}/${clienteId}/confirmar/${viagemId}`;
+    return this.http.post<Viagem>(url, {}, this.httpOptions).pipe(
+      tap((v: Viagem) => this.log(`viagem confirmada id=${v._id}`)),
+      catchError(this.handleError<Viagem>('confirmarViagem'))
+    );
+  }
 
-// Rejeitar uma viagem
-rejeitarViagem(clienteId: string, viagemId: string): Observable<Viagem> {
-  const url = `${this.baseUrlCliente}/${clienteId}/rejeitar/${viagemId}`;
-  return this.http.post<Viagem>(url, {}, this.httpOptions).pipe(
-    tap((v: Viagem) => this.log(`viagem rejeitada id=${v._id}`)),
-    catchError(this.handleError<Viagem>('rejeitarViagem'))
-  );
-}
+  // Rejeitar uma viagem
+  rejeitarViagem(clienteId: string, viagemId: string): Observable<Viagem> {
+    const url = `${this.baseUrlCliente}/${clienteId}/rejeitar/${viagemId}`;
+    return this.http.post<Viagem>(url, {}, this.httpOptions).pipe(
+      tap((v: Viagem) => this.log(`viagem rejeitada id=${v._id}`)),
+      catchError(this.handleError<Viagem>('rejeitarViagem'))
+    );
+  }
 
-cancelarViagem(clienteId: string, viagemId: string): Observable<Viagem> {
-  const url = `${this.baseUrlCliente}/${clienteId}/cancelar/${viagemId}`;
-  return this.http.post<Viagem>(url, {}, this.httpOptions).pipe(
-    tap((v: Viagem) => this.log(`viagem cancelada id=${v._id}`)),
-    catchError(this.handleError<Viagem>('cancelarViagem'))
-  );
-}
-
+  cancelarViagem(clienteId: string, viagemId: string): Observable<Viagem> {
+    const url = `${this.baseUrlCliente}/${clienteId}/cancelar/${viagemId}`;
+    return this.http.post<Viagem>(url, {}, this.httpOptions).pipe(
+      tap((v: Viagem) => this.log(`viagem cancelada id=${v._id}`)),
+      catchError(this.handleError<Viagem>('cancelarViagem'))
+    );
+  }
 
   // Obter viagens pendentes próximas para o motorista
-  getViagensPendentes(motoristaId: string, lat: number, lon: number): Observable<Viagem[]> {
+  getViagensPendentes(
+    motoristaId: string,
+    lat: number,
+    lon: number
+  ): Observable<Viagem[]> {
     const params = {
       lat: lat.toString(),
       lon: lon.toString(),
     };
     const url = `${this.baseUrlMotorista}/${motoristaId}/viagens-pendentes`;
     return this.http.get<Viagem[]>(url, { params }).pipe(
-        tap((_) => this.log(`fetched pedidos pendentes do motorista ${motoristaId}`)),
-        catchError(this.handleError<Viagem[]>('getPedidosPendentes', []))
+      tap((_) =>
+        this.log(`fetched pedidos pendentes do motorista ${motoristaId}`)
+      ),
+      catchError(this.handleError<Viagem[]>('getPedidosPendentes', []))
     );
   }
 
   // Aceitar pedido de viagem
-  aceitarViagem(motoristaId: string, viagemId: string, distanciaKm: number): Observable<Viagem> {
+  aceitarViagem(
+    motoristaId: string,
+    viagemId: string,
+    distanciaKm: number
+  ): Observable<Viagem> {
     const url = `${this.baseUrlMotorista}/${motoristaId}/aceitar-viagem/${viagemId}`;
-    return this.http.post<Viagem>(url, {distanciaKm}, this.httpOptions).pipe(
+    return this.http.post<Viagem>(url, { distanciaKm }, this.httpOptions).pipe(
       tap((_) => this.log(`Pedido aceite para viagem ${viagemId}`)),
       catchError(this.handleError<Viagem>('aceitarPedido'))
     );
@@ -99,7 +109,7 @@ cancelarViagem(clienteId: string, viagemId: string): Observable<Viagem> {
     const url = `${this.baseUrlMotorista}/detalhes/${viagemId}/viagens`;
     return this.http.get<Viagem[]>(url).pipe(
       tap((_) => this.log(`Fetched viagens pelo motorista ${viagemId}`)),
-      catchError(this.handleError<Viagem[]>('getViagensMotorista',[]))
+      catchError(this.handleError<Viagem[]>('getViagensMotorista', []))
     );
   }
 
@@ -108,12 +118,19 @@ cancelarViagem(clienteId: string, viagemId: string): Observable<Viagem> {
     return this.http.get<Viagem>(url).pipe(
       tap(() => this.log(`Fetched viagem ${viagemId}`)),
       catchError((err) => {
-        console.error("Erro ao buscar viagem por ID:", err);
+        console.error('Erro ao buscar viagem por ID:', err);
         return of(null); // <--- Retorna null para ser tratado no subscribe
       })
     );
   }
 
+  getViagens(): Observable<Viagem[]> {
+    const url = `${this.baseUrlgestor}/viagens`;
+    return this.http.get<Viagem[]>(url).pipe(
+      tap((_) => this.log(`Fetched viagens`)),
+      catchError(this.handleError<Viagem[]>('getViagens', []))
+    );
+  }
 
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {

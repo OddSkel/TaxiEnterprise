@@ -181,7 +181,7 @@ function calcularDistancia(lat1, lon1, lat2, lon2) {
 exports.listarPedidos = async (req, res) => {
   try {
     const { motoristaId } = req.params;
-    let { lat, lon, } = req.query;
+    let { lat, lon } = req.query;
 
     // Coordenadas padrão (Faculdade de Ciências)
     if (!lat || !lon) {
@@ -211,7 +211,10 @@ exports.listarPedidos = async (req, res) => {
         .json({ message: "Motorista não tem turno ativo." });
     }
 
-    const viagens = await Viagem.find({ estado: "pendente", conforto: turnoAtivo.taxi.nivel_conforto })
+    const viagens = await Viagem.find({
+      estado: "pendente",
+      conforto: turnoAtivo.taxi.nivel_conforto,
+    })
       .populate("origem")
       .populate("destino")
       .populate("cliente")
@@ -271,11 +274,10 @@ exports.aceitarPedido = async (req, res) => {
         .json({ message: "Motorista não tem turno ativo." });
     }
 
-
     // Atribuir motorista e turno à viagem
     viagem.motorista = motoristaId;
     viagem.turno = turnoAtivo._id; // Guarda o ID do turno
-    viagem.taxi = turnoAtivo.taxi; 
+    viagem.taxi = turnoAtivo.taxi;
     viagem.distanciaCliente = distanciaKm;
     viagem.seq = await gerarSeqViagem(turnoAtivo); // Gere o seq se necessário
     viagem.estado = "aceite";
@@ -484,6 +486,7 @@ exports.startViagem = async (req, res) => {
 exports.endViagem = async (req, res) => {
   try {
     const { id } = req.params;
+    console.log(id);
 
     const viagem = await Viagem.findById(id)
       .populate("origem")
@@ -491,6 +494,7 @@ exports.endViagem = async (req, res) => {
       .populate("turno")
       .populate("taxi")
       .populate("motorista");
+    console.log(viagem);
 
     if (!viagem) {
       return res.status(404).json({ message: "Viagem não encontrada." });
@@ -504,6 +508,7 @@ exports.endViagem = async (req, res) => {
 
     const fim = new Date();
     fim.setHours(fim.getHours() + 1);
+    console.log(fim);
 
     if (viagem.inicio >= fim) {
       return res.status(400).json({ message: "Hora de fim inválida." });
@@ -521,6 +526,7 @@ exports.endViagem = async (req, res) => {
       inicio: { $lt: fim },
       fim: { $gt: viagem.inicio },
     });
+    console.log(overlap);
 
     if (overlap) {
       return res
@@ -548,6 +554,8 @@ exports.endViagem = async (req, res) => {
       viagem.destino.coordenadas.longitude
     );
 
+    console.log(km);
+
     if (km <= 0) {
       return res
         .status(400)
@@ -567,11 +575,12 @@ exports.endViagem = async (req, res) => {
     const rate = isNight ? baseRate * (1 + nightExtra) : baseRate;
 
     const custo = parseFloat((rate * durationMinutes).toFixed(2));
+    console.log(custo);
 
     viagem.fim = fim;
     viagem.quilometros = km;
     viagem.custo_total = custo;
-    viagem.estado = "concluída";
+    viagem.estado = "concluida";
 
     await viagem.save();
 
@@ -582,10 +591,28 @@ exports.endViagem = async (req, res) => {
   }
 };
 
+exports.getViagens = async (req, res) => {
+  try {
+    const viagens = await Viagem.find()
+      .populate("cliente")
+      .populate("origem")
+      .populate("destino")
+      .populate("motorista")
+      .populate("taxi")
+      .populate("turno")
+      .exec();
+    res.json(viagens);
+  } catch (err) {
+    res
+      .status(500)
+      .json({ erro: "Erro ao listar viagens", detalhes: err.message });
+  }
+};
+
 exports.listarViagensMotorista = async (req, res) => {
   const { id } = req.params;
   console.log("Motorista ID:", id);
-  const viagens = await Viagem.find({ motorista: id})
+  const viagens = await Viagem.find({ motorista: id })
     .sort({ inicio: -1 })
     .populate({
       path: "cliente",
@@ -624,4 +651,3 @@ exports.getViagemById = async (req, res) => {
     res.status(500).json({ message: "Erro ao obter viagem." });
   }
 };
-

@@ -20,6 +20,10 @@ import { TaxiEditComponent } from './pages/taxi-edit/taxi-edit.component';
 import { TaxisListComponent } from './pages/taxis-list/taxis-list.component';
 import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
+import { StatsComponent } from './pages/stats/stats.component';
+import { TaxiStatsComponent } from './pages/taxi-stats/taxi-stats.component';
+import { DriverStatsComponent } from './pages/driver-stats/driver-stats.component';
+import { TripStatsComponent } from './pages/trip-stats/trip-stats.component';
 
 
 @NgModule({
@@ -35,7 +39,11 @@ import { HttpClientModule } from '@angular/common/http';
     SimulateRideComponent,
     TaxiDetailComponent,
     DriverDetailComponent,
-    ConfortEditComponent
+    ConfortEditComponent,
+    StatsComponent,
+    TaxiStatsComponent,
+    DriverStatsComponent,
+    TripStatsComponent
   ],
   imports: [
     CommonModule,
