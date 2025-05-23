@@ -8,7 +8,7 @@ import { ViagemService } from 'src/app/core/services/viagem.service';
 @Component({
   selector: 'app-register-ride',
   templateUrl: './register-ride.component.html',
-  styleUrls: ['./register-ride.component.css']
+  styleUrls: ['./register-ride.component.css'],
 })
 export class RegisterRideComponent {
   viagem: Viagem | null = null;
@@ -40,13 +40,15 @@ export class RegisterRideComponent {
   }
 
   categorizarViagens(viagens: Viagem[]) {
-    this.viagensAceites = viagens.filter(v => v.estado === "aceite");
+    this.viagensAceites = viagens.filter((v) => v.estado === 'aceite');
     console.log(this.viagensAceites);
 
-    this.viagensAtivas = viagens.filter(v => v.estado === "confirmada" || v.estado === "iniciada");
+    this.viagensAtivas = viagens.filter(
+      (v) => v.estado === 'confirmada' || v.estado === 'iniciada'
+    );
     console.log(this.viagensAtivas);
 
-    this.viagensConcluidas = viagens.filter(v => v.estado === "concluída");
+    this.viagensConcluidas = viagens.filter((v) => v.estado === 'concluida');
     console.log(this.viagensConcluidas);
 
     this.sortViagens(this.viagensAceites);

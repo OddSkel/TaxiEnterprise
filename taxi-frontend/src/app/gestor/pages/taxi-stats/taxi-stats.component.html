@@ -1,0 +1,75 @@
+<div class="register-shift-container">
+  <h2>Relatório de Táxis</h2>
+
+  <div class="shift-form">
+    <div class="form-group">
+      <label for="inicio">Início:</label>
+      <input type="datetime-local" id="inicio" [(ngModel)]="startDate" />
+    </div>
+
+    <div class="form-group">
+      <label for="fim">Fim:</label>
+      <input type="datetime-local" id="fim" [(ngModel)]="endDate" />
+    </div>
+
+    <div *ngIf="showValidation" class="error">
+      {{ validationMessage }}
+    </div>
+
+    <button class="validate-button" (click)="mostrartaxiStats()">
+      Gerar Relatório
+    </button>
+  </div>
+
+  <div class="taxis-container" *ngFor="let stat of stats">
+    <div class="taxi-card">
+      <div>
+        <p><strong>Táxi:</strong> {{ stat.matricula }}</p>
+        <p><strong>Total de Viagens:</strong> {{ stat.totalTrips }}</p>
+        <p>
+          <strong>Horas percorridas:</strong>
+          {{ stat.totalHours | number : "1.2-2" }}
+        </p>
+        <p>
+          <strong>Total de Quilómetros:</strong>
+          {{ stat.totalDistance | number : "1.2-2" }}
+        </p>
+        <p>
+          <strong>Receita:</strong>
+          {{ stat.totalRevenue | number : "1.2-2" }} €
+        </p>
+      </div>
+
+      <button (click)="toggleTaxiDetails(stat.taxiId)">
+        {{
+          selectedTaxiId === stat.taxiId
+            ? "Esconder Detalhes"
+            : "Mostrar Detalhes"
+        }}
+      </button>
+
+      <div *ngIf="selectedTaxiId === stat.taxiId" class="trip-details">
+        <h4>Detalhes das Viagens</h4>
+        <ul *ngFor="let viagem of taxiTripsMap[stat.taxiId]">
+          <li><strong>Viagem nº:</strong> {{ viagem.seq }}</li>
+          <li>
+            <strong>Início:</strong>
+            {{ viagem.inicio | date : "short" : "UTC" }}
+          </li>
+          <li>
+            <strong>Fim:</strong> {{ viagem.fim | date : "short" : "UTC" }}
+          </li>
+          <li>
+            <strong>Quilómetros:</strong>
+            {{ viagem.quilometros | number : "1.2-2" }}
+          </li>
+          <li>
+            <strong>Receita:</strong>
+            {{ viagem.custo_total | currency : "EUR" }}
+          </li>
+          <li>-----------------------------------------------------</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

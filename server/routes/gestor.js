@@ -111,4 +111,6 @@ router.get("/conforto/simular/:id", conforto_controller.conforto_details);
 
 router.get("/conforto/nome/:id", conforto_controller.getConfortoByName);
 
+router.get("/viagens", viagem_controller.getViagens);
+
 module.exports = router;
