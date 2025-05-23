@@ -18,7 +18,7 @@ app.use(cors());
 const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
 const mongoDB =
-  "mongodb+srv://Psi013:psi013@empresataxis.xrsvkfs.mongodb.net/?retryWrites=true&w=majority&appName=EmpresaTaxis";
+  "mongodb://PSI013:PSI013@localhost:27017/PSI013?retryWrites=true&authSource=PSI013";
 
 const PORT = 3000;
 app.listen(PORT, () => {
