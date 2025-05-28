@@ -1,0 +1,13 @@
+# Para corre no appserver:
+
+# Backend:
+
+cd psi/server
+
+node app.js
+
+# Frontend:
+
+cd psi/taxi-frontend
+
+npm run start
