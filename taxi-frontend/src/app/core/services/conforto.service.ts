@@ -15,7 +15,7 @@ export class ConfortoService {
     throw new Error('Method not implemented.');
   }
   private confortoUrl =
-    'http://appserver.alunos.di.fc.ul.pt:3063/gestor/conforto'; // URL to web api
+    'http://localhost:3063/gestor/conforto'; // URL to web api
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' }),

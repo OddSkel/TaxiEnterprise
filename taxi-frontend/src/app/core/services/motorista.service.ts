@@ -10,7 +10,7 @@ import { MessageService } from './message.service';
 @Injectable({ providedIn: 'root' })
 export class MotoristaService {
   private motoristaUrl =
-    'http://appserver.alunos.di.fc.ul.pt:3063/gestor/motoristas'; // adapta à tua API
+    'http://localhost:3063/gestor/motoristas'; // adapta à tua API
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' }),

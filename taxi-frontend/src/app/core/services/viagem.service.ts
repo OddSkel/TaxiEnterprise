@@ -10,9 +10,9 @@ import { Viagem } from '../models/viagem';
 @Injectable({ providedIn: 'root' })
 export class ViagemService {
   private baseUrlMotorista =
-    'http://appserver.alunos.di.fc.ul.pt:3063/motorista';
-  private baseUrlCliente = 'http://appserver.alunos.di.fc.ul.pt:3063/cliente';
-  private baseUrlgestor = 'http://appserver.alunos.di.fc.ul.pt:3063/gestor';
+    'http://localhost:3063/motorista';
+  private baseUrlCliente = 'http://localhost:3063/cliente';
+  private baseUrlgestor = 'http://localhost:3063/gestor';
 
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
